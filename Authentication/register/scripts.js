@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else {
             // Show the success message
-            submitForm();
+            //submitForm();
             successMessage.classList.remove('d-none');
             form.classList.add('d-none'); // Optionally hide the form
 
