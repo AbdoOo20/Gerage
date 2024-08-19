@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var isValid = true;
 
         // Validate Username
-        if (username.value.trim() === '') {
+        if (username.value.trim() === '' && username.value.length <= 3) {
             username.classList.add('is-invalid');
             isValid = false;
         } else {
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Validate Phone Number
-        var phonePattern = /^\+41[1-9][0-9]{8}$/; // Example pattern, adjust as needed
+        var phonePattern = /^\+[0-9]{8,}$/; // Example pattern, adjust as needed
         if (!phonePattern.test(phone.value)) {
             phone.classList.add('is-invalid');
             isValid = false;
@@ -79,17 +79,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function submitForm() {
-        createUserWithEmailAndPassword(auth, email, password)
+        createUserWithEmailAndPassword(auth, email.value, password.value)
             .then((userCredential) => {
                 const user = userCredential.user;
-                localStorage.setItem('email', EmailAddress);
+                localStorage.setItem('email', email.value);
                 localStorage.setItem('id', user.uid);
                 setDoc(doc(db, "users", user.uid), {
                     id: user.uid,
-                    email: email,
-                    password: password,
-                    name: username,
-                    phone: phone
+                    email: email.value,
+                    password: password.value,
+                    name: username.value,
+                    phone: phone.value
                 }).then(() => {
                     document.getElementById("username").value = "";
                     document.getElementById("email").value = "";
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         else {
             // Show the success message
-            //submitForm();
+            submitForm();
             successMessage.classList.remove('d-none');
             form.classList.add('d-none'); // Optionally hide the form
 

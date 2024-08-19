@@ -14,6 +14,7 @@ body {
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         width: 100%;
         /*max-width: 500px; /* Max width for the card */
+        min-width: 300px;
         margin: auto;
     }
     
