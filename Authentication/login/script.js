@@ -8,11 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var email = document.getElementById('email');
     var password = document.getElementById('password');
 
-    function submitForm() {
-        
+    function submitForm() { 
         signInWithEmailAndPassword(auth, email.value, password.value)
             .then((userCredential) => {
-                console.log("valid");
                 const user = userCredential.user;
                 localStorage.setItem('email', email.value);
                 localStorage.setItem('id', user.uid); 
@@ -29,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('password').value = '';
             })
             .catch((error) => {
-                console.log("not valid");
                 document.getElementById('email').value = '';
                 document.getElementById('password').value = '';
                 showAlert(error.message, "danger");
