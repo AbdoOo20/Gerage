@@ -105,8 +105,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById("phone").value = "";
                 document.getElementById("password").value = "";
                 document.getElementById("confirmPassword").value = "";
-                alert(error.message);
+                showAlert(error.message, "danger");
             })
+    }
+
+    function showAlert(message, type) { // type => // danger // success // warning
+        const alertContainer = document.getElementById('alert-container');
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.role = 'alert';
+        alertDiv.innerText = message;
+        alertContainer.appendChild(alertDiv);
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
     }
 
     // Handle form submission

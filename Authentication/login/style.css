@@ -1,0 +1,35 @@
+body {
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.card {
+    background-color: #eae6ee;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    min-width: 300px;
+    margin: auto;
+}
+
+.form-label {
+    color: #000000;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.tooltip-inner {
+    background-color: #007bff;
+    color: #fff;
+}
