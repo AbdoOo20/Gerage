@@ -1,0 +1,59 @@
+body {
+    background: url('./../../Images/AdminHome.jpg') no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    height: 100vh;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.title {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.container-box {
+    text-align: center;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    margin: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.container-box img {
+    max-width: 120px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.container-box h4 {
+    margin-top: 15px;
+    font-size: 20px;
+    color: #343a40;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    position: relative;
+    z-index: 1;
+}
