@@ -1,0 +1,74 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: url('./../../../Images/AdminHome.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    /* White background with slight opacity */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.custom-file-upload {
+    cursor: pointer;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    border: 2px solid #ced4da;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-file-upload img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.form-control-file {
+    display: none;
+}
+
+.custom-file-input {
+    display: none;
+}
+
+.custom-file-label {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 100%;
+    text-align: center;
+}
+
+.custom-file-label:hover {
+    background-color: #0056b3;
+}
