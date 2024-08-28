@@ -8,11 +8,13 @@ var UserPhone = document.getElementById("UserPhone");
 // Call the function to get profile data when the page loads
 document.addEventListener("DOMContentLoaded", getProfileData);
 
+
 // Function to get and Set profile data
+const UserID = localStorage.getItem('id');
 async function getProfileData() {
     try {
         //Get Profile Data
-        let userDetails = doc(db, "users", "sNmzeOAe2Tc8eVMNm2ZD32UJrjg2"); // Need UID from previous page or URLPrams Or Cookies
+        let userDetails = doc(db, "users", UserID.toString());
         const userData = await getDoc(userDetails);
 
         //Update User Profile Data
