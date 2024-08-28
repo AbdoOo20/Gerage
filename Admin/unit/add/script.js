@@ -1,4 +1,4 @@
-import { storage, db, uploadBytes, ref, getDownloadURL, addDoc, collection, getDocs, deleteDoc, deleteObject, doc, updateDoc } from './../../../Database/firebase-config.js';
+import { storage, db, uploadBytes, ref, getDownloadURL, addDoc, collection } from './../../../Database/firebase-config.js';
 
 const addForm = document.getElementById('addUnitForm');
 const addBTN = document.getElementById('addBTN');

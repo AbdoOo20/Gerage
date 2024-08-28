@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="container text-white text-center pt-5">
+        <h1 class="title">Settings</h1>
+    </div>
+
+    <div class="container mt-2 mb-3">
+        <form id="settingForm">
+            <div class="alert-container d-flex justify-content-center align-items-center">
+                <div id="alert-container"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="privacyTerms" class="form-label text-white">Privacy Terms</label>
+                <textarea id="privacyTerms" name="privacyTerms" class="form-control fixed-size" rows="5" placeholder="Enter Privacy Terms"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="aboutUs" class="form-label text-white">About Us</label>
+                <textarea id="aboutUs" name="aboutUs" class="form-control fixed-size" rows="5" placeholder="Enter About Us"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="contactEmail" class="form-label text-white">Contact Email</label>
+                <input type="email" id="contactEmail" name="contactEmail" class="form-control" placeholder="Enter Contact Email">
+            </div>
+
+            <div class="mb-3">
+                <label for="contactNumber" class="form-label text-white">Contact Number</label>
+                <input type="tel" id="contactNumber" name="contactNumber" class="form-control" placeholder="Enter Contact Number">
+            </div>
+
+            <div class="mb-3">
+                <label for="facebookLink" class="form-label text-white">Facebook Link</label>
+                <input type="url" id="facebookLink" name="facebookLink" class="form-control" placeholder="Enter Facebook Link">
+            </div>
+
+            <div class="mb-3">
+                <label for="instagramLink" class="form-label text-white">Instagram Link</label>
+                <input type="url" id="instagramLink" name="instagramLink" class="form-control" placeholder="Enter Instagram Link">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js" type="module"></script>
+</body>
+
+</html>

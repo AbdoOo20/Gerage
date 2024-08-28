@@ -1,18 +1,36 @@
-body {
-    background: url('./../../Images/AdminHome.jpg') no-repeat center center fixed;
-    background-size: cover;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    height: 100vh;
-}
-
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+body {
+    background: url('./../../../Images/AdminHome.jpg') no-repeat center center fixed;
+    background-size: cover;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: -1;
+}
+
+.container {
+    position: relative;
     z-index: 1;
 }
 
