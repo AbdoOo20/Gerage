@@ -84,6 +84,7 @@ document.getElementById('bookingForm').addEventListener('submit', function (even
 
 async function MackOrder() {
         let isValid = true;
+        let errorMessage = "";
         // Get form values
         const dateTime = document.getElementById('DateForBooking').value;
         const duration = parseInt(document.getElementById('Duration').value);
@@ -103,13 +104,16 @@ async function MackOrder() {
                 if (data.OrderDate == selectedDateTime.toDateString()) {
                         if (data.OrderSelectedHour == selectedHour) {
                                 isValid = false;
+                                errorMessage = "This Unit Already reserved at this date and in the same hour also !!!"
                                 return;
                         }
                         else if (data.OrderSelectedHour < selectedHour) {
+
                                 if (data.OrderSelectedHour + data.Duration < selectedHour) {
                                         isValid = true;
                                 }
                                 else {
+                                        errorMessage = "This Unit Already reserved at this date plase select hour more than you selected"
                                         isValid = false;
                                         return;
                                 }
@@ -119,14 +123,17 @@ async function MackOrder() {
                                         isValid = true;
                                 }
                                 else {
+                                        errorMessage = "This Unit Already reserved at this date plase select hour less than you selected"
                                         isValid = false;
                                         return;
                                 }
                         }
                 }
-                else isValid = true;
+                else {
+                        isValid = true;
+                }
         });
-
+        
         if (isValid) {
                 try {
                         await addDoc(collection(db, "Orders"), {
@@ -140,7 +147,7 @@ async function MackOrder() {
                                 document.getElementById("SuccessOrder").classList.remove("d-none");
                                 setTimeout(() => {
                                         document.getElementById("SuccessOrder").classList.add("d-none");
-                                }, 3000)
+                                }, 4000)
                         }).catch((error) => {
                                 console.error("Error Making Order: ", error);
                         });
@@ -148,5 +155,12 @@ async function MackOrder() {
                         console.error("Error Making Order: ", error);
                 }
         }
-        else console.log("Error");
+        else {
+                document.getElementById("ErrorOrder").classList.remove("d-none");
+                document.getElementById("ErrorOrderMessage").textContent = errorMessage;
+
+                setTimeout(() => {
+                        document.getElementById("ErrorOrder").classList.add("d-none");
+                }, 4000)
+        }
 }
