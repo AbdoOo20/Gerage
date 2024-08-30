@@ -1,4 +1,4 @@
-import { db, collection, getDoc, getDocs, updateDoc, doc, signOut, auth } from '../../Database/firebase-config.js';
+import { db, collection, getDoc, getDocs, updateDoc, doc, signOut, auth, query, where } from '../../Database/firebase-config.js';
 
 //User Data
 var UserName = document.getElementById("UserName");
@@ -177,7 +177,8 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
         }, 5000);
     } else {
         const Orders = collection(db, "Orders");
-        const querySnapshot = await getDocs(Orders);
+        const q = query(Orders, where("UserID", "==", UserID));
+        const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             //const UnitData = await getDoc(data.UnitID);
@@ -185,13 +186,13 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                         <div class="col-12 mt-2">
                         <div class="card product-card">
                         <div class="card-body">
-                            <a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
                             <h5 class="card-title">Order Date: ${data.OrderDate}</h5>
-                            </a>
                         </div>
                         </div>
                         </div>
                     `;
+            //<a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
+            //</a>
             //<img src=${UnitData.imageUrl} alt="Product Image" class="card-img-top product-image">
             //<p class="card-text"><strong>${UnitData.price} $</strong></p>
 
