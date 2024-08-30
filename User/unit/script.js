@@ -1,7 +1,26 @@
-import { db, getDoc, doc, query, where, addDoc, collection, getDocs } from '../../Database/firebase-config.js';
+import { db, getDoc, doc, query, where, addDoc, collection, getDocs, signOut, auth } from '../../Database/firebase-config.js';
 const urlParams = new URLSearchParams(window.location.search);
 const UnitID = doc(db, "Units", urlParams.get('UnitID'));
 const UserID = localStorage.getItem('id');
+
+document.addEventListener("DOMContentLoaded", async () => {
+        if (UserID == null) {
+                Array.from(document.getElementsByClassName("icons")).forEach((item) => {
+                        item.classList.add("d-none");
+                });
+                document.getElementById("LoginIcon").classList.remove("d-none");
+        } else {
+                document.getElementById("LoginIcon").classList.add("d-none");
+                document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
+                document.getElementById("ErrorOrder").classList.remove("d-none");
+                setTimeout(() => {
+                        document.getElementById("ErrorOrder").classList.add("d-none");
+                }, 5000);
+        }
+
+});
+
+
 
 // Get Unit Data
 (async () => {
@@ -28,20 +47,33 @@ const UserID = localStorage.getItem('id');
 // Get User data
 (async function getProfileData() {
         try {
-                //Get Profile Data
-                let userDetails = doc(db, "users", UserID.toString());
-                const userData = await getDoc(userDetails);
+                if (UserID != null) {
 
-                //Update User Profile Data
-                if (userData.exists) {
-                        const data = userData.data();
-                        document.getElementById("UserName").value = data.name;
-                        document.getElementById("UserEmail").value = data.email;
+                        //Get Profile Data
+                        let userDetails = doc(db, "users", UserID.toString());
+                        const userData = await getDoc(userDetails);
+
+                        //Update User Profile Data
+                        if (userData.exists) {
+                                const data = userData.data();
+                                document.getElementById("UserName").value = data.name;
+                                document.getElementById("UserEmail").value = data.email;
+                        }
+                        else
+                                console.log("This User Dose Not Exists!!");
                 }
-                else
-                        console.log("This User Dose Not Exists!!");
+                else {
+                        document.getElementById("ErrorOrderMessage").textContent = "Aotharization Error: You must Login";
+                        document.getElementById("ErrorOrder").classList.remove("d-none");
+                        setTimeout(() => {
+                                document.getElementById("ErrorOrder").classList.add("d-none");
+                        }, 5000);
+                }
+
+
         }
         catch (error) {
+                console.log("id=" + UserID);
                 console.error("Error fetching profile data: ", error);
         }
 })();
@@ -78,7 +110,15 @@ document.getElementById('bookingForm').addEventListener('submit', function (even
 
         // If form is valid, proceed
         if (formIsValid) {
-                MackOrder();
+                if (UserID != null) {
+                        MackOrder();
+                } else {
+                        document.getElementById("ErrorOrderMessage").textContent = "Aotharization Error: You must Login";
+                        document.getElementById("ErrorOrder").classList.remove("d-none");
+                        setTimeout(() => {
+                                document.getElementById("ErrorOrder").classList.add("d-none");
+                        }, 3000);
+                }
         }
 });
 
@@ -133,7 +173,7 @@ async function MackOrder() {
                         isValid = true;
                 }
         });
-        
+
         if (isValid) {
                 try {
                         await addDoc(collection(db, "Orders"), {
@@ -164,3 +204,10 @@ async function MackOrder() {
                 }, 4000)
         }
 }
+
+document.getElementById("Logout").addEventListener("click", () => {
+        signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = '../../Authentication/login/index.html';
+        });
+})
