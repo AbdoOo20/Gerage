@@ -16,7 +16,6 @@ async function getAllUnits() {
                         <h5 class="card-title">${data.title}</h5>
                         <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block">${data.details}</p>
                         <p class="card-text"><strong>${data.price} $</strong></p>
-                        <p class="card-text"><strong>Availability:</strong> ${data.isUsed ? "Used" : "Empty"} </p>
                         <div class="product-actions d-flex justify-content-between mt-3">
                             <a href="./../edit/edit unit.html?id=${doc.id}" class="fa fa-edit text-primary" title="Edit"></a>
                             <a class="fa fa-trash text-danger" data-unit-id=${doc.id} title="Delete" data-bs-toggle="modal" data-bs-target="#deleteModal"></a>
@@ -37,27 +36,30 @@ document.getElementById('deleteModal').addEventListener('show.bs.modal', functio
 });
 
 document.getElementById('confirmDeleteBtn').addEventListener('click', async function () {
+    const docRef = doc(db, 'Units', unitIdToDelete);
+    const docSnap = await getDoc(docRef);
+    const unitData = docSnap.data();
+    const storageRef = ref(storage, `Units/${unitData.name}`);
+    deleteObject(storageRef)
+    const unitRef = doc(db, "Units", unitIdToDelete);
+    deleteDoc(unitRef).finally(() => {
+        const deleteModalElement = document.getElementById('deleteModal');
+        const deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
+        deleteModal.hide();
+        window.location.reload();
+    });
     if (unitIdToDelete) {
-        const docRef = doc(db, 'Units', unitIdToDelete);
-        const docSnap = await getDoc(docRef);
-        const unitData = docSnap.data();
-        if (unitData.isUsed) {
-            const deleteModalElement = document.getElementById('deleteModal');
-            const deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-            deleteModal.hide();
-            showAlert("You can not delete unit because it is used now", "danger");
-        }
-        else {
-            const storageRef = ref(storage, `Units/${unitData.name}`);
-            deleteObject(storageRef)
-            const unitRef = doc(db, "Units", unitIdToDelete);
-            deleteDoc(unitRef).finally(() => {
-                const deleteModalElement = document.getElementById('deleteModal');
-                const deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
-                deleteModal.hide();
-                window.location.reload();
-            });
-        }
+        
+        
+        // if (unitData.isUsed) {
+        //     const deleteModalElement = document.getElementById('deleteModal');
+        //     const deleteModal = bootstrap.Modal.getInstance(deleteModalElement);
+        //     deleteModal.hide();
+        //     showAlert("You can not delete unit because it is used now", "danger");
+        // }
+        // else {
+            
+        // }
     }
 });
 
@@ -72,3 +74,7 @@ function showAlert(message, type) { // type => // danger // success // warning
         alertDiv.remove();
     }, 3000);
 }
+
+document.getElementById("showAddUnit").addEventListener('click', function () { 
+    window.location.href = "./../add/add unit.html";
+});

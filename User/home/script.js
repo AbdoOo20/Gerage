@@ -16,18 +16,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 querySnapshot.forEach((doc) => {
                         const data = doc.data();
                         const itemHTML = `
+                        <a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
                         <div class="col">
                         <div class="card product-card">
                         <img src=${data.imageUrl} alt="Product Image" class="card-img-top product-image">
-                        <div class="card-body">
-                            <a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
+                        <div class="card-body">     
                             <h5 class="card-title">${data.title}</h5>
-                            </a>
+                            
                             <p class="card-text"><strong>${data.price} $</strong></p>
-                            <p class="card-text"><strong>Availability:</strong> ${data.isUsed ? "available" : "unavailable now"} </p>
                         </div>
                         </div>
                         </div>
+                        </a>
                     `;
                         parentUnit.insertAdjacentHTML('beforeend', itemHTML);
                 });
