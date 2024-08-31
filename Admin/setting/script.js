@@ -29,7 +29,9 @@ var docRef;
     document.getElementById("contactEmail").value = settingData.contactEmail;
     document.getElementById("contactNumber").value = settingData.contactNumber;
     document.getElementById("facebookLink").value = settingData.facebook;
-    document.getElementById("instagramLink").value = settingData.instagram;    
+    document.getElementById("instagramLink").value = settingData.instagram; 
+    document.getElementById("locationLink").value = settingData.location;
+    document.getElementById("youtubeLink").value = settingData.youtube;
 })();
 
 
@@ -42,13 +44,17 @@ settingForm.addEventListener('submit', async (event) => {
     const contactNumber = formData.get('contactNumber');
     const facebookLink = formData.get('facebookLink');
     const instagramLink = formData.get('instagramLink');
+    const locationLink = formData.get('locationLink');
+    const youtubeLink = formData.get('youtubeLink');
     await updateDoc(docRef, {
         privacy: privacy,
         aboutUs: aboutUs,
         contactEmail: contactEmail,
         contactNumber: contactNumber,
         facebook: facebookLink,
-        instagram: instagramLink
+        instagram: instagramLink,
+        location: locationLink,
+        youtube: youtubeLink
     }).then(() => {
         console.log("1");
         showAlert("Settings Edited Successfully", "success");

@@ -1,0 +1,25 @@
+ body {
+     margin: 0;
+     height: 100vh;
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+    background-color: rgba(37, 150, 190, 0.3)
+ }
+
+
+ .title {
+     margin-bottom: 20px;
+     color: black;
+     text-align: center;
+     font-size: 2rem;
+ }
+
+ .table {
+     margin: 0;
+ }
+
+  .rounded-table {
+      border-radius: 10px;
+      overflow: hidden;
+  }

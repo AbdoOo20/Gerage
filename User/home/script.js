@@ -1,6 +1,5 @@
 import { db, collection, getDocs } from '../../Database/firebase-config.js';
 
-
 document.addEventListener("DOMContentLoaded", async () => {
         const parentUnit = document.getElementById('ParentUnit');
         (async () => {
