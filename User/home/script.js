@@ -1,6 +1,8 @@
 import { db, collection, getDocs, signOut, auth } from '../../Database/firebase-config.js';
 const UserID = localStorage.getItem('id');
+
 document.addEventListener("DOMContentLoaded", async () => {
+        console.log(UserID);
         if (UserID == null) {
                 Array.from(document.getElementsByClassName("icons")).forEach((item) => {
                         item.classList.add("d-none");

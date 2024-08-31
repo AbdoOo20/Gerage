@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Validate Phone Number
-        var phonePattern = /^\+[0-9]{15,}$/;
+        var phonePattern = /^\+[0-9]{9,15}$/;
         if (!phonePattern.test(phone.value)) {
             phone.classList.add('is-invalid');
             isValid = false;
@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return isValid;
     }
 
-    function submitForm() {
-        createUserWithEmailAndPassword(auth, email.value, password.value)
+    async function submitForm() {
+        await createUserWithEmailAndPassword(auth, email.value, password.value)
             .then((userCredential) => {
                 const user = userCredential.user;
                 localStorage.setItem('email', email.value);
@@ -96,15 +96,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById("phone").value = "";
                     document.getElementById("password").value = "";
                     document.getElementById("confirmPassword").value = "";
-                    window.location.href = '../../User/home/index.html';
+                    successMessage.classList.remove('d-none');
+                    form.classList.add('d-none');
+                    setTimeout(function () {
+                        window.location.href = "./../../User/home/index.html";
+                    }, 3000);
                 });
             })
             .catch((error) => {
-                document.getElementById("username").value = "";
-                document.getElementById("email").value = "";
-                document.getElementById("phone").value = "";
-                document.getElementById("password").value = "";
-                document.getElementById("confirmPassword").value = "";
                 showAlert(error.message, "danger");
             })
     }
@@ -122,19 +121,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Handle form submission
-    form.addEventListener('submit', function (event) {
+    form.addEventListener('submit', async function (event) {
         event.preventDefault();
         if (!validateForm()) {
             console.log("Validation failed.");
         }
         else {
             // Show the success message
-            submitForm();
-            successMessage.classList.remove('d-none');
-            form.classList.add('d-none'); 
-            setTimeout(function () {
-                window.location.href = "./../login/index.html";
-            }, 3000);
+            await submitForm();
         }
     });
 });
