@@ -4,18 +4,20 @@ const UnitID = doc(db, "Units", urlParams.get('UnitID'));
 const UserID = localStorage.getItem('id');
 
 document.addEventListener("DOMContentLoaded", async () => {
+        getProfileData();
         if (UserID == null) {
                 Array.from(document.getElementsByClassName("icons")).forEach((item) => {
                         item.classList.add("d-none");
                 });
+                
                 document.getElementById("LoginIcon").classList.remove("d-none");
-        } else {
-                document.getElementById("LoginIcon").classList.add("d-none");
                 document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
                 document.getElementById("ErrorOrder").classList.remove("d-none");
                 setTimeout(() => {
                         document.getElementById("ErrorOrder").classList.add("d-none");
                 }, 5000);
+        } else {
+                document.getElementById("LoginIcon").classList.add("d-none");
         }
 
 });
@@ -45,10 +47,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 })();
 
 // Get User data
-(async function getProfileData() {
+async function getProfileData() {
         try {
                 if (UserID != null) {
-
                         //Get Profile Data
                         let userDetails = doc(db, "users", UserID.toString());
                         const userData = await getDoc(userDetails);
@@ -73,10 +74,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         }
         catch (error) {
-                console.log("id=" + UserID);
                 console.error("Error fetching profile data: ", error);
         }
-})();
+};
 
 // Make Order
 document.getElementById('bookingForm').addEventListener('submit', function (event) {
