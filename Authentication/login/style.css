@@ -62,3 +62,7 @@ body::before {
     background-color: #007bff;
     color: #fff;
 }
+
+.invalid-feedback {
+    color: #ed6d0b;
+}

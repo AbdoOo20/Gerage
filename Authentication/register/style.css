@@ -74,3 +74,7 @@ body::before {
 .form-check-input:focus {
     box-shadow: 0 0 0 0.2rem rgba(226, 135, 67, 0.25);
 }
+
+.invalid-feedback {
+    color: #ed6d0b;
+}

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Validate Phone Number
-        var phonePattern = /^\+[0-9]{8,}$/; // Example pattern, adjust as needed
+        var phonePattern = /^\+[0-9]{15,}$/;
         if (!phonePattern.test(phone.value)) {
             phone.classList.add('is-invalid');
             isValid = false;
@@ -131,17 +131,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Show the success message
             submitForm();
             successMessage.classList.remove('d-none');
-            form.classList.add('d-none'); // Optionally hide the form
-
-            // Use setTimeout to hide the success message after 3 seconds and then redirect
+            form.classList.add('d-none'); 
             setTimeout(function () {
-                //successMessage.classList.add('d-none'); // Hide the success message
-                //form.classList.remove('d-none'); // Show the form again (if needed)
-                //form.reset(); // Reset the form fields
-
-                // Redirect to the login page after 3 seconds
                 window.location.href = "./../login/index.html";
-            }, 3000); // 3000 milliseconds = 3 seconds*/
+            }, 3000);
         }
     });
 });
