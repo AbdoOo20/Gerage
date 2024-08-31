@@ -1,10 +1,5 @@
 import { db, collection, getDocs, signOut, auth } from '../../Database/firebase-config.js';
-
-<<<<<<< HEAD
-=======
 const UserID = localStorage.getItem('id');
-
->>>>>>> 7f4ba0e4049db26a9c3e43a1be79b8c6e242c0ad
 document.addEventListener("DOMContentLoaded", async () => {
         if (UserID == null) {
                 Array.from(document.getElementsByClassName("icons")).forEach((item) => {
