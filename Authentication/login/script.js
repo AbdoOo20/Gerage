@@ -52,3 +52,13 @@ document.addEventListener('DOMContentLoaded', function () {
         submitForm();
     });
 });
+
+window.onload = () => {
+    localStorage.clear();
+    const savedEmail = localStorage.getItem('email');
+    if (savedEmail && savedEmail == 'admin@yahoo.com') {
+        window.location.href = '../../Admin/home/home.html';
+    } else if (savedEmail && savedEmail != 'admin@yahoo.com') {
+        window.location.href = '../../User/home/index.html';
+    }
+}

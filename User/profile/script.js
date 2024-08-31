@@ -1,4 +1,4 @@
-import { db, getDoc, updateDoc, doc } from '../../Database/firebase-config.js';
+import { db, collection, getDoc, getDocs, updateDoc, doc, signOut, auth, query, where } from '../../Database/firebase-config.js';
 
 //User Data
 var UserName = document.getElementById("UserName");
@@ -6,26 +6,38 @@ var UserEmail = document.getElementById("UserEmail");
 var UserPhone = document.getElementById("UserPhone");
 
 // Call the function to get profile data when the page loads
-document.addEventListener("DOMContentLoaded", getProfileData);
+document.addEventListener("DOMContentLoaded", async () => {
+    if (UserID == null) {
+        Array.from(document.getElementsByClassName("icons")).forEach((item) => {
+            item.classList.add("d-none");
+        });
+        document.getElementById("LoginIcon").classList.remove("d-none");
+    } else {
+        document.getElementById("LoginIcon").classList.add("d-none");
+    }
+    getProfileData();
 
+});
 
 // Function to get and Set profile data
 const UserID = localStorage.getItem('id');
 async function getProfileData() {
     try {
-        //Get Profile Data
-        let userDetails = doc(db, "users", UserID.toString());
-        const userData = await getDoc(userDetails);
+        if (UserID != null) {
+            //Get Profile Data
+            let userDetails = doc(db, "users", UserID.toString());
+            const userData = await getDoc(userDetails);
 
-        //Update User Profile Data
-        if (userData.exists) {
-            const data = userData.data();
-            UserName.value = data.name;
-            UserEmail.value = data.email;
-            UserPhone.value = data.phone;
+            //Update User Profile Data
+            if (userData.exists) {
+                const data = userData.data();
+                UserName.value = data.name;
+                UserEmail.value = data.email;
+                UserPhone.value = data.phone;
+            }
+            else
+                console.log("This User Dose Not Exists!!");
         }
-        else
-            console.log("This User Dose Not Exists!!");
     }
     catch (error) {
         console.error("Error fetching profile data: ", error);
@@ -34,6 +46,13 @@ async function getProfileData() {
 
 //Edit Profile button
 document.getElementById("EditBtn").addEventListener("click", () => {
+    if (UserID == null) {
+        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
+        document.getElementById("ErrorOrder").classList.remove("d-none");
+        setTimeout(() => {
+            document.getElementById("ErrorOrder").classList.add("d-none");
+        }, 5000);
+    }
     UserName.removeAttribute("readonly");
     UserEmail.removeAttribute("readonly");
     UserPhone.removeAttribute("readonly");
@@ -56,19 +75,27 @@ async function SaveProfileDataEdited() {
     }
 
     try {
-        // Reference to the user's document
-        let userDetails = doc(db, "users", "sNmzeOAe2Tc8eVMNm2ZD32UJrjg2"); // Need UID from previous page or URLParams or Cookies
+        if (UserID != null) {
+            // Reference to the user's document
+            let userDetails = doc(db, "users", UserID);
 
-        // Update the document with new data
-        await updateDoc(userDetails, {
-            name: UserName.value.trim(),
-            email: UserEmail.value.trim(),
-            phone: UserPhone.value.trim()
-        });
-        Updatedsuccessfully();
+            // Update the document with new data
+            await updateDoc(userDetails, {
+                name: UserName.value.trim(),
+                email: UserEmail.value.trim(),
+                phone: UserPhone.value.trim()
+            });
+            Updatedsuccessfully();
+        } else {
+            document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
+            document.getElementById("ErrorOrder").classList.remove("d-none");
+            setTimeout(() => {
+                document.getElementById("ErrorOrder").classList.add("d-none");
+            }, 5000);
+        }
+
     } catch (error) {
         console.error("Error updating profile data: ", error);
-        alert("An error occurred while updating the profile. Please try again.");
     }
 }
 
@@ -132,3 +159,44 @@ function Updatedsuccessfully() {
     document.getElementById("SaveBtn").classList.add("d-none");
     document.getElementById("EditBtn").classList.remove("d-none");
 }
+
+document.getElementById("Logout").addEventListener("click", () => {
+    signOut(auth).then(() => {
+        localStorage.clear();
+        window.location.href = '../../Authentication/login/index.html';
+    });
+})
+
+const superOrder = document.getElementById("superOrder");
+document.getElementById("ShowOrders").addEventListener("click", async () => {
+    if (UserID == null) {
+        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
+        document.getElementById("ErrorOrder").classList.remove("d-none");
+        setTimeout(() => {
+            document.getElementById("ErrorOrder").classList.add("d-none");
+        }, 5000);
+    } else {
+        const Orders = collection(db, "Orders");
+        const q = query(Orders, where("UserID", "==", UserID));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            //const UnitData = await getDoc(data.UnitID);
+            const itemHTML = `
+                        <div class="col-12 mt-2">
+                        <div class="card product-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Order Date: ${data.OrderDate}</h5>
+                        </div>
+                        </div>
+                        </div>
+                    `;
+            //<a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
+            //</a>
+            //<img src=${UnitData.imageUrl} alt="Product Image" class="card-img-top product-image">
+            //<p class="card-text"><strong>${UnitData.price} $</strong></p>
+
+            superOrder.insertAdjacentHTML('beforeend', itemHTML);
+        });
+    }
+})

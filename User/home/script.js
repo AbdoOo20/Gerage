@@ -1,6 +1,19 @@
-import { db, collection, getDocs } from '../../Database/firebase-config.js';
+import { db, collection, getDocs, signOut, auth } from '../../Database/firebase-config.js';
 
+<<<<<<< HEAD
+=======
+const UserID = localStorage.getItem('id');
+
+>>>>>>> 7f4ba0e4049db26a9c3e43a1be79b8c6e242c0ad
 document.addEventListener("DOMContentLoaded", async () => {
+        if (UserID == null) {
+                Array.from(document.getElementsByClassName("icons")).forEach((item) => {
+                        item.classList.add("d-none");
+                });
+                document.getElementById("LoginIcon").classList.remove("d-none");
+        } else {
+                document.getElementById("LoginIcon").classList.add("d-none");
+        }
         const parentUnit = document.getElementById('ParentUnit');
         (async () => {
                 const Units = collection(db, "Units");
@@ -45,9 +58,16 @@ searchInput.addEventListener("keypress", function () {
 
 document.getElementById("clearSearch").addEventListener("click", () => {
         searchInput.value = null;
-        for (let i = 0; i < cards.length; i++) { 
+        for (let i = 0; i < cards.length; i++) {
                 if (cards[i].parentElement.style.display = 'none') {
                         cards[i].parentElement.style.display = '';
                 }
         }
+})
+
+document.getElementById("Logout").addEventListener("click", () => {
+        signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = '../../Authentication/login/index.html';
+        });
 })
