@@ -1,19 +1,19 @@
 
-import { 
-    initializeApp 
+import {
+    initializeApp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
+import {
     getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc,
     query, where, getCountFromServer
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { 
-    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged 
+import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { 
-    getStorage, ref, uploadBytes, getDownloadURL, deleteObject 
+import {
+    getStorage, ref, uploadBytes, getDownloadURL, deleteObject
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-import { 
-    getDatabase, set, push, onValue, update 
+import {
+    getDatabase, set, push, onValue, update
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
@@ -33,9 +33,10 @@ const auth = getAuth(app);
 const storage = getStorage(app);
 const database = getDatabase(app);
 
-export { app, db, auth, storage, update, getDoc, deleteDoc, deleteObject, 
-    getDownloadURL, uploadBytes, signOut, database, set, push, onValue, 
-    createUserWithEmailAndPassword, signInWithEmailAndPassword, collection, 
+export {
+    app, db, auth, storage, update, getDoc, deleteDoc, deleteObject,
+    getDownloadURL, uploadBytes, signOut, database, set, push, onValue,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, collection,
     addDoc, getDocs, setDoc, doc, ref, updateDoc, onAuthStateChanged, getAuth,
     query, where, getCountFromServer
 };
