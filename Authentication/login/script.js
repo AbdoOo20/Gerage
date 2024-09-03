@@ -27,11 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('password').value = '';
             })
             .catch((error) => {
-                document.getElementById('email').value = '';
-                document.getElementById('password').value = '';
                 showAlert(error.message, "danger");
-                createAccountButton.style.display = 'block';
-                loader.style.display = 'none';
             });
     }
 

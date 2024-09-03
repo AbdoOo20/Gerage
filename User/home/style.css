@@ -55,3 +55,8 @@
 .form-control-file {
         display: none;
 }
+
+.form-control:focus {
+        border-color: #e28743;
+        box-shadow: 0 0 0 0.2rem rgba(226, 135, 67, 0.25);
+}

@@ -123,11 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle form submission
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
-        if (!validateForm()) {
-            console.log("Validation failed.");
-        }
-        else {
-            // Show the success message
+        if (validateForm()) {
             await submitForm();
         }
     });
