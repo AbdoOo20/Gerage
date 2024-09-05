@@ -7,7 +7,7 @@ import {
     query, where, getCountFromServer
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
-    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, signOut, onAuthStateChanged
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
     getStorage, ref, uploadBytes, getDownloadURL, deleteObject
@@ -36,7 +36,7 @@ const database = getDatabase(app);
 export {
     app, db, auth, storage, update, getDoc, deleteDoc, deleteObject,
     getDownloadURL, uploadBytes, signOut, database, set, push, onValue,
-    createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, collection,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier, collection,
     addDoc, getDocs, setDoc, doc, ref, updateDoc, onAuthStateChanged, getAuth,
     query, where, getCountFromServer
 };

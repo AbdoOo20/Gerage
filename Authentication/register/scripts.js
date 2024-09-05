@@ -1,4 +1,4 @@
-import { auth, createUserWithEmailAndPassword, db, doc, setDoc } from '../../Database/firebase-config.js';
+import { auth, createUserWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier, db, doc, setDoc } from '../../Database/firebase-config.js';
 
 document.addEventListener('DOMContentLoaded', function () {
 
