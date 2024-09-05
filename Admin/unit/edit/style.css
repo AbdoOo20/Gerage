@@ -72,3 +72,53 @@ body {
 .form-control-file {
     display: none;
 }
+
+.image-display-container {
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.image-scroll-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 5px;
+}
+
+.image-item {
+    position: relative;
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+
+.img-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.close-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.close-icon::before {
+    content: '×';
+    font-family: sans-serif;
+}
+.close-icon:hover {
+    background-color: red;
+}

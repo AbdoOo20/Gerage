@@ -6,12 +6,23 @@ const load = document.getElementById('load');
 const imageDisplay = document.getElementById('displayImage');
 var selectUnitImageName;
 var docRef;
+const imageScrollContainer = document.getElementById('imageScrollContainer');
 
 (async function () {
     var selectedID = window.location.search.split('=')[1];
     docRef = doc(db, 'Units', selectedID);
     const docSnap = await getDoc(docRef);
     const unitData = docSnap.data();
+    let imageHTML = '';
+    for (let i = 0; i < unitData.imageUrl.length; i++) {
+        imageHTML += `
+                    <div class="image-item position-relative m-1">
+                        <img src="${unitData.imageUrl[i]}" class="img-thumbnail" alt="Image" style="width: 100px; height: 100px;">
+                        <i class="close-icon position-absolute top-1 end-1" aria-label="Delete" onclick="deleteImage('${unitData.name[i]}', this)"></i>
+                    </div>
+                `;
+    }
+    imageScrollContainer.innerHTML = imageHTML;
     document.getElementById("unitTitle").value = unitData.title;
     document.getElementById("unitDetails").value = unitData.details;
     document.getElementById("unitPrice").value = unitData.price;

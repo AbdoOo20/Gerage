@@ -12,14 +12,19 @@
 <body>
 
     <div class="overlay"></div>
-    
-
     <div class="container">
         <div class="form-container bg-light">
             <div class="alert-container d-flex justify-content-center align-items-center">
                 <div id="alert-container"></div>
             </div>            
             <h2 class="text-center mb-4">Edit Unit</h2>
+
+            <div class="image-display-container bg-light mb-2">
+                <div class="image-scroll-container d-flex overflow-auto" id="imageScrollContainer">
+                </div>
+            </div>
+
+
             <form id="addUnitForm" novalidate>
                 <div class="mb-3">
                     <label for="unitTitle" class="form-label">Title</label>
