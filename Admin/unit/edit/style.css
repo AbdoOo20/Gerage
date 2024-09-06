@@ -113,6 +113,7 @@ body {
     color: white;
     font-size: 16px;
     cursor: pointer;
+    z-index: 9999;
 }
 
 .close-icon::before {
