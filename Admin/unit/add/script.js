@@ -1,4 +1,4 @@
-import { storage, db, uploadBytes, ref, getDownloadURL, addDoc, collection } from './../../../Database/firebase-config.js';
+import { storage, db, query, uploadBytes, ref, getDownloadURL, where, addDoc, collection, getDocs } from './../../../Database/firebase-config.js';
 
 const addForm = document.getElementById('addUnitForm');
 const addBTN = document.getElementById('addBTN');
@@ -26,12 +26,18 @@ let imageNames = [];
 
 addForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+    imageNames = [];
+    const files = imageInput.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        imageNames.push(file.name);
+    }
     const formData = new FormData(addForm);
     const title = formData.get('title');
     const details = formData.get('details');
     const price = formData.get('price');
     const now = new Date();
-    const files = imageInput.files;
+    
     if (title.length < 4) {
         showAlert("Title must more than 4 character", "danger");
     } else if (details < 10) {
@@ -41,20 +47,21 @@ addForm.addEventListener('submit', async (event) => {
     } else if (files.length == 0) {
         showAlert("You must select image", "danger");
     }
+    else if (await checkDuplicateNames(imageNames)) {
+        showAlert("There is image name duplicate, try to upload image with different name with images in database.", "danger");
+    }
     else {
-        imageLinks = [];
-        imageNames = [];
+        imageLinks = [];   
         showAlert("Wait", "warning");
         addBTN.style.display = "none";
         load.style.display = 'inline-block';
-        imageDisplay.style.display = "none";  
+        imageDisplay.style.display = "none";
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const storageRef = ref(storage, `Units/${file.name}`);
             await uploadBytes(storageRef, file);
             const imageUrl = await getDownloadURL(storageRef);
             imageLinks.push(imageUrl);
-            imageNames.push(file.name);
         }
         await addDoc(collection(db, "Units"), {
             imageUrl: imageLinks,
@@ -90,5 +97,20 @@ function showAlert(message, type) { // type => // danger // success // warning
     alertContainer.appendChild(alertDiv);
     setTimeout(() => {
         alertDiv.remove();
-    }, 3000);
+    }, 4000);
+}
+
+async function checkDuplicateNames(namesList) {
+    try {
+        for (const name of namesList) {
+            const q = query(collection(db, "Units"), where("name", "array-contains", name));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                return true;
+            }
+        }
+        return false;
+    } catch (error) {
+        showAlert(error, "danger");
+    }
 }
