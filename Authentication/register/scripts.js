@@ -66,6 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // OTP sent, show verification field
                 window.confirmationResult = confirmationResult;
                 document.getElementById("Sender").style.display = "none";
+                document.getElementById("Verifier").style.display = "inline-block";
                 document.getElementById("SMS-sent").style.display = "inline-block";
                 setTimeout(() => document.getElementById("SMS-sent").style.display = "none", 3500);
             } catch (error) {
