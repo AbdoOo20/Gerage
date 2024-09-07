@@ -2,3 +2,35 @@
     border-color: #e28743;
     box-shadow: 0 0 0 0.2rem rgba(226, 135, 67, 0.25);
 }
+
+
+.product-list {
+    overflow-y: scroll;
+    background-color: #e28743;
+    height: 75%;
+}
+
+.product-card {
+    cursor: pointer;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.product-card img {
+    width: 70%;
+    height: auto;
+}
+
+.selected-product img {
+    width: 50%;
+    height: auto;
+}
+
+.product-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.product-list::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 10px;
+}
