@@ -1,4 +1,4 @@
-import { storage, db, uploadBytes, ref, getDownloadURL, getDoc, doc, updateDoc } from './../../../Database/firebase-config.js';
+import { storage, db, uploadBytes, ref, getDownloadURL, getDoc, doc, updateDoc, deleteObject } from './../../../Database/firebase-config.js';
 
 const addForm = document.getElementById('addUnitForm');
 const addBTN = document.getElementById('addBTN');
@@ -6,29 +6,11 @@ const load = document.getElementById('load');
 const imageDisplay = document.getElementById('displayImage');
 var selectUnitImageName;
 var docRef;
+let unitData;
 const imageScrollContainer = document.getElementById('imageScrollContainer');
-
-(async function () {
-    var selectedID = window.location.search.split('=')[1];
-    docRef = doc(db, 'Units', selectedID);
-    const docSnap = await getDoc(docRef);
-    const unitData = docSnap.data();
-    let imageHTML = '';
-    for (let i = 0; i < unitData.imageUrl.length; i++) {
-        imageHTML += `
-                    <div class="image-item position-relative m-1">
-                        <img src="${unitData.imageUrl[i]}" class="img-thumbnail" alt="Image" style="width: 100px; height: 100px;">
-                        <i class="close-icon position-absolute top-1 end-1" aria-label="Delete" onclick="deleteImage('${unitData.name[i]}', this)"></i>
-                    </div>
-                `;
-    }
-    imageScrollContainer.innerHTML = imageHTML;
-    document.getElementById("unitTitle").value = unitData.title;
-    document.getElementById("unitDetails").value = unitData.details;
-    document.getElementById("unitPrice").value = unitData.price;
-    selectUnitImageName = unitData.name;
-})();
-
+const imageInput = document.getElementById("image");
+let imageLinks = [];
+let imageNames = [];
 
 (function () {
     'use strict'
@@ -45,13 +27,67 @@ const imageScrollContainer = document.getElementById('imageScrollContainer');
         })
 })();
 
+(async function () {
+    var selectedID = window.location.search.split('=')[1];
+    docRef = doc(db, 'Units', selectedID);
+    const docSnap = await getDoc(docRef);
+    unitData = docSnap.data();
+    let imageHTML = '';
+    for (let i = 0; i < unitData.imageUrl.length; i++) {
+        imageHTML += `
+                    <div class="image-item position-relative m-1">
+                        <img src="${unitData.imageUrl[i]}" class="img-thumbnail" alt="Image" style="width: 100px; height: 100px;">
+                        <i class="close-icon position-absolute top-1 end-1" aria-label="Delete" data-index="${i}" data-id="${docSnap.id}"></i>
+                    </div>
+                `;
+    }
+    imageScrollContainer.innerHTML = imageHTML;
+    document.getElementById("unitTitle").value = unitData.title;
+    document.getElementById("unitDetails").value = unitData.details;
+    document.getElementById("unitPrice").value = unitData.price;
+    selectUnitImageName = unitData.name;
+    // Delete Icon
+    imageScrollContainer.addEventListener('click', function (event) {
+        if (event.target && event.target.classList.contains('close-icon')) {
+            const index = event.target.getAttribute('data-index');
+            const unitID = event.target.getAttribute('data-id');
+            deleteImage(index, unitID, event.target);
+        }
+    });
+})();
+
+
+async function deleteImage(index, unitID, target) {
+    showAlert("Wait", "warning");
+    const docRef = doc(db, 'Units', unitID);
+    const docSnap = await getDoc(docRef);
+    const unitData = docSnap.data();
+    var selectImageName = unitData.name[index];
+    try {
+        const imageRef = ref(storage, `Units/${selectImageName}`);
+        await deleteObject(imageRef);
+        let updatedImageArray = [...unitData.imageUrl];
+        updatedImageArray.splice(index, 1);
+        let updatedNameArray = [...unitData.name];
+        updatedNameArray.splice(index, 1);
+        await updateDoc(docRef, {
+            imageUrl: updatedImageArray,
+            name: updatedNameArray
+        });
+        const parentDiv = target.closest('.image-item');
+        parentDiv.remove();
+    } catch (error) {
+        showAlert(error, "danger");
+    }
+}
+
 addForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(addForm);
     const title = formData.get('title');
     const details = formData.get('details');
     const price = formData.get('price');
-    const image = formData.get('image');
+    const files = imageInput.files;
     if (title.length < 4) {
         showAlert("Title must more than 4 character", "danger");
     } else if (details < 10) {
@@ -64,7 +100,7 @@ addForm.addEventListener('submit', async (event) => {
         addBTN.style.display = "none";
         load.style.display = 'inline-block';
         imageDisplay.style.display = "none";
-        if (image.name == "") {
+        if (files.length == 0) {
             await updateDoc(docRef, {
                 title: title,
                 details: details,
@@ -81,19 +117,35 @@ addForm.addEventListener('submit', async (event) => {
                 imageDisplay.style.display = 'inline-block';
             });
         } else {
-            const storageRef = ref(storage, `Units/${selectUnitImageName}`);
-            await uploadBytes(storageRef, image);
-            const imageUrl = await getDownloadURL(storageRef);
+            imageLinks = [];
+            imageNames = [];
+            addBTN.style.display = "none";
+            load.style.display = 'inline-block';
+            imageDisplay.style.display = "none";
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const storageRef = ref(storage, `Units/${file.name}`);
+                await uploadBytes(storageRef, file);
+                const imageUrl = await getDownloadURL(storageRef);
+                imageLinks.push(imageUrl);
+                imageNames.push(file.name);
+            }
+            for (let i = 0; i < unitData.name.length; i++) {
+                imageLinks.push(unitData.imageUrl[i]);
+                imageNames.push(unitData.name[i]);
+            }
             await updateDoc(docRef, {
-                imageUrl: imageUrl,
+                imageUrl: imageLinks,
                 title: title,
                 details: details,
-                price: price
+                price: price,
+                name: imageNames
             }).then(() => {
                 showAlert("Unit Edited Successfully", "success");
                 addBTN.style.display = 'inline-block';
                 load.style.display = "none";
                 imageDisplay.style.display = 'inline-block';
+                window.location.reload();
             }).catch((e) => {
                 showAlert(e.message, "danger");
                 addBTN.style.display = 'inline-block';
