@@ -1,3 +1,4 @@
+/*
 import { auth, createUserWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier, db, doc, setDoc } from '../../Database/firebase-config.js';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -128,3 +129,72 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+*/
+
+// +201552947735 code ==>> 246897
+
+
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "../../Database/firebase-config.js";
+
+// Initialize Firebase Authentication
+const auth = getAuth();
+auth.useDeviceLanguage(); // Ensure that the auth instance is properly initialized
+
+window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
+    'size': 'invisible',
+    'callback': (response) => {
+        // reCAPTCHA solved, allow signInWithPhoneNumber.
+        onSignInSubmit();
+    }
+});
+
+// Function to handle phone number sign-in submission
+function onSignInSubmit() {
+    const phoneNumber = document.getElementById("PhoneNumber").value;
+    const appVerifier = window.recaptchaVerifier;
+
+    // Trigger Firebase phone authentication
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+        .then((confirmationResult) => {
+            // SMS sent. Prompt user to enter the verification code
+            window.confirmationResult = confirmationResult;
+            //console.log('SMS sent. Please enter the verification code.');
+            document.getElementById("Sender").style.display = "none";
+            document.getElementById("SMS-sent").style.display = "inline-block";
+            document.getElementById("Verifier").style.display = "inline-block";
+            setTimeout(() => {
+                document.getElementById("SMS-sent").style.display = "none";
+            }, 3500);
+        }).catch((error) => {
+            // Handle Errors here.
+            console.error("Error during sign-in: ", error);
+            //alert("Failed to send SMS: " + error.message);
+        });
+}
+
+// Function to handle code verification and user sign-in
+function verifyCode() {
+    const code = document.getElementById("verificationCode").value; // Get the code entered by the user
+
+    window.confirmationResult.confirm(code).then((result) => {
+        // User signed in successfully.
+        const user = result.user;
+        //console.log("User signed in successfully: ", user);
+        //alert("User signed in successfully!");
+        document.getElementById("Sign-In-Success").style.display = "inline-block";
+        document.getElementById("Verifier").style.display = "none";
+        setTimeout(() => {
+            window.location = "../../User/home/index.html";
+        }, 5000);
+
+        // You can redirect the user or update the UI here.
+    }).catch((error) => {
+        // Handle Errors here.
+        console.error("Error verifying code: ", error);
+        alert("Invalid verification code. Please try again.");
+    });
+}
+
+// Attach event listeners for the sign-in button and code verification
+document.getElementById('sign-in-button').addEventListener('click', onSignInSubmit);
+document.getElementById('verify-code-button').addEventListener('click', verifyCode);

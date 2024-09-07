@@ -14,11 +14,11 @@
 <body>
     <!-- Main container -->
     <div class="overlay"></div>
-    <div class="container">
+    <div class="container d-none">
         <div class="row justify-content-center align-items-center min-vh-100">
             <!-- Registration form column -->
             <div class="col-8">
-                
+
                 <div style="background-color: rgba(226,135,67, 0.4);" class="card p-3">
                     <!-- Form header -->
                     <div class="alert-container d-flex justify-content-center align-items-center">
@@ -85,14 +85,15 @@
                             <div class="mb-2 form-check">
                                 <input type="checkbox" class="form-check-input" id="terms" required>
                                 <label class="form-check-label text-white" for="terms">I agree to the <a href="#"
-                                         style="color: #e28743;">terms and conditions</a></label>
+                                        style="color: #e28743;">terms and conditions</a></label>
                                 <div class="invalid-feedback">
                                     You must agree to the terms and conditions.
                                 </div>
                             </div>
                             <!-- Submit button -->
-                             
-                            <button id="submit" style="background-color: #dd792d;" class="btn btn-primary w-100">REGISTER</button>
+
+                            <button id="submit" style="background-color: #dd792d;"
+                                class="btn btn-primary w-100">REGISTER</button>
                             <a href="../login/index.html" class="text-white">have an account ?</a>
                         </form>
                         <!-- Registration form ends here -->
@@ -100,6 +101,50 @@
                     <div id="successMessage" class="alert alert-success d-none" role="alert">
                         Registration successful! Welcome to our platform.
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="container">
+        <label for="Phone Number" class="form-control mb-2 p-2 rounded-3" style="background-color: #dd792d; color: white;">Phone Number :</label>
+        <input class="form-control mb-2" placeholder="+20..." id="PhoneNumber"/>
+        <button id="sign-in-button" class="btn btn-primary  form-control mb-2" style="background-color: #dd792d;">Sign In</button>
+    </div>-->
+    <div class="container">
+        <!-- Alert for Sign In Success -->
+        <div class="alert alert-dismissible alert-success col-12" style="display: none;" id="Sign-In-Success">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h4 class="alert-heading">Sign In Success!</h4>
+            <p class="mb-0">Welcome To Our Platform</p>
+        </div>
+        <div class="alert alert-dismissible alert-success col-12" style="display: none;" id="SMS-sent">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h4 class="alert-heading">SMS sent!</h4>
+            <p class="mb-0">SMS sent. Please enter the verification code.</p>
+        </div>
+        <div id="Sender" class="row">
+            <div class="col-12">
+                <label for="PhoneNumber" class="form-control mb-2 p-2 rounded-3"
+                    style="background-color: #dd792d; color: white;">
+                    Phone Number:
+                </label>
+                <input class="form-control mb-2" placeholder="+20..." id="PhoneNumber" />
+
+                <button id="sign-in-button" class="btn btn-primary form-control mb-2"
+                    style="background-color: #dd792d;">
+                    Sign In
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Input field for verification code -->
+            <div id="Verifier" style="display: none;" class="row">
+                <div class="col-12">
+                    <input class="form-control mb-2" placeholder="Enter verification code" id="verificationCode" />
+                    <button id="verify-code-button" class="btn btn-primary form-control mb-2"
+                        style="background-color: #dd792d;">
+                        Verify Code
+                    </button>
                 </div>
             </div>
         </div>
