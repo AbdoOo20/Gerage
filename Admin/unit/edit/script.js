@@ -1,4 +1,4 @@
-import { storage, db, uploadBytes, ref, getDownloadURL, getDoc, doc, updateDoc, deleteObject } from './../../../Database/firebase-config.js';
+import { storage, db, uploadBytes, ref, query, getDownloadURL, where, getDoc, getDocs, collection, doc, updateDoc, deleteObject } from './../../../Database/firebase-config.js';
 
 const addForm = document.getElementById('addUnitForm');
 const addBTN = document.getElementById('addBTN');
@@ -83,11 +83,16 @@ async function deleteImage(index, unitID, target) {
 
 addForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+    imageNames = [];
+    const files = imageInput.files;
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        imageNames.push(file.name);
+    }
     const formData = new FormData(addForm);
     const title = formData.get('title');
     const details = formData.get('details');
     const price = formData.get('price');
-    const files = imageInput.files;
     if (title.length < 4) {
         showAlert("Title must more than 4 character", "danger");
     } else if (details < 10) {
@@ -117,41 +122,47 @@ addForm.addEventListener('submit', async (event) => {
                 imageDisplay.style.display = 'inline-block';
             });
         } else {
-            imageLinks = [];
-            imageNames = [];
-            addBTN.style.display = "none";
-            load.style.display = 'inline-block';
-            imageDisplay.style.display = "none";
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const storageRef = ref(storage, `Units/${file.name}`);
-                await uploadBytes(storageRef, file);
-                const imageUrl = await getDownloadURL(storageRef);
-                imageLinks.push(imageUrl);
-                imageNames.push(file.name);
-            }
-            for (let i = 0; i < unitData.name.length; i++) {
-                imageLinks.push(unitData.imageUrl[i]);
-                imageNames.push(unitData.name[i]);
-            }
-            await updateDoc(docRef, {
-                imageUrl: imageLinks,
-                title: title,
-                details: details,
-                price: price,
-                name: imageNames
-            }).then(() => {
-                showAlert("Unit Edited Successfully", "success");
+            if (await checkDuplicateNames(imageNames)) {
+                showAlert("There is image name duplicate, try to upload image with different name with images in database.", "danger");
                 addBTN.style.display = 'inline-block';
                 load.style.display = "none";
                 imageDisplay.style.display = 'inline-block';
-                window.location.reload();
-            }).catch((e) => {
-                showAlert(e.message, "danger");
-                addBTN.style.display = 'inline-block';
-                load.style.display = "none";
-                imageDisplay.style.display = 'inline-block';
-            });
+            } else {
+                imageLinks = [];
+                addBTN.style.display = "none";
+                load.style.display = 'inline-block';
+                imageDisplay.style.display = "none";
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const storageRef = ref(storage, `Units/${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    const imageUrl = await getDownloadURL(storageRef);
+                    imageLinks.push(imageUrl);
+                    imageNames.push(file.name);
+                }
+                for (let i = 0; i < unitData.name.length; i++) {
+                    imageLinks.push(unitData.imageUrl[i]);
+                    imageNames.push(unitData.name[i]);
+                }
+                await updateDoc(docRef, {
+                    imageUrl: imageLinks,
+                    title: title,
+                    details: details,
+                    price: price,
+                    name: imageNames
+                }).then(() => {
+                    showAlert("Unit Edited Successfully", "success");
+                    addBTN.style.display = 'inline-block';
+                    load.style.display = "none";
+                    imageDisplay.style.display = 'inline-block';
+                    window.location.reload();
+                }).catch((e) => {
+                    showAlert(e.message, "danger");
+                    addBTN.style.display = 'inline-block';
+                    load.style.display = "none";
+                    imageDisplay.style.display = 'inline-block';
+                });
+            }
         }
     }
 });
@@ -166,4 +177,19 @@ function showAlert(message, type) { // type => // danger // success // warning
     setTimeout(() => {
         alertDiv.remove();
     }, 3000);
+}
+
+async function checkDuplicateNames(namesList) {
+    try {
+        for (const name of namesList) {
+            const q = query(collection(db, "Units"), where("name", "array-contains", name));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                return true;
+            }
+        }
+        return false;
+    } catch (error) {
+        showAlert(error, "danger");
+    }
 }
