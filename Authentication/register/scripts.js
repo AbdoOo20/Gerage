@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => window.location.href = "./../../User/home/index.html", 3000);
 
         } catch (error) {
-            console.error("Error verifying OTP: ", error);
+            //console.error("Error verifying OTP: ", error);
             showAlert("Invalid verification code. Please try again.", "danger");
         }
     }
