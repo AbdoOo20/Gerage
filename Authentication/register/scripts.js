@@ -16,17 +16,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Form validation function
     function validateForm() {
         let isValid = true;
-        const username = document.getElementById('username');
+        var username = "";
         const phone = document.getElementById('PhoneNumber');
         const terms = document.getElementById('terms');
-
-        // Validate Username
-        if (username.value.trim() === '' || username.value.length <= 3) {
-            username.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            username.classList.remove('is-invalid');
+        if (isRegister) {
+            username = document.getElementById('username')
+            // Validate Username
+            if (username.value.trim() === '' || username.value.length <= 3) {
+                username.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                username.classList.remove('is-invalid');
+            }
         }
+
+        
 
         // Validate Phone Number
         const phonePattern = /^\+[0-9]{9,15}$/;
@@ -87,12 +91,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const user = result.user;
 
             // Save user data to Firestore
-            await setDoc(doc(db, "users", user.uid), {
-                id: user.uid,
-                name: document.getElementById("username").value,
-                phone: document.getElementById("PhoneNumber").value
-            });
-
+            if (isRegister) { 
+                await setDoc(doc(db, "users", user.uid), {
+                    id: user.uid,
+                    name: document.getElementById("username").value,
+                    phone: document.getElementById("PhoneNumber").value
+                });
+            }
+            
             // Display success message
             document.getElementById("Sign-In-Success").style.display = "inline-block";
             document.getElementById("Verifier").style.display = "none";
@@ -138,9 +144,13 @@ document.getElementById("haveAccount").addEventListener('click', async function 
     await changePage();
     this.innerText = isRegister ? "Already have an account?" : " Don't have account ? Register now";
     document.getElementById("headTitle").innerHTML = isRegister ? "REGISTER" : " LOGIN";
-    document.getElementById("userName").style.display = isRegister ? "block" : " none";
+    document.getElementById("userNameDiv").style.display = isRegister ? "block" : " none";
 });
 
 async function changePage() {
     isRegister = !isRegister;
 }
+
+(function () {
+    document.getElementById("Verifier").style.display = "none";
+})();

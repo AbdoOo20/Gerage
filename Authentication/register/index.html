@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -27,12 +27,12 @@
                     </div>
 
                     <div class="card-header text-center">
-                        <h3 id="headTitle">Register</h3>
+                        <h3 class="text-white" id="headTitle">Register</h3>
                     </div>
 
                     <div class="card-body">
                         <form>
-                            <div class="mb-2" id="userName">
+                            <div class="mb-2" id="userNameDiv">
                                 <label for="username" class="form-label text-white">Username</label>
                                 <input type="text" class="form-control" id="username" placeholder="Enter your username"
                                     required>
@@ -44,9 +44,9 @@
                                 <button id="sign-in-button" class="btn btn-primary w-100 mb-2"
                                     style="background-color: #dd792d;">Send Code</button>
                             </div>
-                            <div id="Verifier" style="display: none;">
-                                <input class="form-control mb-2" id="verificationCode"
-                                    placeholder="Enter verification code" required>
+                            <div id="Verifier">
+                                <input class="form-control mb-2" id="verificationCode" name="verificationCode"
+                                    placeholder="Enter verification code" >
                                 <button id="verify-code-button" class="btn btn-primary w-100 mb-2"
                                     style="background-color: #dd792d;">Verify Code</button>
                             </div>
