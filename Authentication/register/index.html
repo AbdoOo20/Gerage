@@ -4,10 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTER</title>
-    <!-- Bootstrap CSS -->
+    <title>Authentication</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <link href="style.css" rel="stylesheet">
 </head>
 
@@ -16,7 +14,6 @@
         <div class="row justify-content-center align-items-center min-vh-100">
             <div class="col-8">
                 <div class="card p-3" style="background-color: rgba(226,135,67, 0.4);">
-                    <!-- Success alert -->
                     <div class="alert alert-success" id="Sign-In-Success" style="display: none;">
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         <h4 class="alert-heading">Sign In Success!</h4>
@@ -30,47 +27,39 @@
                     </div>
 
                     <div class="card-header text-center">
-                        <h3>Register</h3>
+                        <h3 id="headTitle">Register</h3>
                     </div>
 
                     <div class="card-body">
                         <form>
-                            <!-- Username -->
-                            <div class="mb-2">
-                                <label for="username" class="form-label">Username</label>
+                            <div class="mb-2" id="userName">
+                                <label for="username" class="form-label text-white">Username</label>
                                 <input type="text" class="form-control" id="username" placeholder="Enter your username"
                                     required>
                                 <div class="invalid-feedback">Please enter a username.</div>
                             </div>
-
-                            <!-- Phone Number and Send Code -->
                             <div id="Sender">
-                                <label for="PhoneNumber" class="form-label">Phone Number</label>
+                                <label for="PhoneNumber" class="form-label text-white">Phone Number</label>
                                 <input class="form-control mb-2" id="PhoneNumber" placeholder="+20..." required>
                                 <button id="sign-in-button" class="btn btn-primary w-100 mb-2"
                                     style="background-color: #dd792d;">Send Code</button>
                             </div>
-
-                            <!-- Verification Code -->
                             <div id="Verifier" style="display: none;">
                                 <input class="form-control mb-2" id="verificationCode"
                                     placeholder="Enter verification code" required>
                                 <button id="verify-code-button" class="btn btn-primary w-100 mb-2"
                                     style="background-color: #dd792d;">Verify Code</button>
                             </div>
-
-                            <!-- Terms and Conditions -->
                             <div class="mb-2 form-check">
                                 <input type="checkbox" class="form-check-input" id="terms" required>
-                                <label for="terms" class="form-check-label">I agree to the <a href="#"
+                                <label for="terms" class="form-check-label" style="color: white">I agree to the <a href="#"
                                         style="color: #e28743;">terms and conditions</a></label>
                                 <div class="invalid-feedback">You must agree to the terms.</div>
                             </div>
-                            <a href="../login/index.html" class="d-block text-center mt-2">Already have an account?</a>
+                            <div id="haveAccount" class="text-white" style="cursor: pointer;">Already have an account?</div>
                         </form>
                     </div>
 
-                    <!-- Success message -->
                     <div id="successMessage" class="alert alert-success d-none">
                         Registration successful! Welcome to our platform.
                     </div>

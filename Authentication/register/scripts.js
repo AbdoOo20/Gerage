@@ -1,5 +1,7 @@
 // Import Firebase modules
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber,db, doc, setDoc } from "../../Database/firebase-config.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, db, doc, setDoc } from "../../Database/firebase-config.js";
+
+let isRegister = false;
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
@@ -47,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Initialize RecaptchaVerifier
-    window.recaptchaVerifier = new RecaptchaVerifier(auth,'sign-in-button', {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
         'size': 'invisible',
         'callback': (response) => {
             // reCAPTCHA solved, proceed to send OTP
@@ -130,3 +132,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+
+document.getElementById("haveAccount").addEventListener('click', async function () {
+    await changePage();
+    this.innerText = isRegister ? "Already have an account?" : " Don't have account ? Register now";
+    document.getElementById("headTitle").innerHTML = isRegister ? "REGISTER" : " LOGIN";
+    document.getElementById("userName").style.display = isRegister ? "block" : " none";
+});
+
+async function changePage() {
+    isRegister = !isRegister;
+}
