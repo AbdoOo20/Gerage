@@ -32,7 +32,9 @@ async function getProfileData() {
             if (userData.exists) {
                 const data = userData.data();
                 UserName.value = data.name;
-                UserEmail.value = data.email;
+                if (!data.email)
+                    UserEmail.value = "N/A";
+                else UserEmail.value = data.email;
                 UserPhone.value = data.phone;
             }
             else
@@ -55,7 +57,7 @@ document.getElementById("EditBtn").addEventListener("click", () => {
     }
     UserName.removeAttribute("readonly");
     UserEmail.removeAttribute("readonly");
-    UserPhone.removeAttribute("readonly");
+    // UserPhone.removeAttribute("readonly");
     document.getElementById("EditBtn").classList.add("d-none");
     document.getElementById("SaveBtn").classList.remove("d-none");
     UserName.focus();
