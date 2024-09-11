@@ -58,6 +58,35 @@
     <div class="container">
         <!-- Card Details Container -->
         <div class="row">
+            <!-- Modal -->
+            <div class="modal fade" id="conflictModal" tabindex="-1" aria-labelledby="conflictModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="conflictModalLabel">Booking Conflict</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="conflictMessage"></p>
+                            <table class='table table-bordered mt-3'>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Hour</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="conflictTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="SuccessOrder" class="alert alert-dismissible alert-success d-none">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <h4 class="alert-heading">success</h4>
@@ -70,7 +99,21 @@
             </div>
             <div class="col-md-6">
                 <div class="card mb-4">
-                    <img id="UnitImg" src="" class="card-img-top" alt="Card Image">
+                    <div id="UnitCarousel" class="carousel slide">
+                        <div class="carousel-inner" id="carouselImages" style="height: 400px;">
+                            <!-- Images will be dynamically inserted here -->
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#UnitCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#UnitCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
                     <div class="card-body">
                         <h2 id="UnitTitle" class="card-title"></h2>
                         <p id="UnitDetails" class="card-text"></p>
@@ -78,6 +121,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-md-6 rounded-3 mb-4" style="background-color: rgba(226,135,67, 0.4);">
                 <form id="bookingForm" class="d-flex flex-column justify-content-around h-100 p-4">
                     <legend>Booking Your Room Now:</legend>
@@ -85,29 +129,28 @@
                         <label for="UserName" class="form-label mt-4">Full name</label>
                         <input type="text" class="form-control" id="UserName" readonly>
                     </div>
-                    
+
                     <div>
-                        <label for="UserEmail" class="form-label mt-4">Email address</label>
-                        <input type="email" class="form-control" id="UserEmail" aria-describedby="emailHelp" readonly>
+                        <label for="PhoneNumber" class="form-label mt-4">Phone Number</label>
+                        <input type="text" class="form-control" id="PhoneNumber" aria-describedby="emailHelp" readonly>
                     </div>
-                    
+
                     <div>
                         <label for="DateForBooking" class="form-label mt-4">Date For Booking</label>
-                        <input type="datetime-local" class="form-control" id="DateForBooking"  required>
+                        <input type="datetime-local" class="form-control" id="DateForBooking" required>
                         <small id="dateError" class="text-danger"></small>
                     </div>
-                    
+
                     <div>
                         <label for="Duration" class="form-label mt-4">Duration </label>
-                        <input type="number" min="1" max="5" value="1" class="form-control" id="Duration" placeholder="Enter End Hour"
-                            autocomplete="off" required>
+                        <input type="number" min="1" max="5" value="1" class="form-control" id="Duration"
+                            placeholder="Enter End Hour" autocomplete="off" required>
                     </div>
                     <div>
                         <button type="submit" class="btn form-control mt-2 text-white fw-bold"
                             style="background-color: #dd792d;">Make Order</button>
                     </div>
                 </form>
-            
             </div>
         </div>
     </div>
