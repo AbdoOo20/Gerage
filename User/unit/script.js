@@ -1,7 +1,15 @@
 import { db, getDoc, doc, query, where, addDoc, collection, getDocs, signOut, auth } from '../../Database/firebase-config.js';
 
+// Base64 Decoding Function
+function decodeBase64(str) {
+        return decodeURIComponent(escape(atob(str)));
+}
+
+// Fetch the unit ID from the URL and decode it
 const urlParams = new URLSearchParams(window.location.search);
-const UnitID = doc(db, "Units", urlParams.get('UnitID'));
+const encodedUnitID = urlParams.get('UnitID');
+const unitID = decodeBase64(encodedUnitID); // Decode the UnitID
+const UnitID = doc(db, "Units", unitID);
 const UserID = localStorage.getItem('id');
 
 document.addEventListener("DOMContentLoaded", async () => {

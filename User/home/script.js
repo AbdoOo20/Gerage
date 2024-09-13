@@ -1,5 +1,14 @@
 import { db, collection, getDocs, signOut, auth } from '../../Database/firebase-config.js';
 
+// Base64 Encoding/Decoding Functions
+function encodeBase64(str) {
+        return btoa(unescape(encodeURIComponent(str)));
+}
+
+function decodeBase64(str) {
+        return decodeURIComponent(escape(atob(str)));
+}
+
 // Fetch the user ID from local storage
 const UserID = localStorage.getItem('id');
 
@@ -22,8 +31,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         querySnapshot.forEach((doc) => {
                 const data = doc.data();
+                const encodedUnitID = encodeBase64(doc.id); // Encrypt UnitID
                 const itemHTML = `
-            <a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
+            <a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${encodedUnitID}">
                 <div class="col">
                     <div class="card product-card">
                         <img src=${data.imageUrl} alt="Product Image" class="card-img-top product-image">
@@ -35,9 +45,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>
             </a>
         `;
-                // Add each unit card to the parent container
                 parentUnit.insertAdjacentHTML('beforeend', itemHTML);
         });
+
+        // Decrypt UnitID from URL if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const encodedUnitID = urlParams.get('UnitID');
+        if (encodedUnitID) {
+                const unitID = decodeBase64(encodedUnitID); // Decrypt UnitID
+                console.log('UnitID:', unitID);
+                // Fetch and display details for the unit with the decrypted UnitID
+        }
 });
 
 // Search functionality for filtering units based on user input
