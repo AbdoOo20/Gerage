@@ -4,361 +4,280 @@ const urlParams = new URLSearchParams(window.location.search);
 const UnitID = doc(db, "Units", urlParams.get('UnitID'));
 const UserID = localStorage.getItem('id');
 
-// Document ready function
 document.addEventListener("DOMContentLoaded", async () => {
-        getProfileData();
-        if (UserID == null) {
-                Array.from(document.getElementsByClassName("icons")).forEach((item) => {
-                        item.classList.add("d-none");
-                });
+        await getProfileData();
+        handleLoginState();
+        fetchUnitData();
+});
+
+async function getProfileData() {
+        if (!UserID) {
+                showError("Authorization Error: You must Login");
+                return;
+        }
+
+        try {
+                const userDetails = doc(db, "users", UserID.toString());
+                const userData = await getDoc(userDetails);
+
+                if (userData.exists) {
+                        const data = userData.data();
+                        document.getElementById("UserName").value = data.name;
+                        document.getElementById("PhoneNumber").value = data.phone;
+                } else {
+                        console.log("This User Does Not Exist!!");
+                }
+        } catch (error) {
+                console.error("Error fetching profile data: ", error);
+        }
+}
+
+function handleLoginState() {
+        const icons = Array.from(document.getElementsByClassName("icons"));
+        if (!UserID) {
+                icons.forEach(item => item.classList.add("d-none"));
                 document.getElementById("LoginIcon").classList.remove("d-none");
-                document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-                document.getElementById("ErrorOrder").classList.remove("d-none");
-                setTimeout(() => {
-                        document.getElementById("ErrorOrder").classList.add("d-none");
-                }, 5000);
+                showError("Authorization Error: You must Login");
         } else {
                 document.getElementById("LoginIcon").classList.add("d-none");
         }
-});
+}
 
-// Get Unit Data and set up carousel with setInterval
-(async () => {
+async function fetchUnitData() {
         try {
-                // Get Unit Data
-                const UnitData = await getDoc(UnitID);
+                const unitData = await getDoc(UnitID);
 
-                // Check if UnitData exists
-                if (UnitData.exists) {
-                        const data = UnitData.data();
+                if (unitData.exists) {
+                        const data = unitData.data();
                         document.getElementById("UnitTitle").textContent = data.title;
                         document.getElementById("UnitDetails").textContent = data.details;
-                        document.getElementById("UnitPrice").textContent = data.price + "$";
+                        document.getElementById("UnitPrice").textContent = `${data.price}$`;
 
-                        // Assuming `imageUrl` is an array of image URLs
-                        const images = data.imageUrl;
-                        const carouselInner = document.getElementById("carouselImages");
-
-                        // Clear existing content (if any)
-                        carouselInner.innerHTML = "";
-
-                        // Create carousel items dynamically
-                        images.forEach((imgUrl, index) => {
-                                const carouselItem = document.createElement("div");
-                                carouselItem.classList.add("carousel-item");
-                                if (index === 0) {
-                                        carouselItem.classList.add("active");
-                                }
-
-                                const imgElement = document.createElement("img");
-                                imgElement.src = imgUrl;
-                                imgElement.classList.add("d-block", "w-100");
-                                imgElement.alt = `Image ${index + 1}`;
-
-                                carouselItem.appendChild(imgElement);
-                                carouselInner.appendChild(carouselItem);
-                        });
-
-                        // Automatically change images every 700 milliseconds
-                        let currentIndex = 0;
-                        const totalImages = images.length;
-
-                        setInterval(() => {
-                                // Get all carousel items
-                                const carouselItems = document.querySelectorAll("#carouselImages .carousel-item");
-
-                                // Remove the 'active' class from the current image
-                                carouselItems[currentIndex].classList.remove("active");
-
-                                // Calculate the next index
-                                currentIndex = (currentIndex + 1) % totalImages;
-
-                                // Add the 'active' class to the next image
-                                carouselItems[currentIndex].classList.add("active");
-                        }, 1500); // Change image every 700 milliseconds
-
+                        setupCarousel(data.imageUrl);
                 } else {
                         console.log("This Unit Does Not Exist!!");
                 }
         } catch (error) {
                 console.error("Error fetching Unit data: ", error);
         }
-})();
+}
 
+function setupCarousel(images) {
+        const carouselInner = document.getElementById("carouselImages");
+        carouselInner.innerHTML = "";
 
-// Get User data
-async function getProfileData() {
-        try {
-                if (UserID != null) {
-                        //Get Profile Data
-                        let userDetails = doc(db, "users", UserID.toString());
-                        const userData = await getDoc(userDetails);
+        images.forEach((imgUrl, index) => {
+                const carouselItem = document.createElement("div");
+                carouselItem.classList.add("carousel-item");
+                if (index === 0) carouselItem.classList.add("active");
 
-                        //Update User Profile Data
-                        if (userData.exists) {
-                                const data = userData.data();
-                                document.getElementById("UserName").value = data.name;
-                                document.getElementById("PhoneNumber").value = data.phone;
-                        } else {
-                                console.log("This User Does Not Exist!!");
-                        }
-                } else {
-                        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-                        document.getElementById("ErrorOrder").classList.remove("d-none");
-                        setTimeout(() => {
-                                document.getElementById("ErrorOrder").classList.add("d-none");
-                        }, 5000);
-                }
-        } catch (error) {
-                console.error("Error fetching profile data: ", error);
-        }
-};
+                const imgElement = document.createElement("img");
+                imgElement.src = imgUrl;
+                imgElement.classList.add("d-block", "w-100");
+                imgElement.alt = `Image ${index + 1}`;
 
-// Handle booking form submission
-document.getElementById('bookingForm').addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent the form from submitting
+                carouselItem.appendChild(imgElement);
+                carouselInner.appendChild(carouselItem);
+        });
 
-        // Clear previous error messages
-        document.getElementById('dateError').textContent = '';
+        let currentIndex = 0;
+        const totalImages = images.length;
 
-        // Get form values
+        setInterval(() => {
+                const carouselItems = document.querySelectorAll("#carouselImages .carousel-item");
+                carouselItems[currentIndex].classList.remove("active");
+                currentIndex = (currentIndex + 1) % totalImages;
+                carouselItems[currentIndex].classList.add("active");
+        }, 1500);
+}
+
+document.getElementById('bookingForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
         const dateTime = document.getElementById('DateForBooking').value;
         const duration = parseInt(document.getElementById('Duration').value);
-
-        // Convert selected date and time to a Date object
         const selectedDateTime = new Date(dateTime);
         const now = new Date();
 
         let formIsValid = true;
+        let errorMessage = "";
 
-        // Check if the selected date and time are in the past
         if (selectedDateTime < now) {
-                document.getElementById('dateError').textContent = 'The booking date and time cannot be in the past. Please select a valid date and time.';
+                errorMessage = 'The booking date and time cannot be in the past. Please select a valid date and time.';
                 formIsValid = false;
         }
 
-        // Check if the duration is within the valid range (1 to 5 hours)
         if (duration < 1 || duration > 5) {
-                document.getElementById('dateError').textContent = 'Duration must be between 1 and 5 hours.';
+                errorMessage = 'Duration must be between 1 and 5 hours.';
                 formIsValid = false;
         }
 
-        // If form is valid, proceed
         if (formIsValid) {
-                if (UserID != null) {
-                        MackOrder(selectedDateTime, duration);
+                if (UserID) {
+                        await makeOrder(selectedDateTime, duration);
                 } else {
-                        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-                        document.getElementById("ErrorOrder").classList.remove("d-none");
-                        setTimeout(() => {
-                                document.getElementById("ErrorOrder").classList.add("d-none");
-                        }, 3000);
+                        showError("Authorization Error: You must Login");
                 }
+        } else {
+                document.getElementById('dateError').textContent = errorMessage;
         }
 });
 
-// Make Order with alternative unit suggestion
-async function MackOrder(selectedDateTime, duration) {
-        var index = 0;
-        let isValid = true;
-        let errorMessage = "";
 
-        // Get the hours and minutes
-        const selectedHour = selectedDateTime.getHours();
+async function makeOrder(selectedDateTime, duration) {
+        try {
+                // Split duration into hours and minutes
+                const hours = Math.floor(duration);
+                const minutes = Math.round((duration - hours) * 60);
 
-        const Orders = collection(db, "Orders");
-        const q = query(Orders, where("UnitID", "==", UnitID.id));
-        const querySnapshot = await getDocs(q);
-
-        querySnapshot.forEach(doc => {
-                const data = doc.data();
-                DatesOfBookedUnits[index] = data.OrderDate;
-                HoursOfBookedUnits[index] = data.OrderSelectedHour;
-                index++;
-
-                const bookedStartHour = data.OrderSelectedHour;
-                const bookedEndHour = bookedStartHour + data.Duration;
-
-                // Check for booking conflicts on the same date
-                if (data.OrderDate === selectedDateTime.toDateString()) {
-                        if ((selectedHour < bookedEndHour && selectedHour >= bookedStartHour) ||
-                                (selectedHour + duration > bookedStartHour && selectedHour < bookedEndHour)) {
-                                isValid = false;
-                                errorMessage = `This Unit is already reserved on ${data.OrderDate} from ${bookedStartHour}:00 to ${bookedEndHour}:00.`;
-                                return;
-                        }
+                // Validate duration
+                if (hours < 1 || hours > 5 || minutes < 0 || minutes >= 60) {
+                        showError('Duration must be between 1 and 5 hours and can include fractional hours (e.g., 1.5 hours).');
+                        return;
                 }
-        });
 
-        // If valid, proceed with booking
-        if (isValid) {
-                try {
+                const Orders = collection(db, "Orders");
+                const q = query(Orders, where("UnitID", "==", UnitID.id));
+                const querySnapshot = await getDocs(q);
+
+                let isValid = true;
+                let errorMessage = "";
+                const selectedHour = selectedDateTime.getHours();
+                const selectedMinute = selectedDateTime.getMinutes();
+
+                // Calculate end time based on duration
+                const endDateTime = new Date(selectedDateTime);
+                endDateTime.setHours(selectedHour + hours);
+                endDateTime.setMinutes(selectedMinute + minutes);
+
+                const endHour = endDateTime.getHours();
+                const endMinute = endDateTime.getMinutes();
+
+                const bookedDates = [];
+                const bookedStartTimes = [];
+                const bookedEndTimes = [];
+
+                querySnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const bookedStartHour = data.OrderSelectedHour;
+                        const bookedStartMinute = data.OrderSelectedMinute || 0;
+                        const bookedDuration = data.Duration;
+                        const bookedEndDateTime = new Date(selectedDateTime);
+                        bookedEndDateTime.setHours(bookedStartHour + Math.floor(bookedDuration));
+                        bookedEndDateTime.setMinutes(bookedStartMinute + ((bookedDuration % 1) * 60));
+
+                        const bookedEndHour = bookedEndDateTime.getHours();
+                        const bookedEndMinute = bookedEndDateTime.getMinutes();
+
+                        bookedDates.push(data.OrderDate);
+                        bookedStartTimes.push({ hour: bookedStartHour, minute: bookedStartMinute });
+                        bookedEndTimes.push({ hour: bookedEndHour, minute: bookedEndMinute });
+
+                        // Check for conflicts
+                        if (data.OrderDate === selectedDateTime.toDateString()) {
+                                const isOverlapping =
+                                        (selectedHour < bookedEndHour || (selectedHour === bookedEndHour && selectedMinute < bookedEndMinute)) &&
+                                        (endHour > bookedStartHour || (endHour === bookedStartHour && endMinute > bookedStartMinute));
+
+                                if (isOverlapping) {
+                                        isValid = false;
+                                        errorMessage = `This Unit is already reserved on ${data.OrderDate} from ${bookedStartHour}:${bookedStartMinute < 10 ? '0' : ''}${bookedStartMinute} to ${bookedEndHour}:${bookedEndMinute < 10 ? '0' : ''}${bookedEndMinute}`;
+                                }
+                        }
+                });
+
+                if (isValid) {
                         await addDoc(collection(db, "Orders"), {
                                 UserID: UserID,
                                 UnitID: UnitID.id,
                                 OrderDate: selectedDateTime.toDateString(),
                                 OrderSelectedHour: selectedHour,
-                                Duration: duration,
+                                OrderSelectedMinute: selectedMinute,
+                                Duration: duration, // Store duration as hours (e.g., 1.5 for 1 hour 30 minutes)
                                 OrderStatus: "Pending",
                                 imageUrl: ""
-                        }).then(() => {
-                                document.getElementById("SuccessOrder").classList.remove("d-none");
-                                setTimeout(() => {
-                                        document.getElementById("SuccessOrder").classList.add("d-none");
-                                }, 4000);
-                        }).catch((error) => {
-                                console.error("Error Making Order: ", error);
                         });
-                } catch (error) {
-                        console.error("Error Making Order: ", error);
+                        showSuccess("Order successfully placed!");
+                } else {
+                        displayConflictTable(errorMessage, bookedDates, bookedStartTimes, bookedEndTimes);
                 }
-        } else {
-                // Show modal with alternative units
-                displayConflictTable(errorMessage);
+        } catch (error) {
+                console.error("Error Making Order: ", error);
         }
 }
 
-// Suggest alternative units in a modal
-async function suggestAlternativeUnits(errorMessage) {
-        const UnitsCollection = collection(db, "Units");
-        const querySnapshot = await getDocs(UnitsCollection);
-
-        const alternativeUnits = [];
-        querySnapshot.forEach(doc => {
-                const data = doc.data();
-                if (data.isAvailable) {  // Assuming there's a field `isAvailable`
-                        alternativeUnits.push(data);
-                }
-        });
-
-        const modalBody = document.getElementById('alternativeUnitsBody');
-        modalBody.innerHTML = ''; // Clear previous suggestions
-
-        alternativeUnits.forEach(unit => {
-                const unitItem = document.createElement('p');
-                unitItem.textContent = `${unit.title} - ${unit.price}$`;
-                modalBody.appendChild(unitItem);
-        });
-
-        if (alternativeUnits.length > 0) {
-                document.getElementById('alternativeUnitsTitle').textContent = "This unit is unavailable. Here are some alternatives:";
-        } else {
-                document.getElementById('alternativeUnitsTitle').textContent = "No alternative units available.";
-        }
-
-        const conflictMessage = document.getElementById("conflictMessage");
-        conflictMessage.textContent = errorMessage;
-
-        const conflictModal = new bootstrap.Modal(document.getElementById('alternativeUnitsModal'));
-        conflictModal.show();
-}
-
-
-var DatesOfBookedUnits = [];
-var HoursOfBookedUnits = [];
-
-// // Make Order
-// async function MackOrder() {
-//         var index = 0;
-//         let isValid = true;
-//         let errorMessage = "";
-
-//         // Get form values
-//         const dateTime = document.getElementById('DateForBooking').value;
-//         const duration = parseInt(document.getElementById('Duration').value);
-
-//         // Validate if date and time are selected
-//         if (!dateTime || isNaN(duration) || duration <= 0) {
-//                 document.getElementById("ErrorOrder").classList.remove("d-none");
-//                 document.getElementById("ErrorOrderMessage").innerHTML = "Please select a valid date, time, and duration.";
-//                 return;
-//         }
-
-//         // Convert selected date and time to a Date object
-//         const selectedDateTime = new Date(dateTime);
-
-//         // Get the hours and minutes
-//         const selectedHour = selectedDateTime.getHours();
-//         const selectedMinute = selectedDateTime.getMinutes();
-
-//         const Orders = collection(db, "Orders");
-//         const q = query(Orders, where("UnitID", "==", UnitID.id));
-//         const querySnapshot = await getDocs(q);
-
-//         querySnapshot.forEach(doc => {
-//                 const data = doc.data();
-//                 DatesOfBookedUnits[index] = data.OrderDate;
-//                 HoursOfBookedUnits[index] = data.OrderSelectedHour;
-//                 index++;
-
-//                 const bookedStartHour = data.OrderSelectedHour;
-//                 const bookedEndHour = bookedStartHour + data.Duration;
-
-//                 // Check for booking conflicts on the same date
-//                 if (data.OrderDate === selectedDateTime.toDateString()) {
-//                         if ((selectedHour < bookedEndHour && selectedHour >= bookedStartHour) ||
-//                                 (selectedHour + duration > bookedStartHour && selectedHour < bookedEndHour)) {
-//                                 isValid = false;
-//                                 errorMessage = `This Unit is already reserved on ${data.OrderDate} from ${bookedStartHour}:00 to ${bookedEndHour}:00.`;
-//                                 return;
-//                         }
-//                 }
-//         });
-
-//         // If valid, proceed with booking
-//         if (isValid) {
-//                 try {
-//                         await addDoc(collection(db, "Orders"), {
-//                                 UserID: UserID,
-//                                 UnitID: UnitID.id,
-//                                 OrderDate: selectedDateTime.toDateString(),
-//                                 OrderSelectedHour: selectedHour,
-//                                 OrderSelectedMinute: selectedMinute,
-//                                 Duration: duration,
-//                                 OrderStatus: "Pending",
-//                                 imageUrl: ""
-//                         }).then(() => {
-//                                 document.getElementById("SuccessOrder").classList.remove("d-none");
-//                                 setTimeout(() => {
-//                                         document.getElementById("SuccessOrder").classList.add("d-none");
-//                                 }, 4000);
-//                         }).catch((error) => {
-//                                 console.error("Error Making Order: ", error);
-//                         });
-//                 } catch (error) {
-//                         console.error("Error Making Order: ", error);
-//                 }
-//         } else {
-//                 // Show modal with the conflict table
-//                 displayConflictTable(errorMessage);
-//         }
-// }
-
-
-// Display the conflict message with a table of existing bookings in a modal
-function displayConflictTable(errorMessage) {
+function displayConflictTable(errorMessage, dates, startTimes, endTimes) {
         const conflictMessage = document.getElementById("conflictMessage");
         const conflictTableBody = document.getElementById("conflictTableBody");
 
-        // Set the error message in the modal
         conflictMessage.textContent = errorMessage;
-
-        // Clear any existing rows in the table body
         conflictTableBody.innerHTML = '';
 
-        // Populate the table with booked dates and hours
-        for (let i = 0; i < DatesOfBookedUnits.length; i++) {
-                let row = `<tr><td>${DatesOfBookedUnits[i]}</td><td>${HoursOfBookedUnits[i]}:00</td></tr>`;
+        for (let i = 0; i < dates.length; i++) {
+                let row = `<tr>
+                <td>${dates[i]}</td>
+                <td>${startTimes[i].hour}:${startTimes[i].minute < 10 ? '0' : ''}${startTimes[i].minute}</td>
+                <td>${endTimes[i].hour}:${endTimes[i].minute < 10 ? '0' : ''}${endTimes[i].minute}</td>
+            </tr>`;
                 conflictTableBody.innerHTML += row;
         }
 
-        // Show the modal
         const conflictModal = new bootstrap.Modal(document.getElementById('conflictModal'));
         conflictModal.show();
 
         document.getElementById('conflictModal').addEventListener('hidden.bs.modal', () => {
                 suggestAlternativeUnits(errorMessage);
         });
+}
+
+
+
+async function suggestAlternativeUnits(errorMessage) {
+        try {
+                const UnitsCollection = collection(db, "Units");
+                const querySnapshot = await getDocs(UnitsCollection);
+
+                const alternativeUnits = [];
+                querySnapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.isAvailable) {
+                                alternativeUnits.push(data);
+                        }
+                });
+
+                const modalBody = document.getElementById('alternativeUnitsBody');
+                modalBody.innerHTML = '';
+
+                alternativeUnits.forEach(unit => {
+                        const unitItem = document.createElement('p');
+                        unitItem.textContent = `${unit.title} - ${unit.price}$`;
+                        modalBody.appendChild(unitItem);
+                });
+
+                document.getElementById('alternativeUnitsTitle').textContent =
+                        alternativeUnits.length > 0 ? "This unit is unavailable. Here are some alternatives:" : "No alternative units available.";
+                document.getElementById("conflictMessage").textContent = errorMessage;
+
+                const conflictModal = new bootstrap.Modal(document.getElementById('alternativeUnitsModal'));
+                conflictModal.show();
+        } catch (error) {
+                console.error("Error suggesting alternative units: ", error);
+        }
+}
+
+function showError(message) {
+        document.getElementById("ErrorOrderMessage").textContent = message;
+        document.getElementById("ErrorOrder").classList.remove("d-none");
+        setTimeout(() => {
+                document.getElementById("ErrorOrder").classList.add("d-none");
+        }, 5000);
+}
+
+function showSuccess(message) {
+        document.getElementById("SuccessOrder").textContent = message;
+        document.getElementById("SuccessOrder").classList.remove("d-none");
+        setTimeout(() => {
+                document.getElementById("SuccessOrder").classList.add("d-none");
+        }, 5000);
 }
 
 // Logout function
