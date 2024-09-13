@@ -10,6 +10,7 @@
 </head>
 
 <body>
+
     <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" data-bs-theme="dark">
         <div class="container-fluid">
             <div class="navbar-brand pb-2 pe-5 rounded-circle  d-flex align-items-center justify-content-center "
@@ -37,17 +38,14 @@
                         <a class="nav-link active" href="../../Privacy Policy/index.html">Privacy and Terms</a>
                     </li>
                 </ul>
-                <a title="Profile" class="nav-link active d-flex pe-3 text-white pt-2 icons"
+                <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons"
                     href="../profile/index.html">
-                    <i class="fa-solid fa-user"></i>
-                </a>
-                <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons" href="#">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
                 <a title="Logout" id="Logout" class="nav-link active d-flex text-white pt-2 icons">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
-                <a id="LoginIcon" href="../../Authentication/login/index.html" title="Login"
+                <a id="LoginIcon" href="../../Authentication/register/index.html" title="Login"
                     class="nav-link active d-flex text-white pt-2">
                     Login
                 </a>
@@ -86,6 +84,26 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal for alternative unit suggestions -->
+            <div class="modal fade" id="alternativeUnitsModal" tabindex="-1" aria-labelledby="alternativeUnitsLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="alternativeUnitsTitle">Unit Unavailable</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="alternativeUnitsBody">
+                            <!-- Alternative units will be displayed here -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div id="SuccessOrder" class="alert alert-dismissible alert-success d-none">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>

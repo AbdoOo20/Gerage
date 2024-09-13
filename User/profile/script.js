@@ -1,4 +1,4 @@
-import { db, collection, getDoc, getDocs, updateDoc, doc, signOut, auth, query, where } from '../../Database/firebase-config.js';
+import { db, setDoc, deleteDoc, collection, getDoc, getDocs, updateDoc, doc, signOut, auth, query, where, storage, ref, uploadBytes, getDownloadURL } from '../../Database/firebase-config.js';
 
 //User Data
 var UserName = document.getElementById("UserName");
@@ -169,36 +169,191 @@ document.getElementById("Logout").addEventListener("click", () => {
     });
 })
 
+
+
 const superOrder = document.getElementById("superOrder");
+var ordersData = [];
+
 document.getElementById("ShowOrders").addEventListener("click", async () => {
+    const errorOrderElement = document.getElementById("ErrorOrderMessage");
+    const errorOrderContainer = document.getElementById("ErrorOrder");
+
     if (UserID == null) {
-        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-        document.getElementById("ErrorOrder").classList.remove("d-none");
+        errorOrderElement.textContent = "Authorization Error: You must Login";
+        errorOrderContainer.classList.remove("d-none");
         setTimeout(() => {
-            document.getElementById("ErrorOrder").classList.add("d-none");
+            errorOrderContainer.classList.add("d-none");
         }, 5000);
-    } else {
+        return;
+    }
+
+    try {
+        // Fetch orders for the user
         const Orders = collection(db, "Orders");
         const q = query(Orders, where("UserID", "==", UserID));
         const querySnapshot = await getDocs(q);
+
+        // Clear existing orders data
+        ordersData = [];
+
+        // Process each order
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            //const UnitData = await getDoc(data.UnitID);
-            const itemHTML = `
-                        <div class="col-12 mt-2">
-                        <div class="card product-card">
-                        <div class="card-body">
-                            <h5 class="card-title">Order Date: ${data.OrderDate}</h5>
-                        </div>
-                        </div>
-                        </div>
-                    `;
-            //<a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
-            //</a>
-            //<img src=${UnitData.imageUrl} alt="Product Image" class="card-img-top product-image">
-            //<p class="card-text"><strong>${UnitData.price} $</strong></p>
-
-            superOrder.insertAdjacentHTML('beforeend', itemHTML);
+            const OrderID = doc.id;
+            ordersData.push({
+                OrderID: OrderID,
+                OrderDate: data.OrderDate,
+                OrderSelectedHour: data.OrderSelectedHour,
+                Duration: data.Duration,
+                UnitID: data.UnitID,
+                OrderStatus: data.OrderStatus
+            });
         });
+
+        // Clear existing cards in the container
+        superOrder.innerHTML = '';
+
+        // Check if no orders were found
+        if (ordersData.length === 0) {
+            // Display "No orders found" message
+            document.getElementById('noOrdersMessage').classList.remove('d-none');
+        } else {
+            // Hide "No orders found" message if there are orders
+            document.getElementById('noOrdersMessage').classList.add('d-none');
+        }
+
+        // Create cards for each order
+        for (const order of ordersData) {
+            try {
+                // Fetch unit data
+                const Unit_ID = doc(db, "Units", order.UnitID);
+                const UnitData = await getDoc(Unit_ID);
+
+                if (!UnitData.exists()) {
+                    console.warn(`Unit with ID ${order.UnitID} does not exist.`);
+                    continue; // Skip to the next order
+                }
+
+                const data = UnitData.data();
+
+                // Create a div for the card
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add("col-12", "border", "border-2", "m-2", "p-2", "rounded");
+
+                // Create card content with unique input IDs
+                cardDiv.innerHTML = `
+                  <h5 class="card-title">Order Room Title: ${data.title}</h5>
+                  <br>
+                  <p class="card-text"><strong>Order Date:</strong> ${order.OrderDate}</p>
+                  <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
+                  <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
+                  <p class="card-text"><strong>Order Status:</strong> ${order.OrderStatus}</p>
+                  <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Buy" />
+                  <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Cancel" />
+                  <button type="button" data-bs-toggle="modal" data-bs-target="#UploadImag" id="UploadImage-${order.OrderID}" data-OrderID="${order.OrderID}" class="btn text-white">
+                  Upload Payment receipt
+                  </button>
+                `;
+
+                // Append the card to the container
+                superOrder.appendChild(cardDiv);
+
+                // Change border color and button visibility based on order status
+                switch (order.OrderStatus) {
+                    case "Pending":
+                        cardDiv.classList.add("border-warning");
+                        break;
+                    case "Confirmed":
+                        cardDiv.classList.add("border-success");
+                        document.getElementById(`buy-${order.OrderID}`).classList.add("d-none");
+                        document.getElementById(`cancel-${order.OrderID}`).classList.add("d-none");
+                        document.getElementById(`UploadImage-${order.OrderID}`).classList.add("d-none");
+                        break;
+                }
+
+                // Event listener for showing the modal and handling file upload
+                document.getElementById("uploadBtn").addEventListener('click', async () => {
+                    const fileInput = document.getElementById('formFile');
+                    const file = fileInput.files[0];
+
+                    if (file) {
+                        const storageRef = ref(storage, 'Orders/' + file.name); // Define the storage path
+
+                        try {
+                            // Upload the file to Firebase Storage
+                            const snapshot = await uploadBytes(storageRef, file);
+
+                            // Get the file's URL
+                            const downloadURL = await getDownloadURL(snapshot.ref);
+
+                            // Save the URL to Firestore
+                            const orderDocRef = doc(db, "Orders", order.OrderID);
+                            await updateDoc(orderDocRef, {
+                                imageUrl: downloadURL,
+                                uploadedAt: new Date().toDateString()
+                            });
+
+                            // Show success message
+                            document.getElementById('uploadSuccessMessage').classList.remove('d-none');
+                            setTimeout(() => {
+                                document.getElementById('uploadSuccessMessage').classList.add('d-none');
+                            }, 3000);
+
+                            // Hide the modal after successful upload
+                            const modalElement = document.getElementById('UploadImag'); // Get the modal element
+                            const modalInstance = bootstrap.Modal.getInstance(modalElement); // Bootstrap modal instance
+                            modalInstance.hide(); // Hide the modal
+
+                        } catch (error) {
+                            console.error('Error uploading file:', error);
+                            alert('Failed to upload image.');
+                        }
+                    } else {
+                        alert('Please select an image first.');
+                    }
+                });
+
+                // Event listener for 'Buy' button
+                document.getElementById(`buy-${order.OrderID}`).addEventListener("click", () => {
+                    window.location = `../Payments/Payment.html?Order=${order.OrderID}`;
+                });
+
+                // Event listener for 'Cancel' button
+                document.getElementById(`cancel-${order.OrderID}`).addEventListener("click", async () => {
+                    try {
+                        // Reference to the Firestore document to delete
+                        const orderDocRef = doc(db, "Orders", order.OrderID);
+
+                        // Delete the document
+                        await deleteDoc(orderDocRef);
+
+                        // Remove the card from the DOM
+                        cardDiv.remove();
+
+                        // Show the "Order Canceled" alert
+                        const cancelAlertDiv = document.getElementById("cancelAlert");
+                        cancelAlertDiv.classList.remove("d-none");
+                        cancelAlertDiv.textContent = "Order has been successfully canceled.";
+
+                        // Hide the alert after 3 seconds
+                        setTimeout(() => {
+                            cancelAlertDiv.classList.add("d-none");
+                        }, 3000);
+
+                    } catch (error) {
+                        console.error("Error deleting order: ", error);
+                    }
+                });
+
+
+            } catch (error) {
+                console.error("Error processing order: ", error);
+            }
+        }
+
+    } catch (error) {
+        console.error("Error fetching orders: ", error);
     }
-})
+
+
+});
