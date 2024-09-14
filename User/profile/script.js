@@ -159,7 +159,7 @@ function displayAuthorizationError() {
 document.getElementById("Logout").addEventListener("click", () => {
     signOut(auth).then(() => {
         localStorage.clear();
-        window.location.href = '../../Authentication/login/index.html';
+        window.location.href = '../../Authentication/register/index.html';
     });
 });
 
