@@ -48,25 +48,40 @@
     <br><br>
     <div class="container">
 
-        <!-- Modal -->
-        <div class="modal fade" id="UploadImag" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- Modal for Uploading Image -->
+        <div class="modal fade" id="UploadImag" tabindex="-1" aria-labelledby="UploadImagLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Upload Image</h5>
+                        <h5 class="modal-title" id="UploadImagLabel">Upload Payment receipt</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="imageUploadForm">
-                            <div class="mb-3">
-                                <label for="formFile" class="form-label">Select Image</label>
-                                <input class="form-control" type="file" id="formFile" accept="image/*">
-                            </div>
-                        </form>
+                        <!-- File input and upload button here -->
+                        <input type="file" id="formFile" class="form-control" accept="image/*">
+                        <br>
+                        <button id="uploadBtn" class="btn btn-primary">Upload</button>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="uploadBtn">Upload Image</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Display Uploaded Image -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Uploaded Payment receipt</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="modalImage" src="" alt="Uploaded Image" style="width: 100%; height: auto;">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -118,6 +133,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-6">
                 <div class="card">
                     <div class="card-body">
@@ -130,9 +146,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="uploadSuccessMessage" class="alert alert-success d-none" role="alert">
-            Payment receipt uploaded successfully!
         </div>
 
         <div id="noOrdersMessage" class="alert alert-secondary mt-3 d-none">

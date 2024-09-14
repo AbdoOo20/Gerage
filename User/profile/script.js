@@ -264,11 +264,11 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                 const file = fileInput.files[0];
 
                 if (file) {
-                    if (file.size > 2 * 1024 * 1024) {
+                    if (file.size > 2 * 1024 * 1024) { // Check for file size
                         alert('File size exceeds 2MB.');
                         return;
                     }
-                    const validExtensions = ["image/jpeg", "image/png", "image/jpg"];
+                    const validExtensions = ["image/jpeg", "image/png", "image/jpg"]; // Check for valid extensions
                     if (!validExtensions.includes(file.type)) {
                         alert('Please upload a valid image file.');
                         return;
@@ -277,23 +277,30 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                     const storageRef = ref(storage, 'Orders/' + file.name);
 
                     try {
+                        // Upload file and get download URL
                         const snapshot = await uploadBytes(storageRef, file);
                         const downloadURL = await getDownloadURL(snapshot.ref);
 
+                        // Update Firestore document
                         const orderDocRef = doc(db, "Orders", order.OrderID);
                         await updateDoc(orderDocRef, {
                             imageUrl: downloadURL,
                             uploadedAt: new Date().toDateString()
                         });
 
-                        document.getElementById('uploadSuccessMessage').classList.remove('d-none');
-                        setTimeout(() => {
-                            document.getElementById('uploadSuccessMessage').classList.add('d-none');
-                        }, 3000);
 
-                        const modalElement = document.getElementById('UploadImag');
-                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        modalInstance.hide();
+                        // Hide the current modal
+                        const currentModalElement = document.getElementById('UploadImag');
+                        const currentModalInstance = bootstrap.Modal.getInstance(currentModalElement);
+                        currentModalInstance.hide();
+
+                        // Set the image source and show the Image in the modal
+                        const modalImage = document.getElementById('modalImage');
+                        modalImage.src = downloadURL;
+
+                        const imageModalElement = document.getElementById('imageModal');
+                        const imageModalInstance = new bootstrap.Modal(imageModalElement);
+                        imageModalInstance.show();
 
                     } catch (error) {
                         console.error('Error uploading file:', error);
@@ -303,6 +310,7 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                     alert('Please select an image first.');
                 }
             });
+
         }
 
     } catch (error) {
