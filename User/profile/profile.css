@@ -9,6 +9,17 @@
         box-shadow: 0 0 0 0.2rem rgba(226, 135, 67, 0.25);
 }
 
-.btn:hover,.btn {
+.btn {
         background-color: #dd792d;
+}
+
+.btn:hover,
+.btn:focus {
+        background-color: #c5692c;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn:disabled {
+        background-color: #ddd;
+        cursor: not-allowed;
 }

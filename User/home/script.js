@@ -19,9 +19,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 Array.from(document.getElementsByClassName("icons")).forEach((item) => {
                         item.classList.add("d-none");
                 });
-                document.getElementById("LoginIcon").classList.remove("d-none");
+                document.getElementById("Login").classList.remove("d-none");
         } else {
-                document.getElementById("LoginIcon").classList.add("d-none");
+                document.getElementById("Login").classList.add("d-none");
         }
 
         // Fetch and display the list of units from Firestore

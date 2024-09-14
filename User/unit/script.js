@@ -44,10 +44,10 @@ function handleLoginState() {
         const icons = Array.from(document.getElementsByClassName("icons"));
         if (!UserID) {
                 icons.forEach(item => item.classList.add("d-none"));
-                document.getElementById("LoginIcon").classList.remove("d-none");
+                document.getElementById("Login").classList.remove("d-none");
                 showError("Authorization Error: You must Login");
         } else {
-                document.getElementById("LoginIcon").classList.add("d-none");
+                document.getElementById("Login").classList.add("d-none");
         }
 }
 
