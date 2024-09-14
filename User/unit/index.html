@@ -12,18 +12,19 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
         <div class="container-fluid">
-            <!-- Brand with Garage logo -->
-            <a href="../home/index.html" class="navbar-brand d-flex align-items-center" aria-label="Home">
-                <img src="../../Images/GrageLogo.jpg" class="rounded-3 ms-5" height="50" alt="Garage Logo"
-                    loading="lazy" />
+            <!-- Brand Logo -->
+            <a class="navbar-brand" href="../home/index.html">
+                <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="Garage Logo"
+                    loading="lazy">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
                 aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
+                <!-- Navigation Links -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link active" href="../home/index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link active" href="../../Contact/index.html">Contact</a></li>
@@ -32,7 +33,7 @@
                             Terms</a></li>
                 </ul>
 
-                <!-- Cart and login/logout icons -->
+                <!-- Icons for Cart, Logout, and Login -->
                 <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons"
                     href="../profile/index.html">
                     <i class="fa-solid fa-cart-shopping"></i>
@@ -41,7 +42,9 @@
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
                 <a id="Login" href="../../Authentication/register/index.html" title="Login"
-                    class="nav-link active d-flex text-white pt-2">Login</a>
+                    class="nav-link active d-flex text-white pt-2">
+                    Login
+                </a>
             </div>
         </div>
     </nav>
