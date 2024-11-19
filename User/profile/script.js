@@ -240,7 +240,7 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
             }
 
             document.getElementById(`buy-${order.OrderID}`).addEventListener("click", () => {
-                window.location = `../Payments/Payment.html?Order=${order.OrderID}`;
+                window.location = `../payment/index.html?Order=${order.OrderID}`;
             });
 
             document.getElementById(`cancel-${order.OrderID}`).addEventListener("click", async () => {
