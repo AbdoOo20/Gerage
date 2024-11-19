@@ -11,7 +11,9 @@ const encodedUnitID = urlParams.get('UnitID');
 const unitID = decodeBase64(encodedUnitID); // Decode the UnitID
 const UnitID = doc(db, "Units", unitID);
 const UserID = localStorage.getItem('id');
+
 let UnitPrice;
+let UnitImages;
 document.addEventListener("DOMContentLoaded", async () => {
         await getProfileData();
         handleLoginState();
@@ -58,6 +60,7 @@ async function fetchUnitData() {
                 if (unitData.exists) {
                         const data = unitData.data();
                         UnitPrice = data.price;
+                        UnitImages = data.imageUrl
                         document.getElementById("UnitTitle").textContent = data.title;
                         document.getElementById("UnitDetails").textContent = data.details;
                         document.getElementById("UnitPrice").textContent = `${data.price}$`;
@@ -203,7 +206,8 @@ async function makeOrder(selectedDateTime, duration) {
                                 OrderSelectedMinute: selectedMinute,
                                 Duration: duration, // Store duration as hours (e.g., 1.5 for 1 hour 30 minutes)
                                 OrderStatus: "Pending",
-                                UnitPrice: UnitPrice
+                                UnitPrice: UnitPrice,
+                                UnitImages: UnitImages
                         });
                         showSuccess("Order successfully placed!");
                 } else {

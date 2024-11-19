@@ -209,24 +209,37 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
             }
 
             const data = UnitData.data();
+
+            // Debugging UnitImages
+            //console.log("Full Unit Data:", data);
+            //console.log("UnitImages Array:", data.UnitImages);
+
+            // Handle the first image URL or provide a default image
+            const firstImageUrl = data.imageUrl
+                && data.imageUrl.length > 0 ? data.imageUrl[0]
+                : 'https://via.placeholder.com/200x150?text=No+Image'; // Placeholder image URL
+
+            //console.log("First Image URL (computed):", firstImageUrl);
+
             const cardDiv = document.createElement('div');
-            cardDiv.classList.add("col-12", "border", "border-2", "m-2", "p-2", "rounded");
+            cardDiv.classList.add("d-flex", "align-items-start", "border", "border-2", "m-2", "p-2", "rounded");
 
             cardDiv.innerHTML = `
-              <h5 class="card-title">Order Room Title: ${data.title}</h5>
-              <p class="card-text"><strong>Order Date:</strong> ${order.OrderDate}</p>
-              <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
-              <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
-              <p class="card-text"><strong>Order Status:</strong> ${order.OrderStatus}</p>
-              <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Buy" />
-              <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Cancel" />
-              <button type="button" data-bs-toggle="modal" data-bs-target="#UploadImag" id="UploadImage-${order.OrderID}" data-OrderID="${order.OrderID}" class="btn text-white">
-              Upload Payment receipt
-              </button>
+                <div class="flex-grow-1">
+                    <h5 class="card-title">Order Room Title: ${data.title}</h5>
+                    <p class="card-text"><strong>Order Date:</strong> ${order.OrderDate}</p>
+                    <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
+                    <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
+                    <p class="card-text"><strong>Order Status:</strong> ${order.OrderStatus}</p>
+                    <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn btn-primary me-2" value="Buy" />
+                    <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn btn-danger" value="Cancel" />
+                </div>
+                <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
             `;
 
             superOrder.appendChild(cardDiv);
 
+            // Add border color based on order status
             switch (order.OrderStatus) {
                 case "Pending":
                     cardDiv.classList.add("border-warning");
@@ -235,19 +248,21 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                     cardDiv.classList.add("border-success");
                     document.getElementById(`buy-${order.OrderID}`).classList.add("d-none");
                     document.getElementById(`cancel-${order.OrderID}`).classList.add("d-none");
-                    document.getElementById(`UploadImage-${order.OrderID}`).classList.add("d-none");
                     break;
             }
 
+            // Add event listener for Buy button
             document.getElementById(`buy-${order.OrderID}`).addEventListener("click", () => {
                 window.location = `../payment/index.html?Order=${order.OrderID}`;
             });
 
+            // Add event listener for Cancel button
             document.getElementById(`cancel-${order.OrderID}`).addEventListener("click", async () => {
                 try {
                     const orderDocRef = doc(db, "Orders", order.OrderID);
                     await deleteDoc(orderDocRef);
                     cardDiv.remove();
+
                     const cancelAlertDiv = document.getElementById("cancelAlert");
                     cancelAlertDiv.classList.remove("d-none");
                     cancelAlertDiv.textContent = "Order has been successfully canceled.";
@@ -259,59 +274,62 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                 }
             });
 
-            document.getElementById("uploadBtn").addEventListener('click', async () => {
-                const fileInput = document.getElementById('formFile');
+            // Add event listener for file upload
+            document.getElementById("uploadBtn").addEventListener("click", async () => {
+                const fileInput = document.getElementById("formFile");
                 const file = fileInput.files[0];
 
                 if (file) {
-                    if (file.size > 2 * 1024 * 1024) { // Check for file size
-                        alert('File size exceeds 2MB.');
-                        return;
-                    }
-                    const validExtensions = ["image/jpeg", "image/png", "image/jpg"]; // Check for valid extensions
-                    if (!validExtensions.includes(file.type)) {
-                        alert('Please upload a valid image file.');
+                    // Validate file size and type
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert("File size exceeds 2MB.");
                         return;
                     }
 
-                    const storageRef = ref(storage, 'Orders/' + file.name);
+                    const validExtensions = ["image/jpeg", "image/png", "image/jpg"];
+                    if (!validExtensions.includes(file.type)) {
+                        alert("Please upload a valid image file.");
+                        return;
+                    }
+
+                    const storageRef = ref(storage, `Orders/${file.name}`);
 
                     try {
-                        // Upload file and get download URL
+                        // Upload file and get its URL
                         const snapshot = await uploadBytes(storageRef, file);
                         const downloadURL = await getDownloadURL(snapshot.ref);
 
-                        // Update Firestore document
+                        // Update Firestore with the uploaded image URL
                         const orderDocRef = doc(db, "Orders", order.OrderID);
                         await updateDoc(orderDocRef, {
                             imageUrl: downloadURL,
                             uploadedAt: new Date().toDateString()
                         });
 
-
-                        // Hide the current modal
-                        const currentModalElement = document.getElementById('UploadImag');
+                        // Hide the upload modal
+                        const currentModalElement = document.getElementById("UploadImag");
                         const currentModalInstance = bootstrap.Modal.getInstance(currentModalElement);
                         currentModalInstance.hide();
 
-                        // Set the image source and show the Image in the modal
-                        const modalImage = document.getElementById('modalImage');
+                        // Show the uploaded image in another modal
+                        const modalImage = document.getElementById("modalImage");
                         modalImage.src = downloadURL;
 
-                        const imageModalElement = document.getElementById('imageModal');
+                        const imageModalElement = document.getElementById("imageModal");
                         const imageModalInstance = new bootstrap.Modal(imageModalElement);
                         imageModalInstance.show();
 
                     } catch (error) {
-                        console.error('Error uploading file:', error);
-                        alert('Failed to upload image.');
+                        console.error("Error uploading file:", error);
+                        alert("Failed to upload image.");
                     }
                 } else {
-                    alert('Please select an image first.');
+                    alert("Please select an image first.");
                 }
             });
-
         }
+
+
 
     } catch (error) {
         console.error("Error fetching orders: ", error);
