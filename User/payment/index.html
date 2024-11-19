@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -37,34 +36,19 @@
                         <a class="nav-link active" href="../../Privacy Policy/index.html">Privacy and Terms</a>
                     </li>
                 </ul>
-                <a title="Profile" class="nav-link active d-flex pe-3 text-white pt-2 icons"
-                    href="../profile/index.html">
-                    <i class="fa-solid fa-user"></i>
-                </a>
-                <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons" href="#">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </a>
-                <a title="Logout" id="Logout" class="nav-link active d-flex text-white pt-2 icons">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </a>
-                <a id="LoginIcon" href="../../Authentication/login/index.html" title="Login"
-                    class="nav-link active d-flex text-white pt-2">
-                    Login
-                </a>
             </div>
         </div>
     </nav>
     <br>
-
+    <div id="alertPlaceholder"></div>
     <div class="container payment-container">
         <div class="row g-0">
             <!-- Product Details Section -->
             <div class="col-md-5 p-4 bg-light">
-                <h2>Product Details</h2>
-                <p class="text-muted">Test</p>
-                <h3>$20.00</h3>
+                <h3 id="unitName"></h3>
+                <h5 id="unitPrice"></h5>
                 <div class="product-image">
-                    <img src="https://via.placeholder.com/400x300" alt="Product Image">
+                    <img id="unitImage" style="object-fit: cover;" alt="Product Image">
                 </div>
             </div>
 
@@ -110,7 +94,7 @@
                     <!-- Submit Button -->
                     <button type="submit" style="background-color: #dd792d;"
                         class="btn w-100 d-flex align-items-center justify-content-center">
-                        <span class="text-white">Pay $20.00</span>
+                        <span class="text-white" id="valuePaid">Pay</span>
                         <div id="spinner" class="loading-spinner ms-2" style="display: none;"></div>
                     </button>
                 </form>
@@ -189,8 +173,7 @@
         </footer>
     </div>
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="script.js" type="module"></script>
 </body>

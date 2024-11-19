@@ -223,56 +223,77 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
 
             const cardDiv = document.createElement('div');
             cardDiv.classList.add("d-flex", "align-items-start", "border", "border-2", "m-2", "p-2", "rounded");
-
-            cardDiv.innerHTML = `
+            if (order.OrderStatus === "Paid") {
+                const dateNow = new Date();
+                var orderDate = new Date(order.OrderDate);
+                var state = dateNow > orderDate ? "Confirmed" : "Paid";
+                cardDiv.innerHTML = `
                 <div class="flex-grow-1">
-                    <h5 class="card-title">Order Room Title: ${data.title}</h5>
-                    <p class="card-text"><strong>Order Date:</strong> ${order.OrderDate}</p>
+                    <h5 class="card-title">Unit: ${data.title}</h5>
+                    <p class="card-text"><strong>Date:</strong> ${order.OrderDate}</p>
                     <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
                     <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
-                    <p class="card-text"><strong>Order Status:</strong> ${order.OrderStatus}</p>
-                    <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn btn-primary me-2" value="Buy" />
-                    <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn btn-danger" value="Cancel" />
+                    <p class="card-text"><strong>Status:</strong> ${state}</p>
                 </div>
                 <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
             `;
-
+            }
+            else {
+                cardDiv.innerHTML = `
+                <div class="flex-grow-1">
+                    <h5 class="card-title">Unit: ${data.title}</h5>
+                    <p class="card-text"><strong>Date:</strong> ${order.OrderDate}</p>
+                    <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
+                    <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
+                    <p class="card-text"><strong>Status:</strong> ${order.OrderStatus}</p>
+                    
+                    <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white me-2" value="Buy" />
+                    <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Cancel" />
+                </div>
+                <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+            `;
+            }
             superOrder.appendChild(cardDiv);
-
+            const currentDate = new Date();
             // Add border color based on order status
             switch (order.OrderStatus) {
                 case "Pending":
                     cardDiv.classList.add("border-warning");
                     break;
-                case "Confirmed":
-                    cardDiv.classList.add("border-success");
-                    document.getElementById(`buy-${order.OrderID}`).classList.add("d-none");
-                    document.getElementById(`cancel-${order.OrderID}`).classList.add("d-none");
+                case "Paid":
+                    const orderDate = new Date(order.OrderDate);
+                    if (currentDate > orderDate) {
+                        cardDiv.classList.add("border-success");
+                    } else {
+                        cardDiv.classList.add("border-info");
+                    }
                     break;
             }
 
-            // Add event listener for Buy button
-            document.getElementById(`buy-${order.OrderID}`).addEventListener("click", () => {
-                window.location = `../payment/index.html?Order=${order.OrderID}`;
-            });
+            if (order.OrderStatus !== "Paid") {
+                // Add event listener for Buy button
+                document.getElementById(`buy-${order.OrderID}`).addEventListener("click", () => {
+                    window.location = `../payment/index.html?Order=${order.OrderID}`;
+                });
 
-            // Add event listener for Cancel button
-            document.getElementById(`cancel-${order.OrderID}`).addEventListener("click", async () => {
-                try {
-                    const orderDocRef = doc(db, "Orders", order.OrderID);
-                    await deleteDoc(orderDocRef);
-                    cardDiv.remove();
+                // Add event listener for Cancel button
+                document.getElementById(`cancel-${order.OrderID}`).addEventListener("click", async () => {
+                    try {
+                        const orderDocRef = doc(db, "Orders", order.OrderID);
+                        await deleteDoc(orderDocRef);
+                        cardDiv.remove();
 
-                    const cancelAlertDiv = document.getElementById("cancelAlert");
-                    cancelAlertDiv.classList.remove("d-none");
-                    cancelAlertDiv.textContent = "Order has been successfully canceled.";
-                    setTimeout(() => {
-                        cancelAlertDiv.classList.add("d-none");
-                    }, 3000);
-                } catch (error) {
-                    console.error("Error deleting order: ", error);
-                }
-            });
+                        const cancelAlertDiv = document.getElementById("cancelAlert");
+                        cancelAlertDiv.classList.remove("d-none");
+                        cancelAlertDiv.textContent = "Order has been successfully canceled.";
+                        setTimeout(() => {
+                            cancelAlertDiv.classList.add("d-none");
+                        }, 3000);
+                    } catch (error) {
+                        console.error("Error deleting order: ", error);
+                    }
+                });
+            }
 
             // Add event listener for file upload
             document.getElementById("uploadBtn").addEventListener("click", async () => {
