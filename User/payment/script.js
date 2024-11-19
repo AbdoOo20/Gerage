@@ -1,5 +1,36 @@
+import { db, doc, getDoc } from '../../Database/firebase-config.js';
+
 const stripe = Stripe('your-publishable-key'); // Replace with your publishable key
 const elements = stripe.elements();
+
+// Get Order ID from Query String
+const urlParams = new URLSearchParams(window.location.search);
+const OrderIDFromQuery = urlParams.get('Order');
+console.log("Order ID from Query:", OrderIDFromQuery);
+
+// Fetch the Order Data from Firestore
+async function getOrderData(orderId) {
+    if (!orderId) {
+        console.error("No Order ID provided in the query string.");
+        return;
+    }
+
+    try {
+        const orderRef = doc(db, "Orders", orderId); // Replace 'orders' with your collection name
+        const orderSnap = await getDoc(orderRef);
+
+        if (orderSnap.exists()) {
+            console.log("Order Data:", orderSnap.data());
+        } else {
+            console.log("No such order found!");
+        }
+    } catch (error) {
+        console.error("Error fetching order data:", error);
+    }
+}
+
+// Call the function to fetch data
+getOrderData(OrderIDFromQuery);
 
 const style = {
     base: {
