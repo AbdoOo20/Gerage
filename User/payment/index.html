@@ -1,0 +1,198 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" data-bs-theme="dark">
+        <div class="container-fluid">
+            <div class="navbar-brand pb-2 pe-5 rounded-circle  d-flex align-items-center justify-content-center "
+                style="width: 5px; height: 5px;">
+                <a href="../home/index.html">
+                    <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="" loading="lazy" />
+                </a>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="../home/index.html">Home </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="../../Contact/index.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="../../About US/index.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="../../Privacy Policy/index.html">Privacy and Terms</a>
+                    </li>
+                </ul>
+                <a title="Profile" class="nav-link active d-flex pe-3 text-white pt-2 icons"
+                    href="../profile/index.html">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons" href="#">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+                <a title="Logout" id="Logout" class="nav-link active d-flex text-white pt-2 icons">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+                <a id="LoginIcon" href="../../Authentication/login/index.html" title="Login"
+                    class="nav-link active d-flex text-white pt-2">
+                    Login
+                </a>
+            </div>
+        </div>
+    </nav>
+    <br>
+
+    <div class="container payment-container">
+        <div class="row g-0">
+            <!-- Product Details Section -->
+            <div class="col-md-5 p-4 bg-light">
+                <h2>Product Details</h2>
+                <p class="text-muted">Test</p>
+                <h3>$20.00</h3>
+                <div class="product-image">
+                    <img src="https://via.placeholder.com/400x300" alt="Product Image">
+                </div>
+            </div>
+
+            <!-- Payment Form Section -->
+            <div class="col-md-7 form-section">
+                <h3 class="payment-title">Pay with card</h3>
+                <form id="payment-form">
+
+                    <!-- Card Information -->
+                    <div class="mb-4" id="card-section" style="margin-top: 20px;">
+                        <label for="card-number-element" class="form-label">Card information</label>
+                        <div class="d-flex align-items-center mb-1" style="gap: 10px;">
+                            <!-- Use col-3 for smaller input width -->
+                            <div id="card-number-element" class="form-control w-50" style="padding: 10px;">Card Number</div>
+                            
+                            <!-- Card Brand Placeholder -->
+                            <div id="card-brand">
+                                <img src="./../../Images/card.png" class="card-master" alt="MasterCard" />
+                                <img src="./../../Images/visa.png" class="card-visa" alt="Visa" />
+                                <img src="./../../Images/amex.png" class="card-visa" alt="American Express" />
+                                <img src="./../../Images/discover.png" class="card-visa" alt="Discover" />
+                            </div>
+                        </div>
+                        <div class="row gx-1 gy-2">
+                            <div class="col w-50">
+                                <div id="card-expiry-element" class="form-control" style="padding: 10px;">MM/YY</div>
+                            </div>
+                            <div class="col w-50">
+                                <div id="card-cvc-element" class="form-control" style="padding: 10px;">CVC</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+
+
+                    <!-- Cardholder Name -->
+                    <div class="mb-3">
+                        <label for="cardholder-name" class="form-label">Cardholder name</label>
+                        <input type="text" class="form-control" id="cardholder-name" placeholder="Full name on card">
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" style="background-color: #dd792d;"
+                        class="btn w-100 d-flex align-items-center justify-content-center">
+                        <span class="text-white">Pay $20.00</span>
+                        <div id="spinner" class="loading-spinner ms-2" style="display: none;"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--footer -->
+    <div>
+        <footer class="text-center text-lg-start text-white" style="background-color: #dd792d;">
+            <div class="container p-3">
+                <div class="row my-4">
+                    <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                        <div class="rounded-circle bg-white shadow-1-strong d-flex align-items-center justify-content-center mb-4 mx-auto"
+                            style="width: 150px; height: 150px;">
+                            <img src="../../Images/GrageLogo.jpg" height="70" alt="" loading="lazy" />
+                        </div>
+
+                        <p class="text-center">Garage offers you the best services</p>
+
+                        <ul class="list-unstyled d-flex flex-row justify-content-center">
+                            <li>
+                                <a class="text-white px-2" href="#!">
+                                    <i class="fab fa-facebook-square"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="text-white px-2" href="#!">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="text-white ps-2" href="#!">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase mb-4">Quick links</h5>
+
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fa-solid fa-circle-question pe-3"></i>
+                                <a href="../../About US/index.html" class="text-white">About</a>
+                            </li>
+                            <li class="mb-2">
+                                <i class="fa-solid fa-list pe-3"></i>
+                                <a href="../../Privacy Policy/index.html" class="text-white">Privacy and Terms</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                        <h5 class="text-uppercase mb-4">Contact</h5>
+
+                        <ul class="list-unstyled">
+                            <li>
+                                <p><i class="fas fa-map-marker-alt pe-2"></i>Warsaw, 57 Street, Poland</p>
+                            </li>
+                            <li>
+                                <p><i class="fas fa-phone pe-2"></i>+ 01 234 567 89</p>
+                            </li>
+                            <li>
+                                <p><i class="fas fa-envelope pe-2 mb-0"></i>contact@example.com</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Copyright -->
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+                © 2024 Copyright:
+                <a class="text-white" href="https://mdbootstrap.com/">AMTeam</a>
+            </div>
+        </footer>
+    </div>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js" type="module"></script>
+</body>
+
+</html>
