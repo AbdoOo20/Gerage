@@ -10,52 +10,83 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
         <div class="container-fluid">
-            <div class="navbar-brand pb-2 pe-5 rounded-circle  d-flex align-items-center justify-content-center "
-                style="width: 5px; height: 5px;">
-                <a href="../home/index.html">
-                    <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="" loading="lazy" />
-                </a>
-            </div> <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <!-- Brand Logo -->
+            <a class="navbar-brand" href="../home/index.html">
+                <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="Garage Logo"
+                    loading="lazy">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
+                <!-- Navigation Links -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="../home/index.html">Home </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="../../Contact/index.html">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="../../About US/index.html">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="../../Privacy Policy/index.html">Privacy and Terms</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link active" href="../home/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="../../Contact/index.html">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="../../About US/index.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="../../Privacy Policy/index.html">Privacy and
+                            Terms</a></li>
                 </ul>
-                <a title="Profile" class="nav-link active d-flex pe-3 text-white pt-2 icons"
+
+                <!-- Icons for Cart, Logout, and Login -->
+                <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons"
                     href="../profile/index.html">
-                    <i class="fa-solid fa-user"></i>
-                </a>
-                <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons" href="#">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
                 <a title="Logout" id="Logout" class="nav-link active d-flex text-white pt-2 icons">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
-                <a id="LoginIcon" href="../../Authentication/login/index.html" title="Login"
-                    class="nav-link active d-flex text-white pt-2">
-                    Login
-                </a>
+                <a id="Login" href="../../Authentication/register/index.html" title="Login"
+                    class="nav-link active d-flex text-white pt-2">Login</a>
             </div>
         </div>
     </nav>
-    <br>
+
+    <br><br>
     <div class="container">
+
+        <!-- Modal for Uploading Image -->
+        <div class="modal fade" id="UploadImag" tabindex="-1" aria-labelledby="UploadImagLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="UploadImagLabel">Upload Payment receipt</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- File input and upload button here -->
+                        <input type="file" id="formFile" class="form-control" accept="image/*">
+                        <br>
+                        <button id="uploadBtn" class="btn btn-primary">Upload</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Display Uploaded Image -->
+        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="imageModalLabel">Uploaded Payment receipt</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <img id="modalImage" src="" alt="Uploaded Image" style="width: 100%; height: auto;">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="dataUpdatedsuccessfully"
             class="col-lg-8 col-md-7 col-sm-12 alert alert-dismissible alert-success d-none">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -67,8 +98,7 @@
             <p id="ErrorOrderMessage" class="mb-0"></p>
         </div>
         <div class="row">
-            <!-- Profile Details and Navigation -->
-            <div class="col-lg-8 col-md-7 col-sm-12">
+            <div class="col-6">
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row">
@@ -76,7 +106,6 @@
                                 <p class="mb-0">Full Name</p>
                             </div>
                             <div class="col-sm-9">
-                                <!-- <p  class="text-muted mb-0"></p> -->
                                 <input id="UserName" type="text" class="form-control" readonly>
                                 <div id="nameError" class="error-message"></div>
                             </div>
@@ -103,8 +132,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Navigation Links -->
+            <div class="col-6">
                 <div class="card">
                     <div class="card-body">
                         <ul class="nav nav-pills flex-column">
@@ -117,10 +147,15 @@
                 </div>
             </div>
         </div>
-        <div id="superOrder" class="row mb-4">
 
+        <div id="noOrdersMessage" class="alert alert-secondary mt-3 d-none">
+            <h4>No orders found.</h4>
         </div>
+        <div id="cancelAlert" class="alert alert-success d-none" role="alert"></div>
+
+        <div id="superOrder" class="row"></div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/e3f4154824.js" crossorigin="anonymous"></script>
     <script src="script.js" type="module"></script>

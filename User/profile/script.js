@@ -1,6 +1,6 @@
-import { db, collection, getDoc, getDocs, updateDoc, doc, signOut, auth, query, where } from '../../Database/firebase-config.js';
+import { db, setDoc, deleteDoc, collection, getDoc, getDocs, updateDoc, doc, signOut, auth, query, where, storage, ref, uploadBytes, getDownloadURL } from '../../Database/firebase-config.js';
 
-//User Data
+// User Data
 var UserName = document.getElementById("UserName");
 var UserEmail = document.getElementById("UserEmail");
 var UserPhone = document.getElementById("UserPhone");
@@ -11,97 +11,78 @@ document.addEventListener("DOMContentLoaded", async () => {
         Array.from(document.getElementsByClassName("icons")).forEach((item) => {
             item.classList.add("d-none");
         });
-        document.getElementById("LoginIcon").classList.remove("d-none");
+        document.getElementById("Login").classList.remove("d-none");
     } else {
-        document.getElementById("LoginIcon").classList.add("d-none");
+        document.getElementById("Login").classList.add("d-none");
     }
     getProfileData();
-
 });
 
-// Function to get and Set profile data
+// Function to get and set profile data
 const UserID = localStorage.getItem('id');
 async function getProfileData() {
     try {
         if (UserID != null) {
-            //Get Profile Data
             let userDetails = doc(db, "users", UserID.toString());
             const userData = await getDoc(userDetails);
 
-            //Update User Profile Data
             if (userData.exists) {
                 const data = userData.data();
-                UserName.value = data.name;
-                if (!data.email)
-                    UserEmail.value = "N/A";
-                else UserEmail.value = data.email;
-                UserPhone.value = data.phone;
+                UserName.value = data.name || "N/A";
+                UserEmail.value = data.email || "N/A";
+                UserPhone.value = data.phone || "N/A";
+            } else {
+                console.log("This User Does Not Exist!!");
             }
-            else
-                console.log("This User Dose Not Exists!!");
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error fetching profile data: ", error);
     }
 }
 
-//Edit Profile button
+// Edit Profile button
 document.getElementById("EditBtn").addEventListener("click", () => {
     if (UserID == null) {
-        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-        document.getElementById("ErrorOrder").classList.remove("d-none");
-        setTimeout(() => {
-            document.getElementById("ErrorOrder").classList.add("d-none");
-        }, 5000);
+        displayAuthorizationError();
+        return;
     }
+
     UserName.removeAttribute("readonly");
     UserEmail.removeAttribute("readonly");
-    // UserPhone.removeAttribute("readonly");
     document.getElementById("EditBtn").classList.add("d-none");
     document.getElementById("SaveBtn").classList.remove("d-none");
     UserName.focus();
 });
 
-//Save Edited Data
+// Save Edited Data
 document.getElementById("SaveBtn").addEventListener("click", async () => {
-    await SaveProfileDataEdited();
+    await saveProfileDataEdited();
 });
 
-
-//Save Profile Data Edited
-async function SaveProfileDataEdited() {
-    // Call the validation function
+// Save Profile Data Edited
+async function saveProfileDataEdited() {
     if (!validateProfileData()) {
-        return; // If validation fails, do not proceed with saving the data
+        return;
     }
 
     try {
         if (UserID != null) {
-            // Reference to the user's document
             let userDetails = doc(db, "users", UserID);
-
-            // Update the document with new data
             await updateDoc(userDetails, {
                 name: UserName.value.trim(),
                 email: UserEmail.value.trim(),
                 phone: UserPhone.value.trim()
             });
-            Updatedsuccessfully();
+            displaySuccessMessage();
         } else {
-            document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-            document.getElementById("ErrorOrder").classList.remove("d-none");
-            setTimeout(() => {
-                document.getElementById("ErrorOrder").classList.add("d-none");
-            }, 5000);
+            displayAuthorizationError();
         }
-
     } catch (error) {
         console.error("Error updating profile data: ", error);
     }
 }
 
-//validation Checking
+// Validation
 function clearErrorMessages() {
     document.getElementById("nameError").textContent = "";
     document.getElementById("emailError").textContent = "";
@@ -109,7 +90,6 @@ function clearErrorMessages() {
 }
 
 function validateProfileData() {
-    // Clear any previous error messages
     clearErrorMessages();
 
     const name = UserName.value.trim();
@@ -129,7 +109,6 @@ function validateProfileData() {
         document.getElementById("emailError").textContent = "Email field cannot be empty.";
         isValid = false;
     } else {
-        // Simple email format validation
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailPattern.test(email)) {
             document.getElementById("emailError").textContent = "Please enter a valid email address.";
@@ -140,65 +119,201 @@ function validateProfileData() {
     if (!phone) {
         document.getElementById("phoneError").textContent = "Phone field cannot be empty.";
         isValid = false;
+    } else {
+        const phonePattern = /^[0-9]{10}$/;
+        if (!phonePattern.test(phone)) {
+            document.getElementById("phoneError").textContent = "Please enter a valid 10-digit phone number.";
+            isValid = false;
+        }
     }
 
     return isValid;
 }
 
-function Updatedsuccessfully() {
-    // Show success message
+function displaySuccessMessage() {
     document.getElementById("dataUpdatedsuccessfully").classList.remove("d-none");
     setTimeout(() => {
         document.getElementById("dataUpdatedsuccessfully").classList.add("d-none");
     }, 3000);
 
-    // Set fields to read-only
-    document.getElementById("UserName").setAttribute("readonly", true);
-    document.getElementById("UserEmail").setAttribute("readonly", true);
-    document.getElementById("UserPhone").setAttribute("readonly", true);
+    UserName.setAttribute("readonly", true);
+    UserEmail.setAttribute("readonly", true);
+    UserPhone.setAttribute("readonly", true);
 
-    // Hide Save button and show Edit button
     document.getElementById("SaveBtn").classList.add("d-none");
     document.getElementById("EditBtn").classList.remove("d-none");
 }
 
+function displayAuthorizationError() {
+    const errorElement = document.getElementById("ErrorOrderMessage");
+    const errorContainer = document.getElementById("ErrorOrder");
+
+    errorElement.textContent = "Authorization Error: You must log in.";
+    errorContainer.classList.remove("d-none");
+    setTimeout(() => {
+        errorContainer.classList.add("d-none");
+    }, 5000);
+}
+
+// Logout Functionality
 document.getElementById("Logout").addEventListener("click", () => {
     signOut(auth).then(() => {
         localStorage.clear();
-        window.location.href = '../../Authentication/login/index.html';
+        window.location.href = '../../Authentication/register/index.html';
     });
-})
+});
 
+// Orders Section
 const superOrder = document.getElementById("superOrder");
+var ordersData = [];
+
 document.getElementById("ShowOrders").addEventListener("click", async () => {
     if (UserID == null) {
-        document.getElementById("ErrorOrderMessage").textContent = "Authorization Error: You must Login";
-        document.getElementById("ErrorOrder").classList.remove("d-none");
-        setTimeout(() => {
-            document.getElementById("ErrorOrder").classList.add("d-none");
-        }, 5000);
-    } else {
+        displayAuthorizationError();
+        return;
+    }
+
+    try {
         const Orders = collection(db, "Orders");
         const q = query(Orders, where("UserID", "==", UserID));
         const querySnapshot = await getDocs(q);
+
+        ordersData = [];
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            //const UnitData = await getDoc(data.UnitID);
-            const itemHTML = `
-                        <div class="col-12 mt-2">
-                        <div class="card product-card">
-                        <div class="card-body">
-                            <h5 class="card-title">Order Date: ${data.OrderDate}</h5>
-                        </div>
-                        </div>
-                        </div>
-                    `;
-            //<a class="text-dark text-decoration-none" href="../unit/index.html?UnitID=${doc.id}">
-            //</a>
-            //<img src=${UnitData.imageUrl} alt="Product Image" class="card-img-top product-image">
-            //<p class="card-text"><strong>${UnitData.price} $</strong></p>
-
-            superOrder.insertAdjacentHTML('beforeend', itemHTML);
+            ordersData.push({
+                OrderID: doc.id,
+                OrderDate: data.OrderDate,
+                OrderSelectedHour: data.OrderSelectedHour,
+                Duration: data.Duration,
+                UnitID: data.UnitID,
+                OrderStatus: data.OrderStatus
+            });
         });
+
+        superOrder.innerHTML = '';
+
+        if (ordersData.length === 0) {
+            document.getElementById('noOrdersMessage').classList.remove('d-none');
+        } else {
+            document.getElementById('noOrdersMessage').classList.add('d-none');
+        }
+
+        for (const order of ordersData) {
+            const Unit_ID = doc(db, "Units", order.UnitID);
+            const UnitData = await getDoc(Unit_ID);
+
+            if (!UnitData.exists()) {
+                console.warn(`Unit with ID ${order.UnitID} does not exist.`);
+                continue;
+            }
+
+            const data = UnitData.data();
+            const cardDiv = document.createElement('div');
+            cardDiv.classList.add("col-12", "border", "border-2", "m-2", "p-2", "rounded");
+
+            cardDiv.innerHTML = `
+              <h5 class="card-title">Order Room Title: ${data.title}</h5>
+              <p class="card-text"><strong>Order Date:</strong> ${order.OrderDate}</p>
+              <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
+              <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
+              <p class="card-text"><strong>Order Status:</strong> ${order.OrderStatus}</p>
+              <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Buy" />
+              <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Cancel" />
+              <button type="button" data-bs-toggle="modal" data-bs-target="#UploadImag" id="UploadImage-${order.OrderID}" data-OrderID="${order.OrderID}" class="btn text-white">
+              Upload Payment receipt
+              </button>
+            `;
+
+            superOrder.appendChild(cardDiv);
+
+            switch (order.OrderStatus) {
+                case "Pending":
+                    cardDiv.classList.add("border-warning");
+                    break;
+                case "Confirmed":
+                    cardDiv.classList.add("border-success");
+                    document.getElementById(`buy-${order.OrderID}`).classList.add("d-none");
+                    document.getElementById(`cancel-${order.OrderID}`).classList.add("d-none");
+                    document.getElementById(`UploadImage-${order.OrderID}`).classList.add("d-none");
+                    break;
+            }
+
+            document.getElementById(`buy-${order.OrderID}`).addEventListener("click", () => {
+                window.location = `../Payments/Payment.html?Order=${order.OrderID}`;
+            });
+
+            document.getElementById(`cancel-${order.OrderID}`).addEventListener("click", async () => {
+                try {
+                    const orderDocRef = doc(db, "Orders", order.OrderID);
+                    await deleteDoc(orderDocRef);
+                    cardDiv.remove();
+                    const cancelAlertDiv = document.getElementById("cancelAlert");
+                    cancelAlertDiv.classList.remove("d-none");
+                    cancelAlertDiv.textContent = "Order has been successfully canceled.";
+                    setTimeout(() => {
+                        cancelAlertDiv.classList.add("d-none");
+                    }, 3000);
+                } catch (error) {
+                    console.error("Error deleting order: ", error);
+                }
+            });
+
+            document.getElementById("uploadBtn").addEventListener('click', async () => {
+                const fileInput = document.getElementById('formFile');
+                const file = fileInput.files[0];
+
+                if (file) {
+                    if (file.size > 2 * 1024 * 1024) { // Check for file size
+                        alert('File size exceeds 2MB.');
+                        return;
+                    }
+                    const validExtensions = ["image/jpeg", "image/png", "image/jpg"]; // Check for valid extensions
+                    if (!validExtensions.includes(file.type)) {
+                        alert('Please upload a valid image file.');
+                        return;
+                    }
+
+                    const storageRef = ref(storage, 'Orders/' + file.name);
+
+                    try {
+                        // Upload file and get download URL
+                        const snapshot = await uploadBytes(storageRef, file);
+                        const downloadURL = await getDownloadURL(snapshot.ref);
+
+                        // Update Firestore document
+                        const orderDocRef = doc(db, "Orders", order.OrderID);
+                        await updateDoc(orderDocRef, {
+                            imageUrl: downloadURL,
+                            uploadedAt: new Date().toDateString()
+                        });
+
+
+                        // Hide the current modal
+                        const currentModalElement = document.getElementById('UploadImag');
+                        const currentModalInstance = bootstrap.Modal.getInstance(currentModalElement);
+                        currentModalInstance.hide();
+
+                        // Set the image source and show the Image in the modal
+                        const modalImage = document.getElementById('modalImage');
+                        modalImage.src = downloadURL;
+
+                        const imageModalElement = document.getElementById('imageModal');
+                        const imageModalInstance = new bootstrap.Modal(imageModalElement);
+                        imageModalInstance.show();
+
+                    } catch (error) {
+                        console.error('Error uploading file:', error);
+                        alert('Failed to upload image.');
+                    }
+                } else {
+                    alert('Please select an image first.');
+                }
+            });
+
+        }
+
+    } catch (error) {
+        console.error("Error fetching orders: ", error);
     }
-})
+});
