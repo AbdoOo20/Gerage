@@ -1,26 +1,31 @@
-import { db, doc, getDoc } from '../../Database/firebase-config.js';
+import { db, doc, getDoc, updateDoc } from '../../Database/firebase-config.js';
 
-const stripe = Stripe('your-publishable-key'); // Replace with your publishable key
+const stripe = Stripe('pk_test_51QFCeaPPa7Ug3bKucNTL8LOj05NRyWzD50XIP3wib3ltvoHGyUbwDbD4zplmhKfiYNkGSantfctPaPqwadt9uoqA00z8uPg7AN'); // Replace with your publishable key
 const elements = stripe.elements();
 
 // Get Order ID from Query String
 const urlParams = new URLSearchParams(window.location.search);
 const OrderIDFromQuery = urlParams.get('Order');
-console.log("Order ID from Query:", OrderIDFromQuery);
-
+var unitdata;
+var orderdata;
 // Fetch the Order Data from Firestore
 async function getOrderData(orderId) {
     if (!orderId) {
         console.error("No Order ID provided in the query string.");
         return;
     }
-
     try {
         const orderRef = doc(db, "Orders", orderId); // Replace 'orders' with your collection name
         const orderSnap = await getDoc(orderRef);
-
         if (orderSnap.exists()) {
-            console.log("Order Data:", orderSnap.data());
+            orderdata = orderSnap.data();
+            const unitRef = doc(db, "Units", orderSnap.data().UnitID); // Replace 'orders' with your collection name
+            const unitSnap = await getDoc(unitRef);
+            unitdata = unitSnap.data();
+            document.getElementById("unitName").innerText = unitdata.title;
+            document.getElementById("unitPrice").innerText = unitdata.price + '$' + " per hour";
+            document.getElementById("unitImage").src = unitdata.imageUrl[0];
+            document.getElementById("valuePaid").innerText = "Pay " + (unitdata.price * orderdata.Duration) + "$";
         } else {
             console.log("No such order found!");
         }
@@ -29,8 +34,27 @@ async function getOrderData(orderId) {
     }
 }
 
+const UserID = localStorage.getItem('id');
+var userData;
+async function getProfileData() {
+    try {
+        if (UserID != null) {
+            let userDetails = doc(db, "users", UserID.toString());
+            const userSnap = await getDoc(userDetails);
+            if (userSnap.exists) {
+                userData = userSnap.data();
+            } else {
+                console.log("This User Does Not Exist!!");
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching profile data: ", error);
+    }
+}
+
 // Call the function to fetch data
 getOrderData(OrderIDFromQuery);
+getProfileData();
 
 const style = {
     base: {
@@ -61,18 +85,11 @@ cardCvcElement.mount('#card-cvc-element');
 // Add an element to show the card brand icon dynamically
 const cardBrandElement = document.createElement('div'); // Create a div for the card brand icon
 cardBrandElement.setAttribute('id', 'card-brand'); // Assign an ID to the div
-document.querySelector('#card-number-element').parentElement.appendChild(cardBrandElement); // Append the brand div below the card number
-
-// Detect the card brand dynamically and show the corresponding icon
+document.querySelector('#card-number-element').parentElement.appendChild(cardBrandElement);
 cardNumberElement.on('change', (event) => {
-    console.log(event);
-
     const brandElement = document.getElementById('card-brand');
     if (event.brand) {
-        // Clear all previous logos
         brandElement.innerHTML = '';
-
-        // Show brand logo based on the card brand detected
         switch (event.brand) {
             case 'visa':
                 brandElement.innerHTML = '<img src="./../../Images/visa.png" class="card-visa" alt="Visa" />';
@@ -92,10 +109,9 @@ cardNumberElement.on('change', (event) => {
             <img src="./../../Images/card.png" alt="MasterCard" class="card-master" />
             <img src="./../../Images/amex.png" alt="American Express" class="card-visa" />
             <img src="./../../Images/discover.png" alt="Discover" class="card-visa" />
-        `;// Clear if the brand is unknown
+        `;
         }
     } else {
-        // When input is empty or invalid, show all card logos
         console.log('in else');
 
         brandElement.innerHTML = `
@@ -107,18 +123,16 @@ cardNumberElement.on('change', (event) => {
     }
 });
 
-// Form submission (with spinner and AJAX)
 const form = document.getElementById('payment-form');
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const spinner = document.getElementById('spinner');
-    spinner.style.display = 'inline-block'; // Show spinner
-    // Example AJAX call to backend (replace URL with your backend endpoint)
+    spinner.style.display = 'inline-block';
     $.ajax({
         url: "http://localhost:15003/api/Payment/create-intent",
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify({ amount: 2000 }), // Replace amount dynamically
+        data: JSON.stringify({ amount: (unitdata.price * orderdata.Duration) }), // Replace amount dynamically
         success: function (response) {
             if (response.clientSecret) {
                 stripe.confirmCardPayment(response.clientSecret, {
@@ -128,22 +142,64 @@ form.addEventListener('submit', async (event) => {
                             name: document.getElementById('cardholder-name').value,
                         },
                     },
-                }).then((result) => {
+                }).then(async (result) => {
                     if (result.error) {
-                        alert('Payment failed: ' + result.error.message);
+                        const alertPlaceholder = document.getElementById('alertPlaceholder');
+                        const alertHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
+                            <strong>Error!</strong>Payment failed: ${result.error.message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                        alertPlaceholder.innerHTML = alertHTML;
                     } else if (result.paymentIntent.status === 'succeeded') {
-                        alert('Payment successful!');
+                        const orderDocRef = doc(db, "Orders", OrderIDFromQuery);
+                        await updateDoc(orderDocRef, {
+                            OrderStatus: "Paid",
+                        });
+                        const alertPlaceholder = document.getElementById('alertPlaceholder');
+                        const alertHTML = `
+                        <div class="alert alert-success alert-dismissible fade show mx-5" role="alert">
+                            <strong>Error!</strong>Payment successful!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                        alertPlaceholder.innerHTML = alertHTML;
+                        const paymentDetails = {
+                            productName: unitdata.title, // Replace with your product name
+                            price: (unitdata.price * orderdata.Duration) + "$", // Replace with your price
+                            duration: orderdata.Duration + " Hour", // Replace with actual duration
+                            name: userData.title, // Masked card number
+                            phoneNumber: userData.phone, // Replace with actual user phone number
+                            date: orderdata.OrderDate, // Current date and time
+                        };
+                        localStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
+                        window.location.href = "./receipt.html";
                     }
                 });
             } else {
-                alert('Failed to retrieve client secret.');
+                const alertPlaceholder = document.getElementById('alertPlaceholder');
+                const alertHTML = `
+                <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
+                    <strong>Error!</strong>Failed to retrieve client secret.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+                alertPlaceholder.innerHTML = alertHTML;
             }
         },
         error: function () {
-            alert('An error occurred while processing the payment.');
+            const alertPlaceholder = document.getElementById('alertPlaceholder');
+            const alertHTML = `
+                <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
+                    <strong>Error!</strong> An error occurred while processing the payment.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            alertPlaceholder.innerHTML = alertHTML;
         },
         complete: function () {
-            spinner.style.display = 'none'; // Hide spinner
+            spinner.style.display = 'none';
         },
     });
 });
