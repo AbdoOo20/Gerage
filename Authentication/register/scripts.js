@@ -3,6 +3,10 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, db, doc, setDoc } fr
 
 let isRegister = false;
 
+const currentUrl = window.location.href;
+console.log(currentUrl);
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
     const auth = getAuth(); // Initialize Firebase Authentication

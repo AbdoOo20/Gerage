@@ -14,19 +14,33 @@ async function getAllOrders() {
         const data = docu.data();
         var userName = await getUserName(data.UserID);
         var unitName = await getUnitName(data.UnitID);
+        var state;
+        if (data.OrderStatus === "Paid") {
+            const dateNow = new Date();
+            var orderDate = new Date(data.OrderDate);
+            state = dateNow > orderDate ? "Confirmed" : "Paid";
+        } else {
+            state = "Pending";
+        }
         const itemHTML = `<tr>
                     <td>${data.Duration}</td>
                      <td>${data.OrderDate}</td>
-                    <td>${data.OrderSelectedHour}</td>
+                    <td>${formatTime(data.OrderSelectedHour)}</td>
                     <td>${unitName}</td>
                     <td>${userName}</td> 
-                    <td>Waiting</td>
+                    <td>${state}</td>
                 </tr>`;
         tableBody.insertAdjacentHTML('beforeend', itemHTML);
     });
 }
 
 getAllOrders();
+
+function formatTime(hour) {
+    const isPM = hour >= 12;
+    const twelveHour = hour % 12 || 12; // Convert 0 to 12 for midnight
+    return `${twelveHour}:00 ${isPM ? "PM" : "AM"}`;
+}
 
 
 async function getUserName(userID) {

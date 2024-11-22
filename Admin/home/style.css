@@ -75,3 +75,8 @@ body::before {
     position: relative;
     z-index: 1;
 }
+
+#LogoutBTN {
+    pointer-events: auto !important;
+    z-index: 1000;
+}

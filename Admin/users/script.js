@@ -14,7 +14,6 @@ async function getAllUsers() {
         const data = doc.data();
         const itemHTML = `<tr>
                     <td>${data.name}</td>
-                    <td>${data.email}</td>
                     <td>${data.phone}</td>
                 </tr>`;
         tableBody.insertAdjacentHTML('beforeend', itemHTML);

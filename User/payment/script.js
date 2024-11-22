@@ -129,7 +129,7 @@ form.addEventListener('submit', async (event) => {
     const spinner = document.getElementById('spinner');
     spinner.style.display = 'inline-block';
     $.ajax({
-        url: "http://localhost:15003/api/Payment/create-intent",
+        url: "https://garage.runasp.net/api/Payment/create-intent",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ amount: (unitdata.price * orderdata.Duration) }), // Replace amount dynamically
