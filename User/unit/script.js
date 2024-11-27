@@ -15,6 +15,19 @@ const UserID = localStorage.getItem('id');
 let UnitPrice;
 let UnitImages;
 document.addEventListener("DOMContentLoaded", async () => {
+        var mail = document.getElementById('mail');
+        var location = document.getElementById('location');
+        var phone = document.getElementById('phone');
+        var facebook = document.getElementById('facebook');
+        var instagram = document.getElementById('instagram');
+        var youtube = document.getElementById('youtube');
+        var setting = JSON.parse(localStorage.getItem('setting'));
+        mail.innerText = setting.contactEmail;
+        phone.innerText = setting.contactNumber;
+        location.href = setting.location;
+        facebook.href = setting.facebook;
+        instagram.href = setting.instagram;
+        youtube.href = setting.youtube;
         await getProfileData();
         handleLoginState();
         fetchUnitData();
@@ -198,7 +211,7 @@ async function makeOrder(selectedDateTime, duration) {
                 });
 
                 if (isValid) {
-                        await addDoc(collection(db, "Orders"), {
+                        const docRef =  await addDoc(collection(db, "Orders"), {
                                 UserID: UserID,
                                 UnitID: UnitID.id,
                                 OrderDate: selectedDateTime.toDateString(),
@@ -210,6 +223,8 @@ async function makeOrder(selectedDateTime, duration) {
                                 UnitImages: UnitImages
                         });
                         showSuccess("Order successfully placed!");
+                        const documentId = docRef.id;
+                        window.location.href = `./../payment/index.html?Order=${documentId}`;
                 } else {
                         displayConflictTable(errorMessage, bookedDates, bookedStartTimes, bookedEndTimes);
                 }

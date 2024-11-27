@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Make Order</title>
+    <title>Order</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
+    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
 </head>
 
 <body>
@@ -15,7 +16,7 @@
     <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Brand Logo -->
-            <a class="navbar-brand" href="../home/index.html">
+            <a class="navbar-brand" href="./../home/index.html">
                 <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="Garage Logo"
                     loading="lazy">
             </a>
@@ -26,10 +27,9 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <!-- Navigation Links -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active text-white" href="../home/index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="../../Contact/index.html">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="../../About US/index.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="../../Privacy Policy/index.html">Privacy and
+                    <li class="nav-item"><a class="nav-link active text-white" href="./../home/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" href="./../../About US/index.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" href="./../../Privacy Policy/index.html">Privacy and
                             Terms</a></li>
                 </ul>
 
@@ -179,42 +179,58 @@
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
                     <div class="rounded-circle bg-white shadow-1-strong d-flex align-items-center justify-content-center mb-4 mx-auto"
                         style="width: 150px; height: 150px;">
-                        <img src="../../Images/GrageLogo.jpg" height="70" alt="Garage Logo" loading="lazy">
+                        <img src="./../../Images/logo.png" height="150px" alt="Garage Logo" loading="lazy">
                     </div>
-                    <p class="text-center">Garage offers you the best services</p>
+                    <p class="text-center">Mio Garage offers you the best services</p>
                     <ul class="list-unstyled d-flex flex-row justify-content-center">
-                        <li><a class="text-white px-2" href="#!"><i class="fab fa-facebook-square"></i></a></li>
-                        <li><a class="text-white px-2" href="#!"><i class="fab fa-instagram"></i></a></li>
-                        <li><a class="text-white ps-2" href="#!"><i class="fab fa-youtube"></i></a></li>
+                        <li>
+                            <a class="text-white px-2" id="facebook" target="_blank">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-white px-2" id="instagram" target="_blank">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="text-white ps-2" id="youtube" target="_blank">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
                     <h5 class="text-uppercase mb-4">Quick links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><i class="fa-solid fa-circle-question pe-3"></i><a
-                                href="../../About US/index.html" class="text-white">About</a></li>
-                        <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="../../Privacy Policy/index.html"
+                                href="./../../About US/index.html" class="text-white">About</a></li>
+                        <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="./../../Privacy Policy/index.html"
                                 class="text-white">Privacy and Terms</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
                     <h5 class="text-uppercase mb-4">Contact</h5>
                     <ul class="list-unstyled">
-                        <li>
-                            <p><i class="fas fa-map-marker-alt pe-2"></i>Warsaw, 57 Street, Poland</p>
+                        <li class="d-flex mt-3">
+                            <i class="fas fa-map-marker-alt pe-2 mt-1"></i>
+                            <a id="location" class="text-white" target="_blank"></i>Switzerland</a>
                         </li>
-                        <li>
-                            <p><i class="fas fa-phone pe-2"></i>+ 01 234 567 89</p>
+                        <li class="d-flex mt-3">
+                            <i class="fas fa-phone pe-2 mt-1"></i>
+                            <p id="phone"></i></p>
                         </li>
-                        <li>
-                            <p><i class="fas fa-envelope pe-2"></i>contact@example.com</p>
+                        <li class="d-flex">
+                            <i class="fas fa-envelope pe-2 mt-1"></i>
+                            <p id="mail"></p>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: <a
-                class="text-white" href="https://mdbootstrap.com/">AMTeam</a></div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: 
+            <label class="text-white">AM Team</label>
+        </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>

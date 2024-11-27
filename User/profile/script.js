@@ -16,6 +16,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("Login").classList.add("d-none");
     }
     getProfileData();
+    var mail = document.getElementById('mail');
+    var location = document.getElementById('location');
+    var phone = document.getElementById('phone');
+    var facebook = document.getElementById('facebook');
+    var instagram = document.getElementById('instagram');
+    var youtube = document.getElementById('youtube');
+    var setting = JSON.parse(localStorage.getItem('setting'));
+    mail.innerText = setting.contactEmail;
+    phone.innerText = setting.contactNumber;
+    location.href = setting.location;
+    facebook.href = setting.facebook;
+    instagram.href = setting.instagram;
+    youtube.href = setting.youtube;
 });
 
 // Function to get and set profile data

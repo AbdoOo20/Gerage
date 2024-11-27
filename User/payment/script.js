@@ -8,6 +8,23 @@ const urlParams = new URLSearchParams(window.location.search);
 const OrderIDFromQuery = urlParams.get('Order');
 var unitdata;
 var orderdata;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    var mail = document.getElementById('mail');
+    var location = document.getElementById('location');
+    var phone = document.getElementById('phone');
+    var facebook = document.getElementById('facebook');
+    var instagram = document.getElementById('instagram');
+    var youtube = document.getElementById('youtube');
+    var setting = JSON.parse(localStorage.getItem('setting'));
+    mail.innerText = setting.contactEmail;
+    phone.innerText = setting.contactNumber;
+    location.href = setting.location;
+    facebook.href = setting.facebook;
+    instagram.href = setting.instagram;
+    youtube.href = setting.youtube;
+});
+
 // Fetch the Order Data from Firestore
 async function getOrderData(orderId) {
     if (!orderId) {
