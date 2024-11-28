@@ -211,7 +211,7 @@ async function makeOrder(selectedDateTime, duration) {
                 });
 
                 if (isValid) {
-                        const docRef =  await addDoc(collection(db, "Orders"), {
+                        const docRef = await addDoc(collection(db, "Orders"), {
                                 UserID: UserID,
                                 UnitID: UnitID.id,
                                 OrderDate: selectedDateTime.toDateString(),
@@ -261,28 +261,84 @@ function displayConflictTable(errorMessage, dates, startTimes, endTimes) {
 
 async function suggestAlternativeUnits(errorMessage) {
         try {
+                const dateTime = document.getElementById('DateForBooking').value;
+                const selectedDate = new Date(dateTime);
+
                 const UnitsCollection = collection(db, "Units");
                 const querySnapshot = await getDocs(UnitsCollection);
-
-                const alternativeUnits = [];
-                querySnapshot.forEach(doc => {
-                        const data = doc.data();
-                        if (data.isAvailable) {
-                                alternativeUnits.push(data);
-                        }
-                });
 
                 const modalBody = document.getElementById('alternativeUnitsBody');
                 modalBody.innerHTML = '';
 
-                alternativeUnits.forEach(unit => {
-                        const unitItem = document.createElement('p');
-                        unitItem.textContent = `${unit.title} - ${unit.price}$`;
-                        modalBody.appendChild(unitItem);
-                });
+                let foundUnit = false;
+
+                for (const doc of querySnapshot.docs) {
+                        if (foundUnit) break;
+
+                        const Unitdata = doc.data();
+
+                        const Orders = collection(db, "Orders");
+                        const q = query(Orders, where("UnitID", "==", doc.id));
+                        const orderSnapshot = await getDocs(q);
+
+                        let isAvailable = true;
+
+                        for (const orderDoc of orderSnapshot.docs) {
+                                const data = orderDoc.data();
+
+                                if (
+                                        data.OrderDate === selectedDate.toDateString() &&
+                                        data.OrderSelectedHour === selectedDate.getHours()
+                                ) {
+                                        isAvailable = false;
+                                        break;
+                                }
+                        }
+
+                        if (isAvailable) {
+                                foundUnit = true;
+
+                                // Create a container for the unit details
+                                const unitContainer = document.createElement('div');
+                                unitContainer.classList.add('unit-container'); // Add a class for styling
+
+                                // Add the unit image
+                                const unitImage = document.createElement('img');
+                                unitImage.src = Unitdata.imageUrl; // Assuming Unitdata.imageUrl contains the image URL
+                                unitImage.alt = `${Unitdata.title} image`;
+                                unitImage.style.width = '200px'; // Set a default width
+                                unitImage.style.height = 'auto'; // Maintain aspect ratio
+
+                                // Create a link to go to the Unit
+                                const encodedUnitID = btoa(doc.id); // Base64 encoding of UnitID
+                                const UnitLink = document.createElement('a');
+                                UnitLink.href = `./index.html?UnitID=${encodedUnitID}`;
+                                UnitLink.textContent = "Go To Unit";
+                                UnitLink.style.display = 'block';
+
+                                // Add the unit details
+                                const unitDetails = document.createElement('p');
+                                unitDetails.textContent = `${Unitdata.title} - ${Unitdata.price}$`;
+
+                                // Append the details, image, and link to the container
+                                unitContainer.appendChild(unitImage);
+                                unitContainer.appendChild(unitDetails);
+                                unitContainer.appendChild(UnitLink);
+
+                                // Append the container to the modal body
+                                modalBody.appendChild(unitContainer);
+
+                                console.log(Unitdata);
+                        }
+
+
+
+                }
 
                 document.getElementById('alternativeUnitsTitle').textContent =
-                        alternativeUnits.length > 0 ? "This unit is unavailable. Here are some alternatives:" : "No alternative units available.";
+                        foundUnit
+                                ? "This unit is unavailable. Here is an alternative:"
+                                : "No alternative units available.";
                 document.getElementById("conflictMessage").textContent = errorMessage;
 
                 const conflictModal = new bootstrap.Modal(document.getElementById('alternativeUnitsModal'));
@@ -291,6 +347,8 @@ async function suggestAlternativeUnits(errorMessage) {
                 console.error("Error suggesting alternative units: ", error);
         }
 }
+
+
 
 function showError(message) {
         document.getElementById("ErrorOrderMessage").textContent = message;
