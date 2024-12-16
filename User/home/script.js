@@ -14,8 +14,23 @@ const UserID = localStorage.getItem('id');
 
 // Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", async () => {
-        // Toggle the visibility of login/logout icons based on UserID
-        getSettingData();
+        var mail = document.getElementById('mail');
+        var map = document.getElementById('map');
+        var phone = document.getElementById('phone');
+        var facebook = document.getElementById('facebook');
+        var instagram = document.getElementById('instagram');
+        var youtube = document.getElementById('youtube');
+        let settingDoc = doc(db, "Settings", "pMbOKWdq6WtCoOzZ3hA9");
+        const settingData = await getDoc(settingDoc);
+        localStorage.setItem('setting', JSON.stringify(settingData.data()));
+        var setting = JSON.parse(localStorage.getItem('setting'));
+        mail.innerText = setting.contactEmail;
+        phone.innerText = setting.contactNumber;
+        map.href = setting.location;
+        facebook.href = setting.facebook;
+        instagram.href = setting.instagram;
+        youtube.href = setting.youtube;
+        //Toggle the visibility of login/logout icons based on UserID
         if (UserID == null) {
                 Array.from(document.getElementsByClassName("icons")).forEach((item) => {
                         item.classList.add("d-none");
@@ -59,6 +74,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 });
 
+//getSettingData();
+
 // Search functionality for filtering units based on user input
 const searchInput = document.getElementById('searchInput');
 const cardContainer = document.getElementById('ParentUnit');
@@ -93,22 +110,30 @@ document.getElementById("Logout").addEventListener("click", () => {
 
 async function getSettingData() {
         try {
+                console.log('1');
                 var mail = document.getElementById('mail');
                 var location = document.getElementById('location');
                 var phone = document.getElementById('phone');
                 var facebook = document.getElementById('facebook');
                 var instagram = document.getElementById('instagram');
                 var youtube = document.getElementById('youtube');
+                console.log('2');
                 let settingDoc = doc(db, "Settings", "pMbOKWdq6WtCoOzZ3hA9");
+                console.log('3');
                 const settingData = await getDoc(settingDoc);
+                console.log('4');
                 localStorage.setItem('setting', JSON.stringify(settingData.data()));
+                console.log('5');
                 var setting = JSON.parse(localStorage.getItem('setting'));
+                console.log('6');
                 mail.innerText = setting.contactEmail;
                 phone.innerText = setting.contactNumber;
                 location.href = setting.location;
                 facebook.href = setting.facebook;
                 instagram.href = setting.instagram;
                 youtube.href = setting.youtube;
+                console.log('7');
+                console.log(setting);
         } catch (error) {
                 console.error("Error fetching profile data: ", error);
         }
