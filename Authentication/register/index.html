@@ -1,79 +1,97 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authentication</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
-    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- Icon -->
+    <link rel="icon" href="../../Images/logo.png" type="image/x-icon">
 </head>
 
 <body>
-    <div class="container">
-        <div class="row justify-content-center align-items-center min-vh-100">
-            <div class="col-8">
-                <div class="card p-3" style="background-color: rgba(226,135,67, 0.4);">
-                    <div class="alert alert-success" id="Sign-In-Success" style="display: none;">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        <h4 class="alert-heading">Success!</h4>
-                        <p>Welcome to our platform.</p>
-                    </div>
-                    <div id="alert-container"></div>
+    <div class="main d-flex align-items-center justify-content-center vh-100">
+        <div class="container text-center p-4 rounded shadow-lg">
+            <h1 class="mb-4 text-white">Welcome to Garage</h1>
 
-                    <div class="alert alert-success" id="SMS-sent" style="display: none;">
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        <h4 class="alert-heading">SMS Sent!</h4>
-                        <p>Enter the verification code sent to your phone.</p>
-                    </div>
+            <!-- Input for Phone Number -->
+            <div class="number-input mb-3">
+                <input type="text" class="form-control mb-2" placeholder="Enter Your Name (letters only)" id="username"
+                    style="display: none;">
+                <input type="text" id="number" class="form-control mb-2"
+                    placeholder="+1234567890 (international format)">
+                <div id="recaptcha-container" class="mb-3"></div>
+                <button id="send" class="btn w-100 text-white" style="background-color: #dd792d;"
+                    onclick="sendOTP()">Verify Number</button>
+            </div>
 
-                    <div class="card-header text-center">
-                        <h3 class="text-white" id="headTitle">REGISTER</h3>
-                    </div>
+            <!-- Verification Code Input -->
+            <div class="verification mb-3" style="display: none;">
+                <input type="text" class="form-control mb-2" id="verificationCode" placeholder="Enter OTP Code">
+                <button id="verify" class="btn w-100 text-white" style="background-color: #dd792d;"
+                    onclick="verifyCode()">Submit OTP</button>
+                <a href="#" class="d-block mt-2 text-muted" onclick="location.reload()">Didn't receive a code? Try
+                    Again!</a>
+            </div>
 
-                    <div class="card-body">
-                        <form>
-                            <div class="mb-2" id="userNameDiv">
-                                <label for="username" class="form-label text-white">Username</label>
-                                <input type="text" class="form-control" id="username" placeholder="Enter your username"
-                                    required>
-                                <div class="invalid-feedback">Please enter a username.</div>
-                            </div>
-                            <div id="Sender">
-                                <label for="PhoneNumber" class="form-label text-white">Phone Number</label>
-                                <input class="form-control mb-2" id="PhoneNumber" placeholder="+20..." required>
-                                <button id="sign-in-button" class="btn btn-primary w-100 mb-2"
-                                    style="background-color: #dd792d;">Send Code</button>
-                            </div>
-                            <div id="Verifier">
-                                <input class="form-control mb-2" id="verificationCode" name="verificationCode"
-                                    placeholder="Enter verification code">
-                                <button id="verify-code-button" class="btn btn-primary w-100 mb-2"
-                                    style="background-color: #dd792d;">Verify Code</button>
-                            </div>
-                            <div class="mb-2 form-check">
-                                <input type="checkbox" class="form-check-input" id="terms" required>
-                                <label for="terms" class="form-check-label" style="color: white">I agree to the <a
-                                        href="./../../Privacy Policy/index.html" style="color: #e28743;">terms and conditions</a></label>
-                                <div class="invalid-feedback">You must agree to the terms.</div>
-                            </div>
-                            <div id="haveAccount" class="text-white" style="cursor: pointer;">Already have an account?
-                            </div>
-                        </form>
-                    </div>
+            <!-- Results Section -->
+            <div class="result mb-3" style="display: none;">
+                <div class="correct text-center" style="display: none;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4315/4315445.png" alt="" width="50">
+                    <h3>Phone Number Verified!</h3>
+                    <button class="btn btn-success mt-3" onclick="location.reload()">Confirm</button>
+                </div>
 
-                    <div id="successMessage" class="alert alert-success d-none">
-                        Registration successful! Welcome to our platform.
+                <div class="incorrect text-center" style="display: none;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/14025/14025477.png" alt="" width="50">
+                    <h3>Verification Failed!</h3>
+                    <button class="btn btn-danger mt-3" onclick="location.reload()">Try Again!</button>
+                </div>
+            </div>
+
+            <!-- Toggle Buttons for Register/Login -->
+            <p class="mt-4">
+                <span id="toggle-text" class="text-white">Don't have an account?</span>
+                <a href="#" id="toggle-link" onclick="toggleRegisterMode()"
+                    class="text-decoration-none text-primary fw-bold text-white">Register Now</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="alert alert-danger">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="alertModalLabel">Error!!!</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="alertMessage"></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.12.1/firebase-firestore-compat.js"></script>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="scripts.js" type="module"></script>
+
+    <!-- External Script JS -->
+    <script src="./script.js"></script>
 </body>
 
 </html>
