@@ -76,7 +76,7 @@ async function fetchUnitData() {
                         UnitImages = data.imageUrl
                         document.getElementById("UnitTitle").textContent = data.title;
                         document.getElementById("UnitDetails").textContent = data.details;
-                        document.getElementById("UnitPrice").textContent = `${data.price}$`;
+                        document.getElementById("UnitPrice").textContent = `${data.price} CHF`;
 
                         setupCarousel(data.imageUrl);
                 } else {
@@ -318,7 +318,7 @@ async function suggestAlternativeUnits(errorMessage) {
 
                                 // Add the unit details
                                 const unitDetails = document.createElement('p');
-                                unitDetails.textContent = `${Unitdata.title} - ${Unitdata.price}$`;
+                                unitDetails.textContent = `${Unitdata.title} - CHF{Unitdata.price}CHF`;
 
                                 // Append the details, image, and link to the container
                                 unitContainer.appendChild(unitImage);

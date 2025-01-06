@@ -40,9 +40,9 @@ async function getOrderData(orderId) {
             const unitSnap = await getDoc(unitRef);
             unitdata = unitSnap.data();
             document.getElementById("unitName").innerText = unitdata.title;
-            document.getElementById("unitPrice").innerText = unitdata.price + '$' + " per hour";
+            document.getElementById("unitPrice").innerText = unitdata.price + ' CHF' + " per hour";
             document.getElementById("unitImage").src = unitdata.imageUrl[0];
-            document.getElementById("valuePaid").innerText = "Pay " + (unitdata.price * orderdata.Duration) + "$";
+            document.getElementById("valuePaid").innerText = "Pay " + (unitdata.price * orderdata.Duration) + " CHF";
         } else {
             console.log("No such order found!");
         }
@@ -184,7 +184,7 @@ form.addEventListener('submit', async (event) => {
                         alertPlaceholder.innerHTML = alertHTML;
                         const paymentDetails = {
                             productName: unitdata.title, // Replace with your product name
-                            price: (unitdata.price * orderdata.Duration) + "$", // Replace with your price
+                            price: (unitdata.price * orderdata.Duration) + "CHF", // Replace with your price
                             duration: orderdata.Duration + " Hour", // Replace with actual duration
                             name: userData.title, // Masked card number
                             phoneNumber: userData.phone, // Replace with actual user phone number

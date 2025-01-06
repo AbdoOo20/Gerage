@@ -40,6 +40,9 @@ async function getProfileData() {
             const userData = await getDoc(userDetails);
 
             if (userData.exists) {
+                console.log(userDetails);
+                console.log(UserID);
+                
                 const data = userData.data();
                 UserName.value = data.name || "N/A";
                 UserEmail.value = data.email || "N/A";

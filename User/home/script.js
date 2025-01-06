@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <img src=${data.imageUrl} alt="Product Image" class="card-img-top product-image">
                         <div class="card-body">
                             <h5 class="card-title">${data.title}</h5>
-                            <p class="card-text"><strong>${data.price} $</strong></p>
+                            <p class="card-text"><strong>${data.price} CHF</strong></p>
                         </div>
                     </div>
                 </div>
