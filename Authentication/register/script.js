@@ -14,7 +14,7 @@ let recaptchaVerifier;
 let isRegister = false;
 
 // Centralized error handler
-function handleFirebaseError(error) {
+function handleFirebaseError(error) { 
     const errorMessageMap = {
         "auth/invalid-phone-number": "Invalid phone number. Please try again.",
         "auth/too-many-requests": "Too many requests. Please wait and try again later.",
@@ -24,7 +24,7 @@ function handleFirebaseError(error) {
         "auth/user-disabled": "This account is disabled. Please contact support."
     };
 
-    return errorMessageMap[error.code] || "Unexpected error. Please try again later.";
+    return errorMessageMap[error.code] || error.message; //"Unexpected error. Please try again later."
 }
 
 function showAlert(message) {
@@ -128,6 +128,7 @@ async function sendOTP() {
 
     if (!recaptchaVerifier) initializeRecaptcha();
 
+    console.log(`Phone number sent: ${phoneNumber}`);
     firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
         .then((confirmationResult) => {
             window.confirmationResult = confirmationResult;
