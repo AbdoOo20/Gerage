@@ -7,11 +7,11 @@
     <title>Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="profile.css">
-    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
+    <link rel="icon" href="./../../Images/GrageLogo.jpg" type="image/x-icon">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
+    <nav class="navbar navbar-expand-lg" style="background-color: #17365f;" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a class="navbar-brand" href="../home/index.html">
@@ -25,9 +25,9 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <!-- Navigation Links -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../home/index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../../About US/index.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../../Privacy Policy/index.html">Privacy and
+                    <li class="nav-item"><a class="nav-link active text-white" data-translation-key="navbar_home" href="./../home/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" data-translation-key="navbar_about" href="./../../About US/index.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" data-translation-key="navbar_privacy_terms" href="./../../Privacy Policy/index.html">Privacy and
                             Terms</a></li>
                 </ul>
 
@@ -103,7 +103,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Full Name</p>
+                                <p class="mb-0" data-translation-key="full_name"></p>
                             </div>
                             <div class="col-sm-9">
                                 <input id="UserName" type="text" class="form-control" readonly>
@@ -113,17 +113,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <p class="mb-0">Email</p>
-                            </div>
-                            <div class="col-sm-9">
-                                <input id="UserEmail" type="text" class="form-control" readonly>
-                                <div id="emailError" class="error-message"></div>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <p class="mb-0">Phone</p>
+                                <p class="mb-0" data-translation-key="phone_number"></p>
                             </div>
                             <div class="col-sm-9">
                                 <input id="UserPhone" type="text" class="form-control" readonly>
@@ -138,10 +128,10 @@
                 <div class="card">
                     <div class="card-body">
                         <ul class="nav nav-pills flex-column">
-                            <input id="EditBtn" type="button" value="Edit Profile" class="btn text-white fw-bold">
-                            <input id="SaveBtn" type="button" value="Save" class="btn d-none text-white fw-bold">
-                            <input id="ShowOrders" type="button" value="Show My Orders"
-                                class="btn mt-2 text-white fw-bold">
+                            <input id="EditBtn" type="button" class="btn text-white fw-bold" data-translation-key="edit_profile">
+                            <input id="SaveBtn" type="button" class="btn d-none text-white fw-bold" data-translation-key="save">
+                            <input id="ShowOrders" type="button"
+                                class="btn mt-2 text-white fw-bold" data-translation-key="show_my_orders">
                         </ul>
                     </div>
                 </div>
@@ -149,7 +139,7 @@
         </div>
 
         <div id="noOrdersMessage" class="alert alert-secondary mt-3 d-none">
-            <h4>No orders found.</h4>
+            <h4 data-translation-key="no_orders_found"></h4>
         </div>
         <div id="cancelAlert" class="alert alert-success d-none" role="alert"></div>
 
@@ -157,7 +147,7 @@
     </div>
 
      <!-- Footer -->
-     <footer class="text-center text-lg-start text-white" style="background-color: #dd792d;">
+     <footer class="text-center text-lg-start text-white" style="background-color: #17365f;">
         <div class="container p-3">
             <div class="row my-4">
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
@@ -165,7 +155,7 @@
                         style="width: 150px; height: 150px;">
                         <img src="./../../Images/logo.png" height="150px" alt="Garage Logo" loading="lazy">
                     </div>
-                    <p class="text-center">Mio Garage offers you the best services</p>
+                    <p class="text-center" data-translation-key="footer_info">Mio Garage offers you the best services</p>
                     <ul class="list-unstyled d-flex flex-row justify-content-center">
                         <li>
                             <a class="text-white px-2" id="facebook" target="_blank">
@@ -185,20 +175,20 @@
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-4">Quick links</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="quick_links">Quick links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><i class="fa-solid fa-circle-question pe-3"></i><a
-                                href="./../../About US/index.html" class="text-white">About</a></li>
+                                href="./../../About US/index.html" class="text-white" data-translation-key="no_orders_found">About</a></li>
                         <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="./../../Privacy Policy/index.html"
-                                class="text-white">Privacy and Terms</a></li>
+                                class="text-white" data-translation-key="privacy_terms">Privacy and Terms</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-4">Contact</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="contact">Contact</h5>
                     <ul class="list-unstyled">
                         <li class="d-flex mt-3">
                             <i class="fas fa-map-marker-alt pe-2 mt-1"></i>
-                            <a id="location" class="text-white" target="_blank"></i>Switzerland</a>
+                            <a id="location" class="text-white" target="_blank" data-translation-key="switzerland"></i>Switzerland</a>
                         </li>
                         <li class="d-flex mt-3">
                             <i class="fas fa-phone pe-2 mt-1"></i>
@@ -212,8 +202,8 @@
                 </div>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: 
-            <label class="text-white">AM Team</label>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)" data-translation-key="copyright"> 
+
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

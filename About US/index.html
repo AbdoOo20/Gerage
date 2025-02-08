@@ -6,12 +6,12 @@
     <title>About US</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-    <link rel="icon" href="./../Images/logo.png" type="image/x-icon">
+    <link rel="icon" href="./../Images/GrageLogo.jpg" type="image/x-icon">
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
+    <nav class="navbar navbar-expand-lg" style="background-color: #17365f;" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a class="navbar-brand" href="./../User/home/index.html">
@@ -26,12 +26,15 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <!-- Navigation Links -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../User/home/index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white"
-                            href="./../About US/index.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white"
-                            href="./../Privacy Policy/index.html">Privacy and
-                            Terms</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="./../User/home/index.html" data-translation-key="navbar_home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="./../About US/index.html" data-translation-key="navbar_about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="./../Privacy Policy/index.html" data-translation-key="navbar_privacy_terms">Privacy and Terms</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -41,15 +44,16 @@
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10">
                 <div class="privacy-content p-4 shadow rounded bg-light">
-                    <h2 class="text-center text-dark mb-4">About US</h2>
-                    <p id="privacy"></p>
+                    <!-- About Section -->
+                <h2 class="text-center text-dark mb-4" data-translation-key="about_heading">About US</h2>
+                <p id="privacy"></p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="text-center text-lg-start text-white" style="background-color: #dd792d;">
+    <footer class="text-center text-lg-start text-white" style="background-color: #17365f;">
         <div class="container p-3">
             <div class="row my-4">
                 <!-- Garage Logo and Info -->
@@ -58,7 +62,7 @@
                         style="width: 150px; height: 150px;">
                         <img src="./../Images/logo.png" height="150px" alt="Garage Logo" loading="lazy">
                     </div>
-                    <p class="text-center">Mio Garage offers you the best services</p>
+                    <p class="text-center" data-translation-key="footer_info">Mio Garage offers you the best services</p>
                     <ul class="list-unstyled d-flex flex-row justify-content-center">
                         <li>
                             <a class="text-white px-2" id="facebook" target="_blank">
@@ -79,19 +83,19 @@
                 </div>
                 <!-- Quick Links -->
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <h5 class="text-uppercase mb-4">Quick links</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="quick_links">Quick links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="./../Privacy Policy/index.html"
-                                class="text-white">Privacy and Terms</a></li>
+                                class="text-white" data-translation-key="navbar_privacy_terms">Privacy and Terms</a></li>
                     </ul>
                 </div>
                 <!-- Contact Info -->
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <h5 class="text-uppercase mb-4">Contact</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="contact">Contact</h5>
                     <ul class="list-unstyled">
                         <li class="d-flex mt-3">
                             <i class="fas fa-map-marker-alt pe-2 mt-1"></i>
-                            <a id="location" class="text-white" target="_blank"></i>Switzerland</a>
+                            <a id="location" class="text-white" target="_blank" data-translation-key="switzerland"></i>Switzerland</a>
                         </li>
                         <li class="d-flex mt-3">
                             <i class="fas fa-phone pe-2 mt-1"></i>
@@ -105,7 +109,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: 
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)" data-translation-key="copyright">© 2024 Copyright: 
             <label class="text-white">AM Team</label>
         </div>
     </footer>

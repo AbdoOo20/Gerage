@@ -28,6 +28,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         facebook.href = setting.facebook;
         instagram.href = setting.instagram;
         youtube.href = setting.youtube;
+        const translations = {};
+        const defaultLang = localStorage.getItem('language') || 'en';
+
+        // Load translations from JSON file
+        fetch('./../../translation/translations.json')
+        .then(response => response.json())
+        .then(data => {
+                Object.assign(translations, data);
+                applyTranslations(defaultLang);
+        })
+        .catch(error => console.error('Error loading translations:', error));
+
+        // Function to apply translations
+        function applyTranslations(lang) {
+        if (!translations[lang]) {
+                console.error(`Translations not found for language: ${lang}`);
+                return;
+        }
+
+        document.querySelectorAll('[data-translation-key]').forEach(element => {
+                const key = element.getAttribute('data-translation-key');
+                if (translations[lang][key]) {
+                if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+                        element.placeholder = translations[lang][key]; // For placeholders
+                } else {
+                        element.textContent = translations[lang][key]; // For regular text
+                }
+                } else {
+                console.warn(`No translation found for key: ${key}`); // Debugging missing keys
+                }
+        });
+        }
         await getProfileData();
         handleLoginState();
         fetchUnitData();
@@ -40,6 +72,7 @@ async function getProfileData() {
         }
 
         try {
+                
                 const userDetails = doc(db, "users", UserID.toString());
                 const userData = await getDoc(userDetails);
 
@@ -66,12 +99,14 @@ function handleLoginState() {
         }
 }
 
+var data;
+var selectedValue = "Hour";
 async function fetchUnitData() {
         try {
                 const unitData = await getDoc(UnitID);
 
                 if (unitData.exists) {
-                        const data = unitData.data();
+                        data = unitData.data();
                         UnitPrice = data.price;
                         UnitImages = data.imageUrl
                         document.getElementById("UnitTitle").textContent = data.title;
@@ -86,6 +121,19 @@ async function fetchUnitData() {
                 console.error("Error fetching Unit data: ", error);
         }
 }
+
+document.getElementById("TypeForBooking").addEventListener('change', function () {
+        selectedValue = this.value;
+        if (selectedValue === "Hour") {
+           document.getElementById("UnitPrice").textContent = `${data.price} CHF`;
+           document.getElementById("divDur").style.display = 'block';
+           document.getElementById("divTime").style.display = 'block';
+        } else if (selectedValue === "Day") {
+           document.getElementById("UnitPrice").textContent = `${data.priceDay} CHF`;
+           document.getElementById("divDur").style.display = 'none';
+           document.getElementById("divTime").style.display = 'none';
+        }
+    });
 
 function setupCarousel(images) {
         const carouselInner = document.getElementById("carouselImages");
@@ -119,12 +167,19 @@ function setupCarousel(images) {
 document.getElementById('bookingForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const dateTime = document.getElementById('DateForBooking').value;
+        const time = document.getElementById("TimeForBooking").value;
         const duration = parseInt(document.getElementById('Duration').value);
-        const selectedDateTime = new Date(dateTime);
+        // Ensure the time has the correct format
+        const formattedTime = time.includes(':') ? time : `${time}:00`; // Add ":00" if not present
+        // Combine date and time into a single string
+        const combinedDateTimeString = `${dateTime}T${formattedTime}`;
+        // Parse the combined string into a Date object
+        const selectedDateTime = new Date(combinedDateTimeString);
         const now = new Date();
 
         let formIsValid = true;
         let errorMessage = "";
+        
 
         if (selectedDateTime < now) {
                 errorMessage = 'The booking date and time cannot be in the past. Please select a valid date and time.';
@@ -155,7 +210,7 @@ async function makeOrder(selectedDateTime, duration) {
                 const minutes = Math.round((duration - hours) * 60);
 
                 // Validate duration
-                if (hours < 1 || hours > 5 || minutes < 0 || minutes >= 60) {
+                if (selectedValue === "Hour" && (hours < 1 || hours > 5 || minutes < 0 || minutes >= 60)) {
                         showError('Duration must be between 1 and 5 hours and can include fractional hours (e.g., 1.5 hours).');
                         return;
                 }
@@ -208,6 +263,12 @@ async function makeOrder(selectedDateTime, duration) {
                                         errorMessage = `This Unit is already reserved on ${data.OrderDate} from ${bookedStartHour}:${bookedStartMinute < 10 ? '0' : ''}${bookedStartMinute} to ${bookedEndHour}:${bookedEndMinute < 10 ? '0' : ''}${bookedEndMinute}`;
                                 }
                         }
+
+                        // Check for conflicts per day
+                        if (data.OrderDate === selectedDateTime.toDateString() && data.Type == "Day") {
+                                isValid = false;
+                                errorMessage = `This Unit is already reserved on this day`;
+                        }
                 });
 
                 if (isValid) {
@@ -220,7 +281,8 @@ async function makeOrder(selectedDateTime, duration) {
                                 Duration: duration, // Store duration as hours (e.g., 1.5 for 1 hour 30 minutes)
                                 OrderStatus: "Pending",
                                 UnitPrice: UnitPrice,
-                                UnitImages: UnitImages
+                                UnitImages: UnitImages,
+                                Type: selectedValue
                         });
                         showSuccess("Order successfully placed!");
                         const documentId = docRef.id;
@@ -318,7 +380,7 @@ async function suggestAlternativeUnits(errorMessage) {
 
                                 // Add the unit details
                                 const unitDetails = document.createElement('p');
-                                unitDetails.textContent = `${Unitdata.title} - CHF{Unitdata.price}CHF`;
+                                unitDetails.textContent = `${Unitdata.title} - CHF ${Unitdata.price} CHF`;
 
                                 // Append the details, image, and link to the container
                                 unitContainer.appendChild(unitImage);

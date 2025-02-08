@@ -6,32 +6,31 @@
     <title>Payment</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
+    <link rel="icon" href="./../../Images/GrageLogo.jpg" type="image/x-icon">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg" style="background-color: #17365f;" data-bs-theme="dark">
         <div class="container-fluid">
-            <div class="navbar-brand pb-2 pe-5 rounded-circle  d-flex align-items-center justify-content-center "
-                style="width: 5px; height: 5px;">
-                <a href="./../home/index.html">
-                    <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="" loading="lazy" />
-                </a>
-            </div>
+            <a class="navbar-brand" href="./../home/index.html">
+                <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="Garage Logo"
+                    loading="lazy">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
                 aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
+
             </button>
-            <div class="collapse navbar-collapse" id="navbarColor01">
+            <div class="collapse mx-3 navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="./../home/index.html">Home </a>
+                        <a class="nav-link active" href="./../home/index.html" data-translation-key="navbar_home">Home </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="./../../About US/index.html">About</a>
+                        <a class="nav-link active" href="./../../About US/index.html" data-translation-key="navbar_about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="./../../Privacy Policy/index.html">Privacy and Terms</a>
+                        <a class="nav-link active" href="./../../Privacy Policy/index.html" data-translation-key="navbar_privacy_terms">Privacy and Terms</a>
                     </li>
                 </ul>
             </div>
@@ -52,12 +51,12 @@
 
             <!-- Payment Form Section -->
             <div class="col-md-7 form-section">
-                <h3 class="payment-title">Pay with card</h3>
+                <h3 class="payment-title" data-translation-key="pay_with_card"></h3>
                 <form id="payment-form">
 
                     <!-- Card Information -->
                     <div class="mb-4" id="card-section" style="margin-top: 20px;">
-                        <label for="card-number-element" class="form-label">Card information</label>
+                        <label for="card-number-element" class="form-label" data-translation-key="card_information"></label>
                         <div class="d-flex align-items-center mb-1" style="gap: 10px;">
                             <!-- Use col-3 for smaller input width -->
                             <div id="card-number-element" class="form-control w-50" style="padding: 10px;">Card Number</div>
@@ -85,14 +84,14 @@
 
                     <!-- Cardholder Name -->
                     <div class="mb-3">
-                        <label for="cardholder-name" class="form-label">Cardholder name</label>
-                        <input type="text" class="form-control" id="cardholder-name" placeholder="Full name on card">
+                        <label for="cardholder-name" class="form-label" data-translation-key="cardholder_name"></label>
+                        <input type="text" class="form-control" id="cardholder-name">
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" style="background-color: #dd792d;"
+                    <button type="submit" style="background-color: #17365f;"
                         class="btn w-100 d-flex align-items-center justify-content-center">
-                        <span class="text-white" id="valuePaid">Pay</span>
+                        <span class="text-white" id="valuePaid" data-translation-key="pay_amount_chf"></span>
                         <div id="spinner" class="loading-spinner ms-2" style="display: none;"></div>
                     </button>
                 </form>
@@ -101,7 +100,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="text-center text-lg-start text-white" style="background-color: #dd792d;">
+    <footer class="text-center text-lg-start text-white" style="background-color: #17365f;">
         <div class="container p-3">
             <div class="row my-4">
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
@@ -109,7 +108,7 @@
                         style="width: 150px; height: 150px;">
                         <img src="./../../Images/logo.png" height="150px" alt="Garage Logo" loading="lazy">
                     </div>
-                    <p class="text-center">Mio Garage offers you the best services</p>
+                    <p class="text-center" data-translation-key="footer_info">Mio Garage offers you the best services</p>
                     <ul class="list-unstyled d-flex flex-row justify-content-center">
                         <li>
                             <a class="text-white px-2" id="facebook" target="_blank">
@@ -129,20 +128,20 @@
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-4">Quick links</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="quick_links">Quick links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><i class="fa-solid fa-circle-question pe-3"></i><a
-                                href="./../../About US/index.html" class="text-white">About</a></li>
+                                href="./../../About US/index.html" class="text-white" data-translation-key="navbar_about">About</a></li>
                         <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="./../../Privacy Policy/index.html"
-                                class="text-white">Privacy and Terms</a></li>
+                                class="text-white" data-translation-key="privacy_terms">Privacy and Terms</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-4">Contact</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="contact">Contact</h5>
                     <ul class="list-unstyled">
                         <li class="d-flex mt-3">
                             <i class="fas fa-map-marker-alt pe-2 mt-1"></i>
-                            <a id="location" class="text-white" target="_blank"></i>Switzerland</a>
+                            <a id="location" class="text-white" target="_blank" data-translation-key="switzerland"></i>Switzerland</a>
                         </li>
                         <li class="d-flex mt-3">
                             <i class="fas fa-phone pe-2 mt-1"></i>
@@ -156,8 +155,8 @@
                 </div>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: 
-            <label class="text-white">AM Team</label>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)" data-translation-key="copyright">
+           
         </div>
     </footer>
     <script src="https://js.stripe.com/v3/"></script>

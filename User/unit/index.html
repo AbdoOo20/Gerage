@@ -7,13 +7,13 @@
     <title>Order</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
+    <link rel="icon" href="./../../Images/GrageLogo.jpg" type="image/x-icon">
 </head>
 
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
+    <nav class="navbar navbar-expand-lg" style="background-color: #17365f;" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a class="navbar-brand" href="./../home/index.html">
@@ -27,9 +27,9 @@
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <!-- Navigation Links -->
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../home/index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../../About US/index.html">About</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="./../../Privacy Policy/index.html">Privacy and
+                    <li class="nav-item"><a class="nav-link active text-white" data-translation-key="navbar_home" href="./../home/index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" data-translation-key="navbar_about" href="./../../About US/index.html">About</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" data-translation-key="navbar_privacy_terms" href="./../../Privacy Policy/index.html">Privacy and
                             Terms</a></li>
                 </ul>
 
@@ -42,7 +42,7 @@
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </a>
                 <a id="Login" href="../../Authentication/register/index.html" title="Login"
-                    class="nav-link active d-flex text-white pt-2">
+                    class="nav-link active d-flex text-white pt-2" data-translation-key="login">
                     Login
                 </a>
             </div>
@@ -57,7 +57,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="conflictModalLabel">Booking Conflict</h5>
+                            <h5 class="modal-title" id="conflictModalLabel" data-translation-key="booking_conflict"></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -65,8 +65,8 @@
                             <table class='table table-bordered mt-3'>
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Hour</th>
+                                        <th data-translation-key="date"></th>
+                                        <th data-translation-key="hour"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="conflictTableBody"></tbody>
@@ -82,7 +82,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="alternativeUnitsTitle">Unit Unavailable</h5>
+                            <h5 class="modal-title" id="alternativeUnitsTitle" data-translation-key="unit_unavailable"></h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" id="alternativeUnitsBody" aria-live="polite">
@@ -95,13 +95,13 @@
             <!-- Order Success & Error Alerts -->
             <div id="SuccessOrder" class="alert alert-success d-none" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                <h4 class="alert-heading">Success!</h4>
-                <p class="mb-0">Your order is being processed.</p>
+                <h4 class="alert-heading" data-translation-key="success_alert_title"></h4>
+                <p class="mb-0" data-translation-key="success_alert_message"></p>
             </div>
 
             <div id="ErrorOrder" class="alert alert-danger d-none" role="alert">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                <h4 class="alert-heading">Error</h4>
+                <h4 class="alert-heading" data-translation-key="unit_unavailable">error_alert_title</h4>
                 <p id="ErrorOrderMessage"></p>
             </div>
 
@@ -115,12 +115,10 @@
                         <button class="carousel-control-prev" type="button" data-bs-target="#UnitCarousel"
                             data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
                         </button>
                         <button class="carousel-control-next" type="button" data-bs-target="#UnitCarousel"
                             data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
                         </button>
                     </div>
                     <div class="card-body">
@@ -132,32 +130,74 @@
             </div>
 
             <!-- Booking Form -->
-            <div class="col-md-6 rounded-3 mb-4" style="background-color: rgba(226,135,67, 0.4);">
+            <div class="col-md-6 rounded-3 mb-4" style="background-color: rgba(23, 54, 95, 0.4);">
                 <form id="bookingForm" class="d-flex flex-column justify-content-around h-100 p-4">
-                    <legend>Booking Your Room Now:</legend>
+                    <legend data-translation-key="booking_your_lift">Booking Your Lift Now:</legend>
 
                     <!-- Full name field -->
                     <div class="mb-3">
-                        <label for="UserName" class="form-label">Full name</label>
+                        <label for="UserName" class="form-label" data-translation-key="full_name"></label>
                         <input type="text" class="form-control" id="UserName" readonly>
                     </div>
 
                     <!-- Phone number field -->
                     <div class="mb-3">
-                        <label for="PhoneNumber" class="form-label">Phone Number</label>
+                        <label for="PhoneNumber" class="form-label" data-translation-key="phone_number"></label>
                         <input type="text" class="form-control" id="PhoneNumber" readonly>
                     </div>
 
-                    <!-- Booking date -->
-                    <div class="mb-3">
-                        <label for="DateForBooking" class="form-label">Date For Booking</label>
-                        <input type="datetime-local" class="form-control" id="DateForBooking" required>
-                        <small id="dateError" class="text-danger"></small>
+                    <div class="d-flex">
+                        <!-- Booking date -->
+                        <div class="mb-3 col-4">
+                            <label for="DateForBooking" class="form-label" data-translation-key="date_for_booking"></label>
+                            <input type="date" class="form-control" id="DateForBooking" required>
+                            <small id="dateError" class="text-danger"></small>
+                        </div>
+                        <!-- Time  -->
+                        <div class="col-4 mb-3 mx-1" id="divTime">
+                            <label for="TimeForBooking" class="form-label" data-translation-key="time_for_booking"></label>
+                            <select id="TimeForBooking" class="form-control" required>
+                                <!-- Hours Options -->
+                                <option value="00">00:00</option>
+                                <option value="01">01:00</option>
+                                <option value="02">02:00</option>
+                                <option value="03">03:00</option>
+                                <option value="04">04:00</option>
+                                <option value="05">05:00</option>
+                                <option value="06">06:00</option>
+                                <option value="07">07:00</option>
+                                <option value="08">08:00</option>
+                                <option value="09">09:00</option>
+                                <option value="10">10:00</option>
+                                <option value="11">11:00</option>
+                                <option value="12">12:00</option>
+                                <option value="13">13:00</option>
+                                <option value="14">14:00</option>
+                                <option value="15">15:00</option>
+                                <option value="16">16:00</option>
+                                <option value="17">17:00</option>
+                                <option value="18">18:00</option>
+                                <option value="19">19:00</option>
+                                <option value="20">20:00</option>
+                                <option value="21">21:00</option>
+                                <option value="22">22:00</option>
+                                <option value="23">23:00</option>
+                            </select>
+                        </div>
+                        <!-- Type  -->
+                        <div class="col-4 mb-3 mx-1">
+                            <label for="TypeForBooking" class="form-label" data-translation-key="type_of_booking"></label>
+                            <select id="TypeForBooking" class="form-control" required>
+                                <!-- Hours Options -->
+                                <option value="Hour" data-translation-key="hour"></option>
+                                <option value="Day" data-translation-key="day"></option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Duration field -->
-                    <div class="mb-3">
-                        <label for="Duration" class="form-label">Duration (hours)</label>
+                    <div class="mb-3" id="divDur">
+                        <label for="Duration" class="form-label" data-translation-key="duration_hours"></label>
                         <input type="number" min="1" max="5" value="1" class="form-control" id="Duration"
                             placeholder="Enter duration" required>
                     </div>
@@ -165,7 +205,7 @@
                     <!-- Submit button -->
                     <div>
                         <button type="submit" class="btn form-control text-white fw-bold"
-                            style="background-color: #dd792d;">Make Order</button>
+                            style="background-color: #17365f;" data-translation-key="make_order"></button>
                     </div>
                 </form>
             </div>
@@ -173,7 +213,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="text-center text-lg-start text-white" style="background-color: #dd792d;">
+    <footer class="text-center text-lg-start text-white" style="background-color: #17365f;">
         <div class="container p-3">
             <div class="row my-4">
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
@@ -181,7 +221,7 @@
                         style="width: 150px; height: 150px;">
                         <img src="./../../Images/logo.png" height="150px" alt="Garage Logo" loading="lazy">
                     </div>
-                    <p class="text-center">Mio Garage offers you the best services</p>
+                    <p class="text-center" data-translation-key="footer_info">Mio Garage offers you the best services</p>
                     <ul class="list-unstyled d-flex flex-row justify-content-center">
                         <li>
                             <a class="text-white px-2" id="facebook" target="_blank">
@@ -201,20 +241,20 @@
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-4">Quick links</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="quick_links">Quick links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><i class="fa-solid fa-circle-question pe-3"></i><a
-                                href="./../../About US/index.html" class="text-white">About</a></li>
+                                href="./../../About US/index.html" class="text-white" data-translation-key="about">About</a></li>
                         <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="./../../Privacy Policy/index.html"
-                                class="text-white">Privacy and Terms</a></li>
+                                class="text-white" data-translation-key="navbar_privacy_terms">Privacy and Terms</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-                    <h5 class="text-uppercase mb-4">Contact</h5>
+                    <h5 class="text-uppercase mb-4" data-translation-key="contact">Contact</h5>
                     <ul class="list-unstyled">
                         <li class="d-flex mt-3">
                             <i class="fas fa-map-marker-alt pe-2 mt-1"></i>
-                            <a id="location" class="text-white" target="_blank"></i>Switzerland</a>
+                            <a id="location" class="text-white" target="_blank" data-translation-key="switzerland"></i>Switzerland</a>
                         </li>
                         <li class="d-flex mt-3">
                             <i class="fas fa-phone pe-2 mt-1"></i>
@@ -228,8 +268,8 @@
                 </div>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: 
-            <label class="text-white">AM Team</label>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)" data-translation-key="copyright">
+           
         </div>
     </footer>
 

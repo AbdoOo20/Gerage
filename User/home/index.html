@@ -6,12 +6,13 @@
     <title>Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="./../../Images/GrageLogo.jpg" type="image/x-icon">
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" aria-label="Main navigation">
+    <nav class="navbar navbar-expand-lg" style="background-color: #17365f;" aria-label="Main navigation">
         <div class="container-fluid">
             <!-- Brand Logo -->
             <a class="navbar-brand" href="./../home/index.html">
@@ -30,7 +31,48 @@
                     <li class="nav-item"><a class="nav-link active text-white" href="./../../About US/index.html">About</a></li>
                     <li class="nav-item"><a class="nav-link active text-white" href="./../../Privacy Policy/index.html">Privacy and
                             Terms</a></li>
-                </ul>
+
+                                    <!-- Language Dropdown -->
+                <div class="dropdown">
+                    <button
+                        class="btn dropdown-toggle text-white d-flex align-items-center"
+                        type="button"
+                        id="languageDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        <img
+                            src="https://flagcdn.com/w40/us.png"
+                            id="selectedFlag"
+                            alt="Selected Flag"
+                            class="me-2"
+                            width="20"
+                        />
+                        <span id="selectedLanguage">English</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#" data-lang="en" data-flag="https://flagcdn.com/w40/us.png">
+                                <img src="https://flagcdn.com/w40/us.png" alt="English Flag" class="me-2" width="20" />
+                                English
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#" data-lang="de" data-flag="https://flagcdn.com/w40/de.png">
+                                <img src="https://flagcdn.com/w40/de.png" alt="German Flag" class="me-2" width="20" />
+                                German
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#" data-lang="it" data-flag="https://flagcdn.com/w40/it.png">
+                                <img src="https://flagcdn.com/w40/it.png" alt="Italian Flag" class="me-2" width="20" />
+                                Italian
+                            </a>
+                        </li>
+                    </ul>
+                </div>      
+
+                </ul>                         
 
                 <!-- Icons for Cart, Logout, and Login -->
                 <a title="Orders" class="nav-link active d-flex pe-3 text-white pt-2 icons"
@@ -54,7 +96,7 @@
             <input type="text" id="searchInput" class="form-control mb-4" placeholder="Search for units..."
                 aria-label="Search field">
             <button id="clearSearch" class="btn border-0 position-absolute end-0 top-50 translate-middle-y"
-                type="button" style="background-color: #dd792d;">&times;</button>
+                type="button" style="background-color: #17365f; color: white;">&times;</button>
         </div>
         <h1 class="text-center mb-4">
             <i class="fa-solid fa-screwdriver-wrench"></i> Units
@@ -64,7 +106,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="text-center text-lg-start text-white" style="background-color: #dd792d;">
+    <footer class="text-center text-lg-start text-white" style="background-color: #17365f;">
         <div class="container p-3">
             <div class="row my-4">
                 <!-- Garage Logo and Info -->
@@ -99,7 +141,7 @@
                         <li class="mb-2"><i class="fa-solid fa-circle-question pe-3"></i><a
                                 href="../../About US/index.html" class="text-white">About</a></li>
                         <li class="mb-2"><i class="fa-solid fa-list pe-3"></i><a href="../../Privacy Policy/index.html"
-                                class="text-white">Privacy and Terms</a></li>
+                                class="text-white" id="privacyLink">Privacy and Terms</a></li>
                     </ul>
                 </div>
                 <!-- Contact Info -->
@@ -122,8 +164,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">© 2024 Copyright: 
-            <label class="text-white">AM Team</label>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)" id="rights">
         </div>
     </footer>
     <!-- Scripts -->

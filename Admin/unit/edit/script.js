@@ -45,6 +45,7 @@ let imageNames = [];
     document.getElementById("unitTitle").value = unitData.title;
     document.getElementById("unitDetails").value = unitData.details;
     document.getElementById("unitPrice").value = unitData.price;
+    document.getElementById("unitPriceDay").value = unitData.priceDay;
     selectUnitImageName = unitData.name;
     // Delete Icon
     imageScrollContainer.addEventListener('click', function (event) {
@@ -93,12 +94,15 @@ addForm.addEventListener('submit', async (event) => {
     const title = formData.get('title');
     const details = formData.get('details');
     const price = formData.get('price');
+    const priceDay = formData.get('priceDay');
     if (title.length < 4) {
         showAlert("Title must more than 4 character", "danger");
     } else if (details < 10) {
         showAlert("Details must more than 10 character", "danger");
     } else if (price < 1) {
-        showAlert("Price must greater than zero", "danger");
+        showAlert("Price per hour must greater than zero", "danger");
+    } else if (priceDay < 1) {
+        showAlert("Price per day must greater than zero", "danger");
     }
     else {
         showAlert("Wait", "warning");
@@ -109,7 +113,8 @@ addForm.addEventListener('submit', async (event) => {
             await updateDoc(docRef, {
                 title: title,
                 details: details,
-                price: price
+                price: price,
+                priceDay: priceDay
             }).then(() => {
                 showAlert("Unit Edited Successfully", "success");
                 addBTN.style.display = 'inline-block';
@@ -149,6 +154,7 @@ addForm.addEventListener('submit', async (event) => {
                     title: title,
                     details: details,
                     price: price,
+                    priceDay: priceDay,
                     name: imageNames
                 }).then(() => {
                     showAlert("Unit Edited Successfully", "success");

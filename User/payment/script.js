@@ -1,5 +1,7 @@
 import { db, doc, getDoc, updateDoc } from '../../Database/firebase-config.js';
 
+// Test: pk_test_51QFCeaPPa7Ug3bKucNTL8LOj05NRyWzD50XIP3wib3ltvoHGyUbwDbD4zplmhKfiYNkGSantfctPaPqwadt9uoqA00z8uPg7AN
+// Live: pk_live_51QFCeaPPa7Ug3bKu1KUkqNnqZsxN9Q0tKfcIeRoF62FlbrNvG5kTRBvbbDIi0frJn3gkpAP0cWkg1byAxeQ6L0mi00UWXE7tWj
 const stripe = Stripe('pk_live_51QFCeaPPa7Ug3bKu1KUkqNnqZsxN9Q0tKfcIeRoF62FlbrNvG5kTRBvbbDIi0frJn3gkpAP0cWkg1byAxeQ6L0mi00UWXE7tWj'); // Replace with your publishable key
 const elements = stripe.elements();
 
@@ -25,6 +27,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     youtube.href = setting.youtube;
 });
 
+const translations = {};
+const defaultLang = localStorage.getItem('language') || 'en';
+
+// Load translations from JSON file
+fetch('./../../translation/translations.json')
+    .then(response => response.json())
+    .then(data => {
+        Object.assign(translations, data);
+        applyTranslations(defaultLang);
+    })
+    .catch(error => console.error('Error loading translations:', error));
+
+// Function to apply translations
+function applyTranslations(lang) {
+    if (!translations[lang]) {
+        console.error(`Translations not found for language: ${lang}`);
+        return;
+    }
+
+    document.querySelectorAll('[data-translation-key]').forEach(element => {
+        const key = element.getAttribute('data-translation-key');
+        if (translations[lang][key]) {
+            if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+                element.placeholder = translations[lang][key]; // For placeholders
+            } else {
+                element.textContent = translations[lang][key]; // For regular text
+            }
+        } else {
+            console.warn(`No translation found for key: ${key}`); // Debugging missing keys
+        }
+    });
+}
+
 // Fetch the Order Data from Firestore
 async function getOrderData(orderId) {
     if (!orderId) {
@@ -40,9 +75,9 @@ async function getOrderData(orderId) {
             const unitSnap = await getDoc(unitRef);
             unitdata = unitSnap.data();
             document.getElementById("unitName").innerText = unitdata.title;
-            document.getElementById("unitPrice").innerText = unitdata.price + ' CHF' + " per hour";
+            document.getElementById("unitPrice").innerText = orderdata.Type === "Hour" ? unitdata.price + ' CHF ' + translations[defaultLang]["per_hour"] : unitdata.priceDay + ' CHF ' + translations[defaultLang]["per_day"];
             document.getElementById("unitImage").src = unitdata.imageUrl[0];
-            document.getElementById("valuePaid").innerText = "Pay " + (unitdata.price * orderdata.Duration) + " CHF";
+            document.getElementById("valuePaid").innerText = translations[defaultLang]["pay_amount_chf"] + " " + (orderdata.Type === "Hour" ? (unitdata.price * orderdata.Duration) : unitdata.priceDay) + " CHF";
         } else {
             console.log("No such order found!");
         }
@@ -145,6 +180,8 @@ form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const spinner = document.getElementById('spinner');
     spinner.style.display = 'inline-block';
+    // local: http://localhost:15003/
+    // host: https://garageapi.runasp.net
     $.ajax({
         url: "https://garageapi.runasp.net/api/Payment/create-intent",
         type: "POST",
@@ -164,7 +201,7 @@ form.addEventListener('submit', async (event) => {
                         const alertPlaceholder = document.getElementById('alertPlaceholder');
                         const alertHTML = `
                         <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
-                            <strong>Error!</strong>Payment failed: ${result.error.message}
+                            <strong>${translations[defaultLang]["error_alert_title"]}</strong> : ${result.error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     `;
@@ -177,18 +214,19 @@ form.addEventListener('submit', async (event) => {
                         const alertPlaceholder = document.getElementById('alertPlaceholder');
                         const alertHTML = `
                         <div class="alert alert-success alert-dismissible fade show mx-5" role="alert">
-                            <strong>Error!</strong>Payment successful!
+                            <strong>${translations[defaultLang]["success_alert_title"]}!</strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     `;
                         alertPlaceholder.innerHTML = alertHTML;
                         const paymentDetails = {
                             productName: unitdata.title, // Replace with your product name
-                            price: (unitdata.price * orderdata.Duration) + "CHF", // Replace with your price
+                            price: orderdata.Type === "Hour" ? ((unitdata.price * orderdata.Duration) + " CHF") : (unitdata.priceDay + " CHF"), // Replace with your price
                             duration: orderdata.Duration + " Hour", // Replace with actual duration
                             name: userData.title, // Masked card number
                             phoneNumber: userData.phone, // Replace with actual user phone number
                             date: orderdata.OrderDate, // Current date and time
+                            type: orderdata.Type
                         };
                         localStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
                         window.location.href = "./receipt.html";

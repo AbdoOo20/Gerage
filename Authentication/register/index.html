@@ -18,49 +18,54 @@
 
 <body>
     <div class="main d-flex align-items-center justify-content-center vh-100">
-        <div class="container text-center p-4 rounded shadow-lg">
-            <h1 class="mb-4 text-white">Welcome to Garage</h1>
+        <div class="container text-center p-4 rounded shadow-lg" style="background-color: rgba(23, 54, 95, 0.4);">
+            <h1 class="mb-4 text-white" data-translation-key="welcome_to_miogarage"></h1>
 
             <!-- Input for Phone Number -->
             <div class="number-input mb-3">
-                <input type="text" class="form-control mb-2" placeholder="Enter Your Name (letters only)" id="username"
+                <input type="text" class="form-control mb-2" placeholder="Name" id="username"
                     style="display: none;">
                 <input type="text" id="number" class="form-control mb-2"
-                    placeholder="+1234567890 (international format)">
+                    placeholder="+1234567890">
                 <div id="recaptcha-container" class="mb-3"></div>
-                <button id="send" class="btn w-100 text-white" style="background-color: #dd792d;"
-                    onclick="sendOTP()">Verify Number</button>
+                <button id="send" class="btn w-100 text-white" style="background-color: #17365f;"
+                    onclick="sendOTP()" data-translation-key="verify_number"></button>
             </div>
 
             <!-- Verification Code Input -->
             <div class="verification mb-3" style="display: none;">
-                <input type="text" class="form-control mb-2" id="verificationCode" placeholder="Enter OTP Code">
-                <button id="verify" class="btn w-100 text-white" style="background-color: #dd792d;"
-                    onclick="verifyCode()">Submit OTP</button>
-                <a href="#" class="d-block mt-2 text-muted" onclick="location.reload()">Didn't receive a code? Try
-                    Again!</a>
+                <div class="d-flex justify-content-between mb-2">
+                    <input type="text" class="form-control text-center otp-input" maxlength="1" oninput="moveToNext(this, 1)" style="width: 50px; font-size: 1.5rem;">
+                    <input type="text" class="form-control text-center otp-input mx-1" maxlength="1" oninput="moveToNext(this, 2)" style="width: 50px; font-size: 1.5rem;">
+                    <input type="text" class="form-control text-center otp-input" maxlength="1" oninput="moveToNext(this, 3)" style="width: 50px; font-size: 1.5rem;">
+                    <input type="text" class="form-control text-center otp-input mx-1" maxlength="1" oninput="moveToNext(this, 4)" style="width: 50px; font-size: 1.5rem;">
+                    <input type="text" class="form-control text-center otp-input" maxlength="1" oninput="moveToNext(this, 5)" style="width: 50px; font-size: 1.5rem;">
+                    <input type="text" class="form-control text-center otp-input mx-1" maxlength="1" oninput="moveToNext(this, 6)" style="width: 50px; font-size: 1.5rem;">
+                </div>
+                <button id="verify" class="btn w-100 text-white" style="background-color: #17365f;" onclick="verifyCode()" data-translation-key="submit_otp"></button>
+                <a href="#" class="d-block mt-2 text-white" onclick="location.reload()" data-translation-key="didnt_receive_code"></a>
             </div>
 
             <!-- Results Section -->
             <div class="result mb-3" style="display: none;">
                 <div class="correct text-center" style="display: none;">
                     <img src="https://cdn-icons-png.flaticon.com/512/4315/4315445.png" alt="" width="50">
-                    <h3>Phone Number Verified!</h3>
-                    <button class="btn btn-success mt-3" onclick="location.reload()">Confirm</button>
+                    <h3 data-translation-key="phone_number_verified"></h3>
+                    <button class="btn btn-success mt-3" onclick="location.reload()" data-translation-key="confirm"></button>
                 </div>
 
                 <div class="incorrect text-center" style="display: none;">
                     <img src="https://cdn-icons-png.flaticon.com/512/14025/14025477.png" alt="" width="50">
-                    <h3>Verification Failed!</h3>
-                    <button class="btn btn-danger mt-3" onclick="location.reload()">Try Again!</button>
+                    <h3 data-translation-key="verification_failed"></h3>
+                    <button class="btn btn-danger mt-3" onclick="location.reload()" data-translation-key="try_again"></button>
                 </div>
             </div>
 
             <!-- Toggle Buttons for Register/Login -->
             <p class="mt-4">
-                <span id="toggle-text" class="text-white">Don't have an account?</span>
+                <span id="toggle-text" class="text-white" data-translation-key="dont_have_account"></span>
                 <a href="#" id="toggle-link" onclick="toggleRegisterMode()"
-                    class="text-decoration-none text-primary fw-bold text-white">Register Now</a>
+                    class="text-decoration-none text-primary fw-bold text-white" data-translation-key="register_now"></a>
             </p>
         </div>
     </div>
@@ -71,7 +76,7 @@
             <div class="alert alert-danger">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="alertModalLabel">Error!!!</h5>
+                        <h5 class="modal-title" id="alertModalLabel" data-translation-key="error_alert_title"></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

@@ -67,6 +67,6 @@
 
 /* Scrollbar hover effect */
 .product-list::-webkit-scrollbar-thumb:hover {
-    background-color: #dd792d;
+    background-color: #17365f;
     /* Darker color on hover for better visibility */
 }

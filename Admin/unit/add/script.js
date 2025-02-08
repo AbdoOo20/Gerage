@@ -36,6 +36,7 @@ addForm.addEventListener('submit', async (event) => {
     const title = formData.get('title');
     const details = formData.get('details');
     const price = formData.get('price');
+    const priceDay = formData.get('priceDay');
     const now = new Date();
     
     if (title.length < 4) {
@@ -43,7 +44,9 @@ addForm.addEventListener('submit', async (event) => {
     } else if (details < 10) {
         showAlert("Details must more than 10 character", "danger");
     } else if (price < 1) {
-        showAlert("Price must greater than zero", "danger");
+        showAlert("Price per hour must greater than zero", "danger");
+    } else if (priceDay < 1) {
+        showAlert("Price per day must greater than zero", "danger");
     } else if (files.length == 0) {
         showAlert("You must select image", "danger");
     }
@@ -70,6 +73,7 @@ addForm.addEventListener('submit', async (event) => {
             date: now,
             details: details,
             price: price,
+            priceDay: priceDay,
             isUsed: false,
         }).then(() => {
             showAlert("Unit Added Successfully", "success");

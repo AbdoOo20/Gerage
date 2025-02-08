@@ -42,10 +42,18 @@
                         Please provide a valid price.
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label for="unitPriceDay" class="form-label">Price per Day (CHF)</label>
+                    <input type="number" class="form-control" name="priceDay" id="unitPriceDay" min="0" step="0.01" required>
+                    <div class="invalid-feedback">
+                        Please provide a valid price.
+                    </div>
+                </div>
                 <label for="image" id="displayImage" class="custom-file-label">Select Image</label>
                 <input type="file" class="custom-file-input" id="image" name="image" required multiple>
                 <div style="height: 5px;"></div>
                 <button type="submit" id="addBTN" class="btn btn-primary w-100">Add Unit</button>
+                <button onclick="history.back()" id="backBTN" class="btn btn-primary w-100 my-1">Back</button>
                 <div class="d-flex justify-content-center">
                     <div class="spinner-border text-primary" id="load" style="display: none;" role="status">
                     </div>

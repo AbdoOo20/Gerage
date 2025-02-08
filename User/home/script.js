@@ -14,6 +14,7 @@ const UserID = localStorage.getItem('id');
 
 // Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", async () => {
+
         var mail = document.getElementById('mail');
         var map = document.getElementById('map');
         var phone = document.getElementById('phone');
@@ -30,6 +31,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         facebook.href = setting.facebook;
         instagram.href = setting.instagram;
         youtube.href = setting.youtube;
+        const translations = {};
+        const defaultLang = localStorage.getItem('language') || 'en';
+
+        // Load translations from JSON file
+        fetch('./../../translation/translations.json')
+        .then(response => response.json())
+        .then(data => {
+                Object.assign(translations, data);
+                applyTranslations(defaultLang);
+        })
+        .catch(error => console.error('Error loading translations:', error));
+
+        // Function to apply translations
+        function applyTranslations(lang) {
+        if (!translations[lang]) {
+                console.error(`Translations not found for language: ${lang}`);
+                return;
+        }
+        }
+
         //Toggle the visibility of login/logout icons based on UserID
         if (UserID == null) {
                 Array.from(document.getElementsByClassName("icons")).forEach((item) => {
@@ -55,7 +76,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <img src=${data.imageUrl} alt="Product Image" class="card-img-top product-image">
                         <div class="card-body">
                             <h5 class="card-title">${data.title}</h5>
-                            <p class="card-text"><strong>${data.price} CHF</strong></p>
+                            <p class="card-text hour">
+                              <i class="fa-solid fa-stopwatch"></i>
+                              <strong>${data.price} CHF ${translations[defaultLang]["per_hour"]}</strong>
+                            </p>
+                            <p class="card-text day">
+                              <i class="fa-solid fa-calendar-day"></i>
+                              <strong>${data.priceDay} CHF ${translations[defaultLang]["per_day"]}</strong>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -103,7 +131,9 @@ document.getElementById("clearSearch").addEventListener("click", () => {
 // Logout functionality
 document.getElementById("Logout").addEventListener("click", () => {
         signOut(auth).then(() => {
+                var currentLanguage = localStorage.getItem('language') || 'en';
                 localStorage.clear();
+                localStorage.setItem('language', currentLanguage);
                 window.location.href = '../../Authentication/register/index.html';
         });
 });
@@ -138,3 +168,76 @@ async function getSettingData() {
                 console.error("Error fetching profile data: ", error);
         }
 }
+
+const translations = {};
+var savedLang = localStorage.getItem('language') || 'en';
+
+// Load translations from JSON file
+fetch('./../../translation/translations.json')
+.then(response => response.json())
+.then(data => {
+        const savedFlag =
+                savedLang === 'en'
+                ? 'https://flagcdn.com/w40/us.png'
+                : savedLang === 'de'
+                ? 'https://flagcdn.com/w40/de.png'
+                : 'https://flagcdn.com/w40/it.png';
+        const savedLanguage =
+                savedLang === 'en' ? 'English' : savedLang === 'de' ? 'German' : 'Italian';
+
+        // Update button with saved flag and language
+        document.getElementById('selectedFlag').src = savedFlag;
+        document.getElementById('selectedLanguage').textContent = savedLanguage;
+
+        // Apply saved language
+        // updateLanguage(savedLang);
+
+        Object.assign(translations, data);
+        updateLanguage(savedLang); // Set initial language
+});
+
+// Update language based on the dropdown selection
+// Bind click event to dropdown menu
+document.querySelector('.dropdown-menu').addEventListener('click', (event) => {
+        const clickedElement = event.target.closest('a[data-lang]');
+        if (clickedElement) {
+            const lang = clickedElement.getAttribute('data-lang');
+            const flag = clickedElement.getAttribute('data-flag');
+            const languageName = clickedElement.textContent.trim();
+    
+            // Update button with selected flag and language
+            document.getElementById('selectedFlag').src = flag;
+            document.getElementById('selectedLanguage').textContent = languageName;
+    
+            // Update language and save to localStorage
+            if (lang) {
+                savedLang = lang;
+                localStorage.setItem('language', lang);
+                //updateLanguage(lang);
+                window.location.reload();
+            }
+        }
+    });    
+    
+
+function updateLanguage(lang) {
+        if (!translations[lang]) {
+            console.error(`Translations not found for language: ${lang}`);
+            return;
+        }
+        document.getElementById('searchInput').placeholder = translations[lang].search_placeholder || '';
+        document.querySelector('h1').textContent = translations[lang].units_heading || '';
+        document.querySelector('a[href*="About US"]').textContent = translations[lang].about || '';
+        document.querySelector('a[href*="Privacy Policy"]').textContent = translations[lang].privacy_terms || '';
+        document.getElementById('Login').textContent = translations[lang].login || '';
+        document.getElementById('Logout').title = translations[lang].logout || '';
+        document.getElementById('rights').innerText = translations[lang].copyright || '';
+        // if(UserID){
+        //         document.querySelector('a[title="Orders"]').textContent = translations[lang].orders || '';
+        // }
+        document.getElementById('privacyLink').textContent = translations[lang].privacy_terms || '';
+        document.querySelector('footer p.text-center').textContent = translations[lang].footer_info || '';
+        document.querySelector('h5.text-uppercase.mb-4').textContent = translations[lang].quick_links || '';
+        document.querySelector('h5.text-uppercase.mb-4 + ul li a').textContent = translations[lang].contact || '';
+        document.querySelector('#map').textContent = translations[lang].switzerland || '';
+}    

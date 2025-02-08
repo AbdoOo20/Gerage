@@ -7,32 +7,31 @@
     <title>Receipt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="./../../Images/logo.png" type="image/x-icon">
+    <link rel="icon" href="./../../Images/GrageLogo.jpg" type="image/x-icon">
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-color: #dd792d;" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg" style="background-color: #17365f;" data-bs-theme="dark">
         <div class="container-fluid">
-            <div class="navbar-brand pb-2 pe-5 rounded-circle  d-flex align-items-center justify-content-center "
-                style="width: 5px; height: 5px;">
-                <a href="./../home/index.html">
-                    <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="" loading="lazy" />
-                </a>
-            </div>
+            <a class="navbar-brand" href="./../home/index.html">
+                <img src="../../Images/GrageLogo.jpg" class="ms-5 rounded-3" height="50" alt="Garage Logo"
+                    loading="lazy">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
                 aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
+
             </button>
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="./../home/index.html">Home </a>
+                        <a class="nav-link active" href="./../home/index.html" data-translation-key="navbar_home">Home </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="./../../About US/index.html">About</a>
+                        <a class="nav-link active" href="./../../About US/index.html" data-translation-key="navbar_about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="./../../Privacy Policy/index.html">Privacy and Terms</a>
+                        <a class="nav-link active" href="./../../Privacy Policy/index.html" data-translation-key="navbar_privacy_terms">Privacy and Terms</a>
                     </li>
                 </ul>
             </div>
@@ -43,7 +42,7 @@
         <!-- Logo Section -->
         <div class="receipt-header">
             <img src="./../../Images/logo.png" alt="Site Logo">
-            <h2>Mio Garage Receipt</h2>
+            <h2 data-translation-key="receipt_title"></h2>
         </div>
 
         <!-- Receipt Details -->
@@ -52,30 +51,72 @@
         </div>
 
         <!-- Print Button -->
-        <button class="btn w-100 mt-4 print-button text-white" style="background-color: #dd792d;"
-            onclick="handlePrint()">Print Receipt</button>
+        <button class="btn w-100 mt-4 print-button text-white" style="background-color: #17365f;"
+            onclick="handlePrint()"  data-translation-key="print_receipt"></button>
 
         <!-- Home Button -->
-        <button class="btn w-100 mt-2 home-button text-white" style="background-color: #dd792d;"
-            onclick="window.location.href='../home/index.html'">Back To Home</button>
+        <button class="btn w-100 mt-2 home-button text-white" style="background-color: #17365f;"
+            onclick="window.location.href='../home/index.html'" data-translation-key="back_to_home"></button>
     </div>
 
     <script>
         // Load payment details from local storage
         const paymentDetails = JSON.parse(localStorage.getItem('paymentDetails'));
         
-        if (paymentDetails) {
-            document.getElementById('receipt-details').innerHTML = `
-                <p><strong>Unit:</strong> ${paymentDetails.productName}</p>
-                <p><strong>Price:</strong> ${paymentDetails.price}</p>
-                <p><strong>Duration:</strong> ${paymentDetails.duration}</p>
-                <p><strong>Phone Number:</strong> ${paymentDetails.phoneNumber}</p>
-                <p><strong>Date of Booking:</strong> ${paymentDetails.date}</p>
-            `;
-        } else {
-            document.getElementById('receipt-details').innerHTML = `
-                <p class="text-danger">No payment details found. Please complete a payment first.</p>
-            `;
+        let translations = {};
+        const defaultLang = localStorage.getItem('language') || 'en';
+
+        // Load translations from JSON file
+        fetch('./../../translation/translations.json')
+            .then(response => response.json())
+            .then(data => {
+                Object.assign(translations, data);
+                applyTranslations(defaultLang);           
+                if (paymentDetails) {
+                    if(paymentDetails.type == "Hour"){
+                        document.getElementById('receipt-details').innerHTML = `
+                        <p><strong>${translations[defaultLang]["unit"]}:</strong> ${paymentDetails.productName}</p>
+                        <p><strong>${translations[defaultLang]["price"]}:</strong> ${paymentDetails.price}</p>
+                        <p><strong>${translations[defaultLang]["duration"]}:</strong> ${paymentDetails.duration}</p>
+                        <p><strong>${translations[defaultLang]["phone_number"]}:</strong> ${paymentDetails.phoneNumber}</p>
+                        <p><strong>${translations[defaultLang]["date_of_booking"]}:</strong> ${paymentDetails.date}</p>
+                    `;
+                    }
+                    else{
+                        document.getElementById('receipt-details').innerHTML = `
+                        <p><strong>${translations[defaultLang]["unit"]}:</strong> ${paymentDetails.productName}</p>
+                        <p><strong>${translations[defaultLang]["price"]}:</strong> ${paymentDetails.price}</p>
+                        <p><strong>${translations[defaultLang]["phone_number"]}:</strong> ${paymentDetails.phoneNumber}</p>
+                        <p><strong>${translations[defaultLang]["date_of_booking"]}:</strong> ${paymentDetails.date}</p>
+                    `;
+                    }
+                } else {
+                    document.getElementById('receipt-details').innerHTML = `
+                        <p class="text-danger">${translations[defaultLang]["no_payment_details"]}</p>
+                    `;
+                }
+            }).catch(error => console.error('Error loading translations:', error));
+
+            
+        // Function to apply translations
+        function applyTranslations(lang) {
+            if (!translations[lang]) {
+                console.error(`Translations not found for language: ${lang}`);
+                return;
+            }
+
+            document.querySelectorAll('[data-translation-key]').forEach(element => {
+                const key = element.getAttribute('data-translation-key');
+                if (translations[lang][key]) {
+                    if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+                        element.placeholder = translations[lang][key]; // For placeholders
+                    } else {
+                        element.textContent = translations[lang][key]; // For regular text
+                    }
+                } else {
+                    console.warn(`No translation found for key: ${key}`); // Debugging missing keys
+                }
+            });
         }
 
         // Function to handle print and show Home button

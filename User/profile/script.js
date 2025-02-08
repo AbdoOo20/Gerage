@@ -2,8 +2,9 @@ import { db, setDoc, deleteDoc, collection, getDoc, getDocs, updateDoc, doc, sig
 
 // User Data
 var UserName = document.getElementById("UserName");
-var UserEmail = document.getElementById("UserEmail");
 var UserPhone = document.getElementById("UserPhone");
+const translations = {};
+const defaultLang = localStorage.getItem('language') || 'en';
 
 // Call the function to get profile data when the page loads
 document.addEventListener("DOMContentLoaded", async () => {
@@ -14,6 +15,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("Login").classList.remove("d-none");
     } else {
         document.getElementById("Login").classList.add("d-none");
+    }
+
+
+    // Load translations from JSON file
+    fetch('./../../translation/translations.json')
+    .then(response => response.json())
+    .then(data => {
+            Object.assign(translations, data);
+            applyTranslations(defaultLang);
+    })
+    .catch(error => console.error('Error loading translations:', error));
+
+    // Function to apply translations
+    function applyTranslations(lang) {
+    if (!translations[lang]) {
+            console.error(`Translations not found for language: ${lang}`);
+            return;
+    }
+
+    document.querySelectorAll('[data-translation-key]').forEach(element => {
+            const key = element.getAttribute('data-translation-key');
+            if (translations[lang][key]) {
+                if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+                    // Update the value attribute for input elements
+                    element.value = translations[lang][key];
+                } else {
+                    // Update text content for other elements
+                    element.textContent = translations[lang][key];
+                }
+            } else {
+            console.warn(`No translation found for key: ${key}`); // Debugging missing keys
+            }
+    });
     }
     getProfileData();
     var mail = document.getElementById('mail');
@@ -40,12 +74,8 @@ async function getProfileData() {
             const userData = await getDoc(userDetails);
 
             if (userData.exists) {
-                console.log(userDetails);
-                console.log(UserID);
-                
                 const data = userData.data();
                 UserName.value = data.name || "N/A";
-                UserEmail.value = data.email || "N/A";
                 UserPhone.value = data.phone || "N/A";
             } else {
                 console.log("This User Does Not Exist!!");
@@ -64,7 +94,6 @@ document.getElementById("EditBtn").addEventListener("click", () => {
     }
 
     UserName.removeAttribute("readonly");
-    UserEmail.removeAttribute("readonly");
     document.getElementById("EditBtn").classList.add("d-none");
     document.getElementById("SaveBtn").classList.remove("d-none");
     UserName.focus();
@@ -86,7 +115,6 @@ async function saveProfileDataEdited() {
             let userDetails = doc(db, "users", UserID);
             await updateDoc(userDetails, {
                 name: UserName.value.trim(),
-                email: UserEmail.value.trim(),
                 phone: UserPhone.value.trim()
             });
             displaySuccessMessage();
@@ -101,7 +129,6 @@ async function saveProfileDataEdited() {
 // Validation
 function clearErrorMessages() {
     document.getElementById("nameError").textContent = "";
-    document.getElementById("emailError").textContent = "";
     document.getElementById("phoneError").textContent = "";
 }
 
@@ -109,7 +136,6 @@ function validateProfileData() {
     clearErrorMessages();
 
     const name = UserName.value.trim();
-    const email = UserEmail.value.trim();
     const phone = UserPhone.value.trim();
     let isValid = true;
 
@@ -121,22 +147,11 @@ function validateProfileData() {
         isValid = false;
     }
 
-    if (!email) {
-        document.getElementById("emailError").textContent = "Email field cannot be empty.";
-        isValid = false;
-    } else {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(email)) {
-            document.getElementById("emailError").textContent = "Please enter a valid email address.";
-            isValid = false;
-        }
-    }
-
     if (!phone) {
         document.getElementById("phoneError").textContent = "Phone field cannot be empty.";
         isValid = false;
     } else {
-        const phonePattern = /^[0-9]{10}$/;
+        const phonePattern = /^\+?[1-9]\d{1,14}$/;
         if (!phonePattern.test(phone)) {
             document.getElementById("phoneError").textContent = "Please enter a valid 10-digit phone number.";
             isValid = false;
@@ -153,7 +168,6 @@ function displaySuccessMessage() {
     }, 3000);
 
     UserName.setAttribute("readonly", true);
-    UserEmail.setAttribute("readonly", true);
     UserPhone.setAttribute("readonly", true);
 
     document.getElementById("SaveBtn").classList.add("d-none");
@@ -203,7 +217,8 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
                 OrderSelectedHour: data.OrderSelectedHour,
                 Duration: data.Duration,
                 UnitID: data.UnitID,
-                OrderStatus: data.OrderStatus
+                OrderStatus: data.OrderStatus,
+                Type: data.Type
             });
         });
 
@@ -239,35 +254,63 @@ document.getElementById("ShowOrders").addEventListener("click", async () => {
 
             const cardDiv = document.createElement('div');
             cardDiv.classList.add("d-flex", "align-items-start", "border", "border-2", "m-2", "p-2", "rounded");
+            var state;
+            console.log(order);
+            
             if (order.OrderStatus === "Paid") {
                 const dateNow = new Date();
                 var orderDate = new Date(order.OrderDate);
-                var state = dateNow > orderDate ? "Confirmed" : "Paid";
-                cardDiv.innerHTML = `
-                <div class="flex-grow-1">
-                    <h5 class="card-title">Unit: ${data.title}</h5>
-                    <p class="card-text"><strong>Date:</strong> ${order.OrderDate}</p>
-                    <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
-                    <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
-                    <p class="card-text"><strong>Status:</strong> ${state}</p>
-                </div>
-                <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
-            `;
+                state = dateNow > orderDate ? "Confirmed" : "Paid";
+                if(order.Type === "Hour"){
+                    cardDiv.innerHTML = `
+                    <div class="flex-grow-1">
+                        <h5 class="card-title">${translations[defaultLang]["unit"]}: ${data.title}</h5>
+                        <p class="card-text"><strong>${translations[defaultLang]["date_of_booking"]}:</strong> ${order.OrderDate}</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["order_selected_hour"]}:</strong> ${order.OrderSelectedHour}</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["duration"]}:</strong> ${order.Duration} hours</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["status"]}:</strong> ${state}</p>
+                    </div>
+                    <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                `;
+                }else{
+                    cardDiv.innerHTML = `
+                    <div class="flex-grow-1">
+                        <h5 class="card-title">${translations[defaultLang]["unit"]}: ${data.title}</h5>
+                        <p class="card-text"><strong>${translations[defaultLang]["date_of_booking"]}:</strong> ${order.OrderDate}</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["status"]}:</strong> ${state}</p>
+                    </div>
+                    <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                `;
+                }
             }
             else {
-                cardDiv.innerHTML = `
-                <div class="flex-grow-1">
-                    <h5 class="card-title">Unit: ${data.title}</h5>
-                    <p class="card-text"><strong>Date:</strong> ${order.OrderDate}</p>
-                    <p class="card-text"><strong>Start Time:</strong> ${order.OrderSelectedHour}</p>
-                    <p class="card-text"><strong>Duration:</strong> ${order.Duration} hours</p>
-                    <p class="card-text"><strong>Status:</strong> ${order.OrderStatus}</p>
-                    
-                    <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white me-2" value="Buy" />
-                    <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="Cancel" />
-                </div>
-                <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
-            `;
+                state = "Pending";
+                if(order.Type === "Hour"){
+                    cardDiv.innerHTML = `
+                    <div class="flex-grow-1">
+                        <h5 class="card-title">${translations[defaultLang]["unit"]}: ${data.title}</h5>
+                        <p class="card-text"><strong>${translations[defaultLang]["date_of_booking"]}:</strong> ${order.OrderDate}</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["order_selected_hour"]}:</strong> ${order.OrderSelectedHour}</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["duration"]}:</strong> ${order.Duration} hours</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["status"]}:</strong> ${state}</p>
+                        
+                        <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white me-2" value="${translations[defaultLang]["pay"]}" />
+                        <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="${translations[defaultLang]["cancel"]}" />
+                    </div>
+                    <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                `;
+                }else{
+                    cardDiv.innerHTML = `
+                    <div class="flex-grow-1">
+                        <h5 class="card-title">${translations[defaultLang]["unit"]}: ${data.title}</h5>
+                        <p class="card-text"><strong>${translations[defaultLang]["date_of_booking"]}:</strong> ${order.OrderDate}</p>
+                        <p class="card-text"><strong>${translations[defaultLang]["status"]}:</strong> ${state}</p>
+                        <input id="buy-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white me-2" value="${translations[defaultLang]["pay"]}" />
+                        <input id="cancel-${order.OrderID}" data-OrderID="${order.OrderID}" type="button" class="btn text-white" value="${translations[defaultLang]["cancel"]}" />
+                    </div>
+                    <img src="${firstImageUrl}" alt="Order Image" class="img-fluid rounded ms-3" style="max-width: 200px; max-height: 150px; object-fit: cover;">
+                `;
+                }
             }
             superOrder.appendChild(cardDiv);
             const currentDate = new Date();

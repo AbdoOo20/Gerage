@@ -13,6 +13,41 @@ const db = firebase.firestore();
 let recaptchaVerifier;
 let isRegister = false;
 
+const translations = {};
+const defaultLang = localStorage.getItem('language') || 'en';
+
+ // Load translations from JSON file
+ fetch('./../../translation/translations.json')
+ .then(response => response.json())
+ .then(data => {
+         Object.assign(translations, data);
+         applyTranslations(defaultLang);
+ })
+ .catch(error => console.error('Error loading translations:', error));
+
+ // Function to apply translations
+ function applyTranslations(lang) {
+ if (!translations[lang]) {
+         console.error(`Translations not found for language: ${lang}`);
+         return;
+ }
+
+ document.querySelectorAll('[data-translation-key]').forEach(element => {
+         const key = element.getAttribute('data-translation-key');
+         if (translations[lang][key]) {
+             if (element.tagName.toLowerCase() === 'input' || element.tagName.toLowerCase() === 'textarea') {
+                 // Update the value attribute for input elements
+                 element.value = translations[lang][key];
+             } else {
+                 // Update text content for other elements
+                 element.textContent = translations[lang][key];
+             }
+         } else {
+         console.warn(`No translation found for key: ${key}`); // Debugging missing keys
+         }
+ });
+ }
+
 // Centralized error handler
 function handleFirebaseError(error) { 
     const errorMessageMap = {
@@ -60,8 +95,8 @@ function toggleRegisterMode() {
     const toggleLink = document.getElementById('toggle-link');
 
     nameInput.style.display = isRegister ? 'block' : 'none';
-    toggleText.textContent = isRegister ? 'Already have an account?' : "Don't have an account?";
-    toggleLink.textContent = isRegister ? 'Login' : 'Register Now';
+    toggleText.textContent = isRegister ? translations[defaultLang]["already_have_account"] : translations[defaultLang]["dont_have_account"];
+    toggleLink.textContent = isRegister ? translations[defaultLang]["login"] : translations[defaultLang]["register_now"];
 
     initializeRecaptcha(); // Reinitialize ReCAPTCHA on mode change
 }
@@ -142,8 +177,21 @@ async function sendOTP() {
         });
 }
 
+function moveToNext(input, index) {
+    const inputs = document.querySelectorAll('.otp-input');
+    if (input.value.length === 1 && index < inputs.length) {
+        inputs[index].focus(); // Move to the next input
+    } else if (input.value.length === 0 && index > 0) {
+        inputs[index - 2].focus(); // Move back to the previous input
+    }
+}
+
 function verifyCode() {
-    const code = document.getElementById('verificationCode').value;
+    const inputs = document.querySelectorAll('.otp-input');
+        let code = '';
+        inputs.forEach(input => {
+            code += input.value; // Collect all digits
+        });
 
     if (window.confirmationResult) {
         window.confirmationResult.confirm(code).then(async (result) => {
