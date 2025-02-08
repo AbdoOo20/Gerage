@@ -2,7 +2,7 @@ import { db, doc, getDoc, updateDoc } from '../../Database/firebase-config.js';
 
 // Test: pk_test_51QFCeaPPa7Ug3bKucNTL8LOj05NRyWzD50XIP3wib3ltvoHGyUbwDbD4zplmhKfiYNkGSantfctPaPqwadt9uoqA00z8uPg7AN
 // Live: pk_live_51QFCeaPPa7Ug3bKu1KUkqNnqZsxN9Q0tKfcIeRoF62FlbrNvG5kTRBvbbDIi0frJn3gkpAP0cWkg1byAxeQ6L0mi00UWXE7tWj
-const stripe = Stripe('pk_test_51QFCeaPPa7Ug3bKucNTL8LOj05NRyWzD50XIP3wib3ltvoHGyUbwDbD4zplmhKfiYNkGSantfctPaPqwadt9uoqA00z8uPg7AN'); // Replace with your publishable key
+const stripe = Stripe('pk_live_51QFCeaPPa7Ug3bKu1KUkqNnqZsxN9Q0tKfcIeRoF62FlbrNvG5kTRBvbbDIi0frJn3gkpAP0cWkg1byAxeQ6L0mi00UWXE7tWj'); // Replace with your publishable key
 const elements = stripe.elements();
 
 // Get Order ID from Query String
@@ -183,7 +183,7 @@ form.addEventListener('submit', async (event) => {
     // local: http://localhost:15003/
     // host: https://garageapi.runasp.net
     $.ajax({
-        url: "http://localhost:15003/api/Payment/create-intent",
+        url: "https://garageapi.runasp.net/api/Payment/create-intent",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify({ amount: orderdata.Type === "Hour" ? (unitdata.price * orderdata.Duration) : unitdata.priceDay }), // Replace amount dynamically
