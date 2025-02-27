@@ -69,7 +69,9 @@
         "per_hour": "per hour",
         "per_day": "per day",
         "type_of_booking": "Type of Booking",
-        "day": "Day"
+        "day": "Day",
+        "auth_error": "Authorization Error",
+        "auth_error_details": "You must login to continue. Please choose an action below."
     },
     "de": {
         "navbar_home": "Startseite",
@@ -141,7 +143,9 @@
         "per_hour": "pro Stunde",
         "per_day": "pro Tag",
         "type_of_booking": "Art der Buchung",
-        "day": "Tag"
+        "day": "Tag",
+        "auth_error": "Autorisierungsfehler",
+        "auth_error_details": "Sie müssen sich anmelden, um fortzufahren. Bitte wählen Sie unten eine Aktion aus."
     },
     "it": {
         "navbar_home": "Home",
@@ -213,6 +217,8 @@
         "per_hour": "all'ora",
         "per_day": "al giorno",
         "type_of_booking": "Tipo di prenotazione",
-        "day": "Giorno"
+        "day": "Giorno",
+        "auth_error": "Errore di autorizzazione",
+        "auth_error_details": "Devi accedere per continuare. Per favore scegli un'azione qui sotto."
     }
 }

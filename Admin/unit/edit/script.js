@@ -63,7 +63,7 @@ async function deleteImage(index, unitID, target) {
     const docRef = doc(db, 'Units', unitID);
     const docSnap = await getDoc(docRef);
     const unitData = docSnap.data();
-    var selectImageName = unitData.name[index];
+    var selectImageName = unitData.name[index];   
     try {
         const imageRef = ref(storage, `Units/${selectImageName}`);
         await deleteObject(imageRef);
@@ -71,6 +71,7 @@ async function deleteImage(index, unitID, target) {
         updatedImageArray.splice(index, 1);
         let updatedNameArray = [...unitData.name];
         updatedNameArray.splice(index, 1);
+        
         await updateDoc(docRef, {
             imageUrl: updatedImageArray,
             name: updatedNameArray
@@ -128,15 +129,23 @@ addForm.addEventListener('submit', async (event) => {
             });
         } else {
             if (await checkDuplicateNames(imageNames)) {
+                console.log('if');
+                
                 showAlert("There is image name duplicate, try to upload image with different name with images in database.", "danger");
                 addBTN.style.display = 'inline-block';
                 load.style.display = "none";
                 imageDisplay.style.display = 'inline-block';
             } else {
+                console.log('else');
                 imageLinks = [];
                 addBTN.style.display = "none";
                 load.style.display = 'inline-block';
                 imageDisplay.style.display = "none";
+                imageNames = [];
+                for (let i = 0; i < unitData.name.length; i++) {
+                    imageLinks.push(unitData.imageUrl[i]);
+                    imageNames.push(unitData.name[i]);
+                }
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     const storageRef = ref(storage, `Units/${file.name}`);
@@ -145,10 +154,13 @@ addForm.addEventListener('submit', async (event) => {
                     imageLinks.push(imageUrl);
                     imageNames.push(file.name);
                 }
-                for (let i = 0; i < unitData.name.length; i++) {
-                    imageLinks.push(unitData.imageUrl[i]);
-                    imageNames.push(unitData.name[i]);
-                }
+                console.log(docRef);
+                console.log(imageLinks);
+                console.log(title);
+                console.log(details);
+                console.log(price);
+                console.log(priceDay);
+                console.log(imageNames);
                 await updateDoc(docRef, {
                     imageUrl: imageLinks,
                     title: title,

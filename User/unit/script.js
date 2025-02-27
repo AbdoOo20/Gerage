@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function getProfileData() {
         if (!UserID) {
-                showError("Authorization Error: You must Login");
+                //alert("Authorization Error: You must Login");
                 return;
         }
 
@@ -75,7 +75,6 @@ async function getProfileData() {
                 
                 const userDetails = doc(db, "users", UserID.toString());
                 const userData = await getDoc(userDetails);
-
                 if (userData.exists) {
                         const data = userData.data();
                         document.getElementById("UserName").value = data.name;
@@ -93,7 +92,7 @@ function handleLoginState() {
         if (!UserID) {
                 icons.forEach(item => item.classList.add("d-none"));
                 document.getElementById("Login").classList.remove("d-none");
-                showError("Authorization Error: You must Login");
+               // showError("Authorization Error: You must Login");
         } else {
                 document.getElementById("Login").classList.add("d-none");
         }
@@ -195,13 +194,21 @@ document.getElementById('bookingForm').addEventListener('submit', async (event) 
                 if (UserID) {
                         await makeOrder(selectedDateTime, duration);
                 } else {
-                        showError("Authorization Error: You must Login");
+                        const customAlertModal = new bootstrap.Modal(document.getElementById("customAlertModal"));
+                        customAlertModal.show();
+                        //alert("Authorization Error: You must Login");
                 }
         } else {
                 document.getElementById('dateError').textContent = errorMessage;
         }
 });
 
+const loginButton = document.getElementById("loginButton");
+ // Handle Login button click
+ loginButton.addEventListener("click", () => {
+        // Simulate redirection
+        window.location.href = "./../../../Authentication/register/index.html"; // Replace with actual login page URL
+      });
 
 async function makeOrder(selectedDateTime, duration) {
         try {
@@ -272,9 +279,9 @@ async function makeOrder(selectedDateTime, duration) {
                 });
 
                 if (isValid) {
-                        const docRef = await addDoc(collection(db, "Orders"), {
-                                UserID: UserID,
-                                UnitID: UnitID.id,
+                        const bookDetails = {
+                                UserID: UserID, 
+                                UnitID: UnitID.id, 
                                 OrderDate: selectedDateTime.toDateString(),
                                 OrderSelectedHour: selectedHour,
                                 OrderSelectedMinute: selectedMinute,
@@ -283,10 +290,22 @@ async function makeOrder(selectedDateTime, duration) {
                                 UnitPrice: UnitPrice,
                                 UnitImages: UnitImages,
                                 Type: selectedValue
-                        });
-                        showSuccess("Order successfully placed!");
-                        const documentId = docRef.id;
-                        window.location.href = `./../payment/index.html?Order=${documentId}`;
+                            };
+                        localStorage.setItem('bookDetails', JSON.stringify(bookDetails));
+                        // const docRef = await addDoc(collection(db, "Orders"), {
+                        //         UserID: UserID,
+                        //         UnitID: UnitID.id,
+                        //         OrderDate: selectedDateTime.toDateString(),
+                        //         OrderSelectedHour: selectedHour,
+                        //         OrderSelectedMinute: selectedMinute,
+                        //         Duration: duration, // Store duration as hours (e.g., 1.5 for 1 hour 30 minutes)
+                        //         OrderStatus: "Pending",
+                        //         UnitPrice: UnitPrice,
+                        //         UnitImages: UnitImages,
+                        //         Type: selectedValue
+                        // });
+                        // const documentId = docRef.id;
+                        window.location.href = `./../payment/index.html?Order=${UnitID.id}`;
                 } else {
                         displayConflictTable(errorMessage, bookedDates, bookedStartTimes, bookedEndTimes);
                 }
@@ -336,6 +355,9 @@ async function suggestAlternativeUnits(errorMessage) {
 
                 for (const doc of querySnapshot.docs) {
                         if (foundUnit) break;
+                        
+                        // Skip the current unit that is being booked
+                        if (doc.id === UnitID.id) continue;
 
                         const Unitdata = doc.data();
 

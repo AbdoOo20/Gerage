@@ -1,4 +1,4 @@
-import { db, doc, getDoc, updateDoc } from '../../Database/firebase-config.js';
+import { db, addDoc,doc, getDoc, collection } from '../../Database/firebase-config.js';
 
 // Test: pk_test_51QFCeaPPa7Ug3bKucNTL8LOj05NRyWzD50XIP3wib3ltvoHGyUbwDbD4zplmhKfiYNkGSantfctPaPqwadt9uoqA00z8uPg7AN
 // Live: pk_live_51QFCeaPPa7Ug3bKu1KUkqNnqZsxN9Q0tKfcIeRoF62FlbrNvG5kTRBvbbDIi0frJn3gkpAP0cWkg1byAxeQ6L0mi00UWXE7tWj
@@ -9,9 +9,10 @@ const elements = stripe.elements();
 const urlParams = new URLSearchParams(window.location.search);
 const OrderIDFromQuery = urlParams.get('Order');
 var unitdata;
-var orderdata;
+let bookDetails;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    bookDetails = JSON.parse(localStorage.getItem('bookDetails')); 
     var mail = document.getElementById('mail');
     var location = document.getElementById('location');
     var phone = document.getElementById('phone');
@@ -62,22 +63,19 @@ function applyTranslations(lang) {
 
 // Fetch the Order Data from Firestore
 async function getOrderData(orderId) {
-    if (!orderId) {
-        console.error("No Order ID provided in the query string.");
+    if (!orderId || !localStorage.getItem('bookDetails') || localStorage.getItem('bookDetails') === "{}") {
+        alert("No Units ID provided in the query string or bookDetails is empty.");
         return;
     }
     try {
-        const orderRef = doc(db, "Orders", orderId); // Replace 'orders' with your collection name
-        const orderSnap = await getDoc(orderRef);
-        if (orderSnap.exists()) {
-            orderdata = orderSnap.data();
-            const unitRef = doc(db, "Units", orderSnap.data().UnitID); // Replace 'orders' with your collection name
+           const unitRef = doc(db, "Units", orderId); // Replace 'orders' with your collection name
             const unitSnap = await getDoc(unitRef);
             unitdata = unitSnap.data();
+        if (unitSnap.exists()) {
             document.getElementById("unitName").innerText = unitdata.title;
-            document.getElementById("unitPrice").innerText = orderdata.Type === "Hour" ? unitdata.price + ' CHF ' + translations[defaultLang]["per_hour"] : unitdata.priceDay + ' CHF ' + translations[defaultLang]["per_day"];
+            document.getElementById("unitPrice").innerText = bookDetails.Type === "Hour" ? unitdata.price + ' CHF ' + translations[defaultLang]["per_hour"] : unitdata.priceDay + ' CHF ' + translations[defaultLang]["per_day"];
             document.getElementById("unitImage").src = unitdata.imageUrl[0];
-            document.getElementById("valuePaid").innerText = translations[defaultLang]["pay_amount_chf"] + " " + (orderdata.Type === "Hour" ? (unitdata.price * orderdata.Duration) : unitdata.priceDay) + " CHF";
+            document.getElementById("valuePaid").innerText = translations[defaultLang]["pay_amount_chf"] + " " + (bookDetails.Type === "Hour" ? (unitdata.price * bookDetails.Duration) : unitdata.priceDay) + " CHF";
         } else {
             console.log("No such order found!");
         }
@@ -186,7 +184,7 @@ form.addEventListener('submit', async (event) => {
         url: "https://garageapi.runasp.net/api/Payment/create-intent",
         type: "POST",
         contentType: "application/json",
-        data: JSON.stringify({ amount: orderdata.Type === "Hour" ? (unitdata.price * orderdata.Duration) : unitdata.priceDay }), // Replace amount dynamically
+        data: JSON.stringify({ amount: bookDetails.Type === "Hour" ? (unitdata.price * bookDetails.Duration) : unitdata.priceDay }), // Replace amount dynamically
         success: function (response) {
             if (response.clientSecret) {
                 stripe.confirmCardPayment(response.clientSecret, {
@@ -207,10 +205,18 @@ form.addEventListener('submit', async (event) => {
                     `;
                         alertPlaceholder.innerHTML = alertHTML;
                     } else if (result.paymentIntent.status === 'succeeded') {
-                        const orderDocRef = doc(db, "Orders", OrderIDFromQuery);
-                        await updateDoc(orderDocRef, {
+                        await addDoc(collection(db, "Orders"), {
+                            UserID: bookDetails.UserID,
+                            UnitID: bookDetails.UnitID,
+                            OrderDate: bookDetails.OrderDate,
+                            OrderSelectedHour: bookDetails.OrderSelectedHour,
+                            OrderSelectedMinute: bookDetails.OrderSelectedMinute,
+                            Duration: bookDetails.Duration, // Store duration as hours (e.g., 1.5 for 1 hour 30 minutes)
                             OrderStatus: "Paid",
-                        });
+                            UnitPrice: bookDetails.UnitPrice,
+                            UnitImages: bookDetails.UnitImages,
+                            Type: bookDetails.Type
+                    });
                         const alertPlaceholder = document.getElementById('alertPlaceholder');
                         const alertHTML = `
                         <div class="alert alert-success alert-dismissible fade show mx-5" role="alert">
@@ -221,14 +227,15 @@ form.addEventListener('submit', async (event) => {
                         alertPlaceholder.innerHTML = alertHTML;
                         const paymentDetails = {
                             productName: unitdata.title, // Replace with your product name
-                            price: orderdata.Type === "Hour" ? ((unitdata.price * orderdata.Duration) + " CHF") : (unitdata.priceDay + " CHF"), // Replace with your price
-                            duration: orderdata.Duration + " Hour", // Replace with actual duration
+                            price: bookDetails.Type === "Hour" ? ((unitdata.price * bookDetails.Duration) + " CHF") : (unitdata.priceDay + " CHF"), // Replace with your price
+                            duration: bookDetails.Duration + " Hour", // Replace with actual duration
                             name: userData.title, // Masked card number
                             phoneNumber: userData.phone, // Replace with actual user phone number
-                            date: orderdata.OrderDate, // Current date and time
-                            type: orderdata.Type
+                            date: bookDetails.OrderDate, // Current date and time
+                            type: bookDetails.Type
                         };
                         localStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
+                        localStorage.removeItem('bookDetails');
                         window.location.href = "./receipt.html";
                     }
                 });

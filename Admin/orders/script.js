@@ -44,15 +44,23 @@ function formatTime(hour) {
 
 
 async function getUserName(userID) {
-    var docRef = doc(db, 'users', userID);
+    var docRef = doc(db, "users", userID);
     const docSnap = await getDoc(docRef);
-    const userData = docSnap.data();
-    return userData.name;
+    
+    if (!docSnap.exists()) {
+        return "";
+    }
+    
+    return docSnap.data().name || "";
 }
 
 async function getUnitName(unitID) {
-    var docRef = doc(db, 'Units', unitID);
+    var docRef = doc(db, "Units", unitID);
     const docSnap = await getDoc(docRef);
-    const unitData = docSnap.data();
-    return unitData.title;
+    
+    if (!docSnap.exists()) {
+        return "";
+    }
+    
+    return docSnap.data().title || "";
 }

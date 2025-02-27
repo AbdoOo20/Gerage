@@ -50,6 +50,22 @@
     </nav>
 
     <div class="container my-4">
+        <!-- Custom Alert Modal -->
+        <div class="modal fade" id="customAlertModal" tabindex="-1" aria-labelledby="customAlertModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header text-dark" style="background-color: #17365f;">
+                <h5 class="modal-title text-white" id="customAlertModalLabel" data-translation-key="auth_error"></h5>
+                </div>
+                <div class="modal-body" data-translation-key="auth_error_details"></div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translation-key="cancel"></button>
+                <button type="button" class="btn btn-primary" id="loginButton" data-translation-key="login"></button>
+                </div>
+            </div>
+            </div>
+        </div>
+
         <div class="row">
             <!-- Modal for booking conflict -->
             <div class="modal fade" id="conflictModal" tabindex="-1" aria-labelledby="conflictModalLabel"
