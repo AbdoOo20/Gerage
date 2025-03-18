@@ -46,6 +46,7 @@ let imageNames = [];
     document.getElementById("unitDetails").value = unitData.details;
     document.getElementById("unitPrice").value = unitData.price;
     document.getElementById("unitPriceDay").value = unitData.priceDay;
+    document.getElementById("unitNumber").value = unitData.number;
     selectUnitImageName = unitData.name;
     // Delete Icon
     imageScrollContainer.addEventListener('click', function (event) {
@@ -96,6 +97,7 @@ addForm.addEventListener('submit', async (event) => {
     const details = formData.get('details');
     const price = formData.get('price');
     const priceDay = formData.get('priceDay');
+    const number = formData.get('number');
     if (title.length < 4) {
         showAlert("Title must more than 4 character", "danger");
     } else if (details < 10) {
@@ -115,7 +117,8 @@ addForm.addEventListener('submit', async (event) => {
                 title: title,
                 details: details,
                 price: price,
-                priceDay: priceDay
+                priceDay: priceDay,
+                number: parseInt(number, 10)
             }).then(() => {
                 showAlert("Unit Edited Successfully", "success");
                 addBTN.style.display = 'inline-block';
@@ -154,20 +157,14 @@ addForm.addEventListener('submit', async (event) => {
                     imageLinks.push(imageUrl);
                     imageNames.push(file.name);
                 }
-                console.log(docRef);
-                console.log(imageLinks);
-                console.log(title);
-                console.log(details);
-                console.log(price);
-                console.log(priceDay);
-                console.log(imageNames);
                 await updateDoc(docRef, {
                     imageUrl: imageLinks,
                     title: title,
                     details: details,
                     price: price,
                     priceDay: priceDay,
-                    name: imageNames
+                    name: imageNames,
+                    number: parseInt(number, 10)
                 }).then(() => {
                     showAlert("Unit Edited Successfully", "success");
                     addBTN.style.display = 'inline-block';

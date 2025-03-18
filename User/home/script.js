@@ -1,4 +1,4 @@
-import { db, collection, getDocs, signOut, auth, doc, getDoc } from '../../Database/firebase-config.js';
+import { db, collection, getDocs, signOut, auth, doc, getDoc, query, orderBy } from '../../Database/firebase-config.js';
 
 // Base64 Encoding/Decoding Functions
 function encodeBase64(str) {
@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Fetch and display the list of units from Firestore
         const parentUnit = document.getElementById('ParentUnit');
         const Units = collection(db, "Units");
-        const querySnapshot = await getDocs(Units);
+        const q = query(Units, orderBy("number", "asc")); 
+        const querySnapshot = await getDocs(q);
 
         querySnapshot.forEach((doc) => {
                 const data = doc.data();

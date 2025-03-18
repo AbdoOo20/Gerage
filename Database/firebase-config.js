@@ -4,7 +4,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
     getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, deleteDoc, updateDoc,
-    query, where, getCountFromServer
+    query, where, getCountFromServer, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier, signOut, onAuthStateChanged
@@ -38,5 +38,5 @@ export {
     getDownloadURL, uploadBytes, signOut, database, set, push, onValue,
     createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPhoneNumber, RecaptchaVerifier, collection,
     addDoc, getDocs, setDoc, doc, ref, updateDoc, onAuthStateChanged, getAuth,
-    query, where, getCountFromServer
+    query, where, getCountFromServer, orderBy
 };

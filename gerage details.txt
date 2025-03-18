@@ -1,0 +1,22 @@
+
+--> Admin
+1) CRUD Unit (title, details, image, price to hour, isEmptyOrNot)
+2) Edit Email Admin and Password and phone for contact
+3) Statistics of number of users & units & played unit & stoped unit
+4) Reports => all order, all profits money from system & all profits money in month
+5) show user name and phone to contact with him 
+6) CRUD Banner (image)
+7) Login
+--> User
+8) Register(name, email, password, phone)
+9) profile and edit profile and logout in one page
+10) home page 
+     -- navbar with profile icon and logout and contact and privacy terms and about
+     -- show Banner
+     -- show units => show unit details
+11) make order (user id, unit id , date day,start time, duration)
+12) Payment (card data, userid, unit id)
+13) show current order for unit with state 
+    ('complete', 'progress', 'reserved')
+
+

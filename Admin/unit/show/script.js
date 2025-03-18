@@ -1,13 +1,15 @@
-import { storage, db, ref, collection, getDoc, getDocs, deleteDoc, deleteObject, doc } from './../../../Database/firebase-config.js';
+import { storage, db, ref, collection, getDoc, getDocs, deleteDoc, deleteObject, doc, query, orderBy } from './../../../Database/firebase-config.js';
 
 const parentUnit = document.getElementById('ParentUnit');
 let unitIdToDelete = null;
 
 async function getAllUnits() {
     const Units = collection(db, "Units");
-    const querySnapshot = await getDocs(Units);
+    const q = query(Units, orderBy("number", "asc")); 
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
         const data = doc.data();
+        console.log(data.number);
         const itemHTML = `
                     <div class="col">
                     <div class="card product-card">

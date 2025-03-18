@@ -75,6 +75,7 @@ addForm.addEventListener('submit', async (event) => {
             price: price,
             priceDay: priceDay,
             isUsed: false,
+            number: 0
         }).then(() => {
             showAlert("Unit Added Successfully", "success");
             addBTN.style.display = 'inline-block';
