@@ -196,6 +196,7 @@ form.addEventListener('submit', async (event) => {
                     },
                 }).then(async (result) => {
                     if (result.error) {
+                        console.error("Stripe Payment Error:", result.error);
                         const alertPlaceholder = document.getElementById('alertPlaceholder');
                         const alertHTML = `
                         <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
@@ -250,7 +251,8 @@ form.addEventListener('submit', async (event) => {
                 alertPlaceholder.innerHTML = alertHTML;
             }
         },
-        error: function () {
+        error: function (xhr, status, error) {
+            console.error("AJAX Error:", { xhr, status, error });
             const alertPlaceholder = document.getElementById('alertPlaceholder');
             const alertHTML = `
                 <div class="alert alert-danger alert-dismissible fade show mx-5" role="alert">
